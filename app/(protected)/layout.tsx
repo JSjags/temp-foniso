@@ -1,9 +1,7 @@
 import type { Metadata } from "next";
 import { DM_Sans } from "next/font/google";
 import "./globals.css";
-import Nav from "../../components/Nav";
 import { AppProvider } from "../../context";
-import Footer from "@/components/Footer";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 // import { DownloadModal } from "@/components/Modal/downloadModal";
