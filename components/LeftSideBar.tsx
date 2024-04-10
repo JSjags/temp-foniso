@@ -26,10 +26,12 @@ const LeftSideBar = (props: Props) => {
     <div className="h-full fixed z-50 left-0 min-[480px]:sticky bottom-0 sm:top-0 min-[480px]:border-r border-border bg-background">
       {/* Desktop sidebar */}
       <div className="px-[38px] pt-[30px] hidden min-[1000px]:block min-w-[200px] h-full">
-        <AdvancedImage
-          className="w-full max-w-[115.65px]"
-          cldImg={cld.image("foniso/logo")}
-        />
+        <Link href={"/home"}>
+          <AdvancedImage
+            className="w-full max-w-[115.65px]"
+            cldImg={cld.image("foniso/logo")}
+          />
+        </Link>
         <div className="text-white mt-10 flex flex-col gap-y-8">
           {leftSideBarItems
             .slice(0, leftSideBarItems.length - 1)
@@ -118,13 +120,15 @@ const LeftSideBar = (props: Props) => {
       </div>
       {/* Tablet sidebar */}
       <div className="px-[18px] pt-[30px] hidden min-[480px]:block min-[1000px]:hidden relative h-full">
-        <Image
-          width={30}
-          height={30}
-          className="size-[30px] rounded-full object-cover"
-          alt="icon"
-          src={"/assets/favicon.svg"}
-        />
+        <Link href={"/home"}>
+          <Image
+            width={30}
+            height={30}
+            className="size-[30px] rounded-full object-cover"
+            alt="icon"
+            src={"/assets/favicon.svg"}
+          />
+        </Link>
         <div className="text-white mt-10 flex flex-col gap-y-8">
           {leftSideBarItems
             .slice(0, leftSideBarItems.length - 1)

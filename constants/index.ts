@@ -52,7 +52,7 @@ export const leftSideBarItems = [
   },
   {
     title: "More",
-    path: "/more",
+    path: "/home",
     activeIcon: "/assets/app-icons/more-active.svg",
     inactiveIcon: "/assets/app-icons/more-inactive.svg",
   },

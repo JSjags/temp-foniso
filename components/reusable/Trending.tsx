@@ -9,7 +9,7 @@ const Trending = (props: Props) => {
   return (
     <div className="text-white py-5 pb-6 pt-2 relative font-bold border-b border-border max-w-[740px]">
       <p className="px-2 sm:px-6 text-xl text-foreground">Trending now!</p>
-      <div className="mt-4 flex gap-x-4 overflow-x-scroll hide-scrollbar px-2 sm:px-6 snap-x snap-mandatory scroll-p-2 sm:scroll-p-6">
+      <div className="mt-4 flex gap-x-4 overflow-x-scroll hide-scrollbar px-2 sm:px-6 snap-x snap-mandatory scroll-p-2 sm:scroll-p-6 hide-scrollbar">
         {trendingHighlights.map((highlight, i) => (
           <div
             key={i}
