@@ -1,0 +1,13 @@
+{
+  "applinks": {
+    "apps": [],
+    "details": [
+      {
+        "appID": "J23NVS5VAT.team.foniso.app",
+        "paths": [
+          "*"
+        ]
+      }
+    ]
+  }
+}

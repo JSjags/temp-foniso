@@ -1,0 +1,12 @@
+[
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "team.foniso.app",
+      "sha256_cert_fingerprints": [
+        "21:6E:34:EF:55:43:EF:C2:71:F6:4B:79:72:49:7A:FF:C9:58:06:6A:68:35:05:A0:27:16:90:02:5F:ED:EA:51"
+      ]
+    }
+  }
+]
