@@ -232,10 +232,10 @@ export const placeholderPosts = [
         type: "image",
         url: "https://e0.365dm.com/23/01/2048x1152/skysports-ronaldo-all-nassr_6033103.jpg?20230122222115",
       },
-      {
-        type: "video",
-        url: "/assets/placeholder-video.mp4",
-      },
+      // {
+      //   type: "video",
+      //   url: "/assets/placeholder-video.mp4",
+      // },
     ],
     likes_count: "500",
     comment_count: "20",
@@ -266,10 +266,10 @@ export const placeholderPosts = [
         type: "image",
         url: "https://e0.365dm.com/23/01/2048x1152/skysports-ronaldo-all-nassr_6033103.jpg?20230122222115",
       },
-      {
-        type: "video",
-        url: "/assets/placeholder-video.mp4",
-      },
+      // {
+      //   type: "video",
+      //   url: "/assets/placeholder-video.mp4",
+      // },
     ],
     likes_count: "500",
     comment_count: "20",
@@ -300,10 +300,10 @@ export const placeholderPosts = [
         type: "image",
         url: "https://e0.365dm.com/23/01/2048x1152/skysports-ronaldo-all-nassr_6033103.jpg?20230122222115",
       },
-      {
-        type: "video",
-        url: "/assets/placeholder-video.mp4",
-      },
+      // {
+      //   type: "video",
+      //   url: "/assets/placeholder-video.mp4",
+      // },
     ],
     likes_count: "500",
     comment_count: "20",
@@ -334,10 +334,10 @@ export const placeholderPosts = [
         type: "image",
         url: "https://e0.365dm.com/23/01/2048x1152/skysports-ronaldo-all-nassr_6033103.jpg?20230122222115",
       },
-      {
-        type: "video",
-        url: "/assets/placeholder-video.mp4",
-      },
+      // {
+      //   type: "video",
+      //   url: "/assets/placeholder-video.mp4",
+      // },
     ],
     likes_count: "500",
     comment_count: "20",
@@ -368,10 +368,10 @@ export const placeholderPosts = [
         type: "image",
         url: "https://e0.365dm.com/23/01/2048x1152/skysports-ronaldo-all-nassr_6033103.jpg?20230122222115",
       },
-      {
-        type: "video",
-        url: "/assets/placeholder-video.mp4",
-      },
+      // {
+      //   type: "video",
+      //   url: "/assets/placeholder-video.mp4",
+      // },
     ],
     likes_count: "500",
     comment_count: "20",
@@ -402,10 +402,10 @@ export const placeholderPosts = [
         type: "image",
         url: "https://e0.365dm.com/23/01/2048x1152/skysports-ronaldo-all-nassr_6033103.jpg?20230122222115",
       },
-      {
-        type: "video",
-        url: "/assets/placeholder-video.mp4",
-      },
+      // {
+      //   type: "video",
+      //   url: "/assets/placeholder-video.mp4",
+      // },
     ],
     likes_count: "500",
     comment_count: "20",
@@ -438,10 +438,10 @@ export const placeholderComments = [
         type: "image",
         url: "https://e0.365dm.com/23/01/2048x1152/skysports-ronaldo-all-nassr_6033103.jpg?20230122222115",
       },
-      {
-        type: "video",
-        url: "/assets/placeholder-video.mp4",
-      },
+      // {
+      //   type: "video",
+      //   url: "/assets/placeholder-video.mp4",
+      // },
     ],
     likes_count: "500",
     comment_count: "20",
