@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { DM_Sans } from "next/font/google";
 import "./globals.css";
 import { AppProvider } from "../../context";
-import { ToastContainer } from "react-toastify";
+import { ToastContainer, Slide } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 // import { DownloadModal } from "@/components/Modal/downloadModal";
 import Analytics from "@/components/gAnalytics";
@@ -30,35 +30,36 @@ export default function RootLayout({
   // console.log(pathname);
 
   return (
-    // <html lang="en">
-    //   <link
-    //     rel="icon"
-    //     href="/icon?<generated>"
-    //     type="image/<generated>"
-    //     sizes="<generated>"
-    //   />
-    <div className={global_font.className}>
+    <html lang="en">
+      <link
+        rel="icon"
+        href="/icon?<generated>"
+        type="image/<generated>"
+        sizes="<generated>"
+      />
       <Analytics />
-      <AppProvider>
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="system"
-          enableSystem
-          disableTransitionOnChange
-        >
-          <div className="mx-auto w-full flex justify-center gap-0 min-[480px]:gap-2 bg-[##E0E5E2] dark:bg-bgEffect max-w-[1560px] h-screen overflow-y-scroll">
-            <LeftSideBar />
-            {/* max-w-[740px] */}
-            <div className="flex-1 min-w-[240px] h-fit bg-background sm:bg-transparent pb-20 sm:pb-4">
-              {/* Titlebar is only for mobile devices */}
-              <Titlebar />
-              {children}
+      <ThemeProvider
+        attribute="class"
+        defaultTheme="system"
+        enableSystem
+        disableTransitionOnChange
+      >
+        <AppProvider>
+          <body className={global_font.className}>
+            <div className="mx-auto w-full flex justify-center gap-0 min-[480px]:gap-3 bg-main max-w-screen h-screen overflow-y-scroll">
+              <LeftSideBar />
+              <div className="flex-1 min-w-[240px] max-w-[740px] h-fit border-l border-r border-border bg-background sm:bg-background pb-20 sm:pb-4">
+                {/* Only for mobile devices */}
+                {/* <Titlebar /> */}
+                {children}
+              </div>
+
+              <RightSideBar />
             </div>
-          </div>
-          <ToastContainer />
-        </ThemeProvider>
-      </AppProvider>
-    </div>
-    // </html>
+            <ToastContainer transition={Slide} position="top-center" />
+          </body>
+        </AppProvider>
+      </ThemeProvider>
+    </html>
   );
 }

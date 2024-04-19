@@ -4,49 +4,28 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { AdvancedImage } from "@cloudinary/react";
 import { Cloudinary } from "@cloudinary/url-gen";
-import { useTheme } from "next-themes";
 import Image from "next/image";
 import Link from "next/link";
-import React, { useEffect, useState } from "react";
+import React from "react";
 
 const page = () => {
-  const { theme } = useTheme();
-
-  const [logoPath, setLogoPath] = useState("/assets/logo-dark.svg");
-
-  useEffect(() => {
-    setLogoPath(
-      theme === "light" || theme === "undefined"
-        ? "/assets/logo-dark.svg"
-        : "/assets/logo.svg"
-    );
-  }, [theme]);
+  const cld = new Cloudinary({ cloud: { cloudName: "delflsgq4" } });
 
   return (
-    <div className="bg-bgEffect min-h-screen">
-      <div className="max-w-[1812px] flex flex-col ju min-h-screen mx-auto">
+    <div className="bg-main min-h-screen">
+      <div className="max-w-[1812px] flex flex-col ju min-h-screen">
         <div className="flex mt-[15vh] px-2">
           <div className="hidden w-1/2 md:flex justify-center items-center px-10">
-            <Image
-              alt="logo"
-              src={logoPath}
+            <AdvancedImage
               className="w-full max-w-[231px] -translate-y-[120%]"
-              width={231}
-              height={46}
+              cldImg={cld.image("foniso/logo")}
             />
           </div>
           <div className=" w-full md:w-1/2 flex flex-col justify-center items-center">
             <div className="w-full flex justify-center">
-              {/* <AdvancedImage
+              <AdvancedImage
                 className="w-1/2 md:hidden -translate-y-[100%] max-w-[231px]"
                 cldImg={cld.image("foniso/logo")}
-              /> */}
-              <Image
-                alt="logo"
-                src={logoPath}
-                className="w-1/2 md:hidden -translate-y-[100%] max-w-[231px]"
-                width={231}
-                height={46}
               />
             </div>
             <div className="w-full max-w-[571px] p-6 border border-border bg-background rounded-xl">
