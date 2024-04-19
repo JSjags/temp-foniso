@@ -10,9 +10,10 @@ const nextConfig = {
       },
       {
         protocol: "https",
-        hostname: "th.bing.com",
+        hostname: "source.unsplash.com",
         port: "",
-      },
+        pathname: "/random/**",
+      }, // TODO: remove this later. Only used for UI dev
     ],
   },
   //   output: "export",
