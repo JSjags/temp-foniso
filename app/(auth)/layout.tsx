@@ -20,26 +20,26 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
-      <link
-        rel="icon"
-        href="/icon?<generated>"
-        type="image/<generated>"
-        sizes="<generated>"
-      />
+    // <html lang="en">
+    //   <link
+    //     rel="icon"
+    //     href="/icon?<generated>"
+    //     type="image/<generated>"
+    //     sizes="<generated>"
+    //   />
+    <div className={global_font.className}>
       <AppProvider>
-        <body className={global_font.className}>
-          <ThemeProvider
-            attribute="class"
-            defaultTheme="system"
-            enableSystem
-            disableTransitionOnChange
-          >
-            {children}
-            <ToastContainer />
-          </ThemeProvider>
-        </body>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
+          {children}
+          <ToastContainer />
+        </ThemeProvider>
       </AppProvider>
-    </html>
+    </div>
+    // </html>
   );
 }

@@ -10,106 +10,261 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { cn } from "@/lib/utils";
+import { cn, validatePhoneNumber } from "@/lib/utils";
 import { AdvancedImage } from "@cloudinary/react";
 import { Cloudinary } from "@cloudinary/url-gen";
-import { CircleCheckBig } from "lucide-react";
+import { Check, ChevronsUpDown, CircleCheckBig, Search } from "lucide-react";
+import { useTheme } from "next-themes";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
-import React from "react";
+import React, { ChangeEvent, useEffect, useState } from "react";
 import VerificationInput from "react-verification-input";
+import { Country } from "country-state-city";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+} from "@/components/ui/command";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 const page = () => {
-  const cld = new Cloudinary({ cloud: { cloudName: "delflsgq4" } });
+  const { theme } = useTheme();
 
   const searchParams = useSearchParams();
   const router = useRouter();
 
   const tab = searchParams.get("tab");
 
+  const [countryData, setCountryData] = useState(Country.getAllCountries());
+  const [open, setOpen] = React.useState(false);
+  const [value, setValue] = React.useState("");
+
+  const verifyEmail = () => {
+    router.push("?tab=verify");
+  };
+
+  const CreateAccount = () => {
+    const [formData, setFormData] = useState({
+      country: "",
+      email: "",
+      phone: "",
+    });
+
+    const [errors, setErrors] = useState({
+      country: "",
+      email: "",
+      phone: "",
+    });
+
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+      const { name, value } = e.target;
+      setFormData({
+        ...formData,
+        [name]: value,
+      });
+
+      // Validate form fields as the user types
+      validateField(name, value);
+    };
+
+    const validateField = (name: string, value: string) => {
+      const newErrors = { ...errors };
+
+      switch (name) {
+        case "country":
+          newErrors.country = !value ? "Country is required" : "";
+          break;
+        case "email":
+          newErrors.email = !value ? "Email is required" : "";
+          break;
+        case "phone":
+          newErrors.phone = !validatePhoneNumber(formData.phone)
+            ? ""
+            : "Phone number is not valid.";
+          newErrors.phone = !value ? "Phone number is required" : "";
+          break;
+        default:
+          break;
+      }
+
+      setErrors(newErrors);
+    };
+    // onClick={() => verifyEmail()}
+
+    const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+      e.preventDefault();
+      // Validate form fields
+      const newErrors = {
+        country: "",
+        email: "",
+        phone: "",
+      };
+
+      // Basic validation for country
+      if (!formData.country) {
+        newErrors.country = "Country is required";
+      }
+      // Basic validation for email
+      if (!formData.email) {
+        newErrors.email = "Email is required";
+      }
+
+      // Basic validation for phone number
+      if (validatePhoneNumber(formData.phone)) {
+        newErrors.phone = "Phone number is not valid.";
+      }
+      if (!formData.phone) {
+        newErrors.phone = "Phone number is required";
+      }
+
+      // Update errors state
+      setErrors(newErrors);
+
+      // If there are no errors, submit the form
+      if (Object.values(newErrors).every((error) => !error)) {
+        // Submit form data
+        console.log("Form submitted:", formData);
+      }
+    };
+
+    return (
+      <form
+        onSubmit={handleSubmit}
+        className="w-full max-w-[571px] p-6 pb-8 pt-4 border border-border bg-background rounded-xl mt-6 mb-20"
+      >
+        <h2 className="text-xl sm:text-[24px] text-center font-bold text-foreground mb-4">
+          Create account
+        </h2>
+        <div>
+          <Label
+            htmlFor="country"
+            className="text-foreground text-base font-semibold mt-8"
+          >
+            Your country
+          </Label>
+          <div>
+            <Popover open={open} onOpenChange={setOpen}>
+              <PopoverTrigger asChild className="w-full">
+                <Button
+                  variant="outline"
+                  role="combobox"
+                  aria-expanded={open}
+                  onChange={handleChange}
+                  className="justify-between bg-transparent border-foreground/50 mt-2 w-full h-[54px] capitalize"
+                >
+                  {value ? value : "Select country"}
+                  <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-[--radix-popover-trigger-width] max-h-[--radix-popover-content-available-height] p-0 bg-background">
+                <Command className="w-full bg-background">
+                  <CommandInput
+                    placeholder="Search country"
+                    className="bg-transparent w-full mt-2 border-foreground/50 h-[54px] text-base text-semibold placeholder:text-foreground/50 font-semibold"
+                  />
+                  <CommandEmpty>No country found</CommandEmpty>
+                  <ScrollArea className="max-h-[200px] overflow-y-scroll">
+                    <CommandGroup>
+                      {countryData.map((country) => (
+                        <CommandItem
+                          key={country.name}
+                          value={country.name}
+                          onSelect={(currentValue) => {
+                            setValue(
+                              currentValue === value ? "" : currentValue
+                            );
+                            setOpen(false);
+                          }}
+                        >
+                          {/* <Check
+                          className={cn(
+                            "mr-2 h-4 w-4",
+                            value === country.name
+                              ? "opacity-100"
+                              : "opacity-0"
+                          )}
+                        /> */}
+                          {country.name} ({country.phonecode})
+                        </CommandItem>
+                      ))}
+                    </CommandGroup>
+                  </ScrollArea>
+                </Command>
+              </PopoverContent>
+            </Popover>
+          </div>
+          {errors.country && (
+            <p className="text-sm mt-1 text-red-500">{errors.country}</p>
+          )}
+        </div>
+        <div className="mt-4">
+          <Label
+            htmlFor="email"
+            className="text-colorWhite text-base font-semibold"
+          >
+            Your Phone number
+          </Label>
+          <Input
+            type="number"
+            id="phone"
+            onChange={handleChange}
+            placeholder="Enter Phone number"
+            className="bg-transparent mt-2 border-foreground/50 h-[54px] text-base text-semibold placeholder:text-foreground/50 font-semibold"
+          />
+          {errors.phone && (
+            <p className="text-sm mt-1 text-red-500">{errors.phone}</p>
+          )}
+        </div>
+        <div className="mt-4">
+          <Label
+            htmlFor="email"
+            className="text-colorWhite text-base font-semibold"
+          >
+            Your Email address
+          </Label>
+          <Input
+            id="email"
+            onChange={handleChange}
+            placeholder="Enter your email address"
+            className="bg-transparent mt-2 border-foreground/50 h-[54px] text-base text-semibold placeholder:text-foreground/50 font-semibold"
+          />
+          {errors.email && (
+            <p className="text-sm mt-1 text-red-500">{errors.email}</p>
+          )}
+        </div>
+
+        <Button className="w-full hover:bg-foreground hover:text-background hover:scale-[1.01] transition-all hover:shadow-xl bg-background border border-border text-foreground rounded-full flex justify-center items-center mt-10 h-[54px]">
+          <span className="text-base font-bold block p-0 align-middle -translate-y-[2px]">
+            Create account
+          </span>
+        </Button>
+        <div className="flex items-center justify-center gap-x-1 text-foreground/50 mt-4 text-base">
+          <span className="whitespace-nowrap">Already have an account?</span>
+          <Button
+            variant={"ghost"}
+            className="w-fit h-fit transition-all flex justify-center items-center p-0"
+          >
+            <span className="text-base text-foreground font-bold block p-0 align-middle">
+              Log in
+            </span>
+          </Button>
+        </div>
+      </form>
+    );
+  };
+
   const identifyPage = (currentTab: string | null) => {
     switch (currentTab) {
       case null:
-        return (
-          <div className="w-full max-w-[571px] p-6 pb-8 pt-4 border border-border bg-background rounded-xl mt-6 mb-20">
-            <h2 className="text-xl sm:text-[24px] text-center font-bold text-foreground mb-4">
-              Create account
-            </h2>
-            <div>
-              <Label
-                htmlFor="country"
-                className="text-foreground text-base font-semibold mt-8"
-              >
-                Your country
-              </Label>
-              <Select>
-                <SelectTrigger className="w-full mt-2 text-foreground/50 bg-transparent border-foreground/50 h-[54px] font-semibold">
-                  <SelectValue
-                    placeholder="Select your country"
-                    className="text-white text-base text-semibold placeholder:text-foreground/50 font-semibold"
-                    color="white"
-                  />
-                </SelectTrigger>
-                <SelectContent className="bg-darkGrey border-border mt-4">
-                  <SelectItem
-                    className="py-2 text-base text-foreground/50 font-semibold data-[highlighted]:text-black"
-                    value="light"
-                  >
-                    Light
-                  </SelectItem>
-                  <SelectItem
-                    className="py-2 text-base text-foreground/50 font-semibold data-[highlighted]:text-black"
-                    value="dark"
-                  >
-                    Dark
-                  </SelectItem>
-                  <SelectItem
-                    className="py-2 text-base text-foreground/50 font-semibold data-[highlighted]:text-black"
-                    value="system"
-                  >
-                    System
-                  </SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-            <div className="mt-4">
-              <Label
-                htmlFor="email"
-                className="text-colorWhite text-base font-semibold"
-              >
-                Your email address
-              </Label>
-              <Input
-                id="email"
-                placeholder="Enter your email address"
-                className="bg-transparent mt-2 border-foreground/50 h-[54px] text-base text-semibold placeholder:text-foreground/50 font-semibold"
-              />
-            </div>
-
-            <Button
-              onClick={() => router.push("?tab=verify")}
-              className="w-full hover:bg-foreground hover:text-background hover:scale-[1.01] transition-all hover:shadow-xl bg-background border border-border text-foreground rounded-full flex justify-center items-center mt-10 h-[54px]"
-            >
-              <span className="text-base font-bold block p-0 align-middle -translate-y-[2px]">
-                Create account
-              </span>
-            </Button>
-            <div className="flex items-center justify-center gap-x-1 text-foreground/50 mt-4 text-base">
-              <span className="whitespace-nowrap">
-                Already have an account?
-              </span>
-              <Button
-                variant={"ghost"}
-                className="w-fit h-fit transition-all flex justify-center items-center p-0"
-              >
-                <span className="text-base text-foreground font-bold block p-0 align-middle">
-                  Log in
-                </span>
-              </Button>
-            </div>
-          </div>
-        );
+        return <CreateAccount />;
       case "verify":
         return (
           <div className="w-full max-w-[571px] p-6 pb-8 pt-4 border border-border bg-background rounded-xl mt-6 mb-20">
@@ -293,7 +448,7 @@ const page = () => {
                   htmlFor="sex"
                   className="text-foreground text-base font-semibold mt-8"
                 >
-                  Select your favorite sport
+                  Sex
                 </Label>
                 <Select>
                   <SelectTrigger
@@ -391,14 +546,27 @@ const page = () => {
     }
   };
 
+  const [logoPath, setLogoPath] = useState("/assets/logo-dark.svg");
+
+  useEffect(() => {
+    setLogoPath(
+      theme === "light" || theme === "undefined"
+        ? "/assets/logo-dark.svg"
+        : "/assets/logo.svg"
+    );
+  }, [theme]);
+
   return (
-    <div className="bg-background min-h-screen p-2">
+    <div className="bg-bgEffect min-h-screen p-2">
       <div className="max-w-[1812px] flex flex-col min-h-screen">
         <div className="mt-20">
           <div className="max-w-[188px] flex justify-center items-center sm:px-10">
-            <AdvancedImage
+            <Image
+              alt="logo"
+              src={logoPath}
               className="w-full max-w-[231px] -translate-y-[120%]"
-              cldImg={cld.image("foniso/logo")}
+              width={165.65}
+              height={23}
             />
           </div>
           <div className="w-full flex flex-col items-center mt-10">

@@ -13,23 +13,37 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { ModeToggle } from "./ThemeToggle";
 import { useTheme } from "next-themes";
+import { useEffect, useState } from "react";
 
 type Props = {};
 
 const LeftSideBar = (props: Props) => {
   const { theme } = useTheme();
-  const cld = new Cloudinary({ cloud: { cloudName: "delflsgq4" } });
-
   const pathname = usePathname();
+
+  const [logoPath, setLogoPath] = useState("/assets/logo-dark.svg");
+  const [invertStyle, setInvertStyle] = useState("");
+
+  useEffect(() => {
+    setLogoPath(
+      theme === "light" || theme === "undefined"
+        ? "/assets/logo-dark.svg"
+        : "/assets/logo.svg"
+    );
+    setInvertStyle(theme === "light" || theme === "undefined" ? "invert" : "");
+  }, [theme]);
 
   return (
     <div className="h-full fixed z-50 left-0 min-[480px]:sticky bottom-0 sm:top-0 min-[480px]:border-r border-border bg-background">
       {/* Desktop sidebar */}
-      <div className="px-[38px] pt-[30px] hidden min-[1000px]:block min-w-[200px] h-full">
+      <div className="px-[38px] pt-[30px] hidden min-[1000px]:block min-w-[240px] lg:min-w-[271px] h-full">
         <Link href={"/home"}>
-          <AdvancedImage
+          <Image
+            alt="foniso-logo"
+            src={logoPath}
             className="w-full max-w-[115.65px]"
-            cldImg={cld.image("foniso/logo")}
+            width={165.65}
+            height={23}
           />
         </Link>
         <div className="text-white mt-10 flex flex-col gap-y-8">
@@ -58,7 +72,7 @@ const LeftSideBar = (props: Props) => {
                     className={cn(
                       "w-[30px]",
                       pathname === item.path ? "brightness-200" : "",
-                      theme === "light" ? "invert" : ""
+                      invertStyle
                     )}
                     alt="icon"
                     src={

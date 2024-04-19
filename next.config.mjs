@@ -8,6 +8,11 @@ const nextConfig = {
         port: "",
         pathname: "/files/**",
       },
+      {
+        protocol: "https",
+        hostname: "th.bing.com",
+        port: "",
+      },
     ],
   },
   //   output: "export",
