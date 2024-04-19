@@ -1,6 +1,6 @@
 "use client";
 
-import React, { ReactNode } from "react";
+import React from "react";
 import { Input } from "./ui/input";
 import { SearchIcon } from "lucide-react";
 import Trending from "./reusable/Trending";
@@ -9,10 +9,7 @@ import SidebarFooter from "./reusable/SidebarFooter";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 
-type Props = {
-  containerClassName?: string;
-  component?: ReactNode;
-};
+type Props = {};
 
 const RightSideBar = (props: Props) => {
   const pathname = usePathname();
@@ -20,12 +17,35 @@ const RightSideBar = (props: Props) => {
   return (
     <div
       className={cn(
-        "hidden min-[860px]:block min-w-[280px] w-[40%] max-w-[480px] min-h-screen h-fit border-l border-border bg-background sticky",
-        pathname === "/explore" ? "top-0" : "-top-[642px]",
-        props.containerClassName
+        "hidden min-[860px]:block min-w-[200px] w-[30%] max-w-[480px] min-h-screen h-fit border-l border-border bg-background sticky",
+        pathname === "/explore" ? "top-0" : "-top-[642px]"
       )}
     >
-      {props.component}
+      <div className="pb-[30vh]">
+        {pathname !== "/explore" ? (
+          <>
+            <div className="py-5 px-6 relative">
+              <div className="relative">
+                <SearchIcon
+                  size={18}
+                  color="#888888"
+                  className="absolute left-4 top-[18px]"
+                />
+                <Input
+                  id="search"
+                  placeholder="Search"
+                  className="bg-transparent mt-2 pl-10 text-foreground border-border h-[54px] text-base placeholder:text-foreground/40 rounded-xl"
+                />
+              </div>
+            </div>
+            <Trending />
+          </>
+        ) : null}
+        <PeopleSuggestions />
+        <div className="relative">
+          <SidebarFooter />
+        </div>
+      </div>
     </div>
   );
 };
