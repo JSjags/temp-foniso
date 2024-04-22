@@ -1,15 +1,6 @@
 "use client";
 
-import Image from "next/image";
-import { IoMdMore } from "react-icons/io";
-import { FaArrowLeftLong } from "react-icons/fa6";
 import { useRouter, usePathname, useSearchParams } from "next/navigation";
-import {
-  DropdownMenu,
-  DropdownMenuTrigger,
-  DropdownMenuContent,
-  DropdownMenuItem,
-} from "@/components/ui/dropdown-menu";
 import { Lock } from "lucide-react";
 import { useTheme } from "next-themes";
 import { formatNumber } from "@/utils";
@@ -17,10 +8,10 @@ import { Button } from "../ui/button";
 import Link from "next/link";
 import About from "./About";
 import Feeds from "./Feeds";
-import { cn } from "@/lib/utils";
+import HeaderWithImage from "../reusable/HeaderWithImage";
 
 const CommunityIntro = () => {
-  const { back, push } = useRouter();
+  const { push } = useRouter();
   const pathName = usePathname();
   const { get } = useSearchParams();
   const { resolvedTheme } = useTheme();
@@ -85,52 +76,23 @@ const CommunityIntro = () => {
       },
     },
   ];
+
   return (
-    <>
-      <div className="h-[140px] duo:h-[231px] relative w-full">
-        <Image
-          src="https://source.unsplash.com/random/1220x520/?ocean"
-          alt="community"
-          fill
-          className=" object-cover object-center"
-        />
+    <div>
+      <HeaderWithImage
+        imgSrc="https://source.unsplash.com/random/1220x520/?ocean"
+        dropDownOptions={moreOptionsAdmin}
+        name="  Manchester United FC"
+        memberCount={5000}
+        sideBtn={
+          <Button className="border rounded-full flex justify-center items-center h-8 duo:h-[40px] px-3 w-max hover:bg-white hover:scale-[1.01] transition-all hover:shadow-xl bg-white border-border text-foreground dark:text-black">
+            Request to join
+          </Button>
+        }
+      />
 
-        <div className="absolute top-[11px] w-full px-4 flex justify-between items-center">
-          <button
-            type="button"
-            className="size-[45px] center-item rounded-full appearance-none bg-[#22262399] cursor-pointer"
-            onClick={() => back()}
-          >
-            <FaArrowLeftLong className="fill-white text-xl" />
-          </button>
-
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <button
-                type="button"
-                className="size-[45px] center-item rounded-full appearance-none bg-[#22262399]"
-              >
-                <IoMdMore className="fill-white text-3xl" />
-              </button>
-            </DropdownMenuTrigger>
-
-            <DropdownMenuContent align="end" className="duo:w-[220px]">
-              {moreOptionsAdmin.map(({ label, callback, color }) => (
-                <DropdownMenuItem
-                  key={label}
-                  className={cn(color, "py-3 cursor-pointer")}
-                  onClick={callback}
-                >
-                  <span className="">{label}</span>
-                </DropdownMenuItem>
-              ))}
-            </DropdownMenuContent>
-          </DropdownMenu>
-        </div>
-      </div>
-
-      <div className="mt-5 px-4 ">
-        <div className="flex items-end justify-between relative">
+      <div className="px-4">
+        {/* <div className="flex items-end justify-between relative">
           <div className="">
             <p className="text-2xl duo:text-[26px] font-bold">
               Manchester United FC
@@ -152,7 +114,7 @@ const CommunityIntro = () => {
           <Button className="border absolute bottom-0 right-0 rounded-full flex justify-center items-center h-8 duo:h-[40px] px-3 w-max hover:bg-white hover:scale-[1.01] transition-all hover:shadow-xl bg-white border-border text-foreground dark:text-black">
             Request to join
           </Button>
-        </div>
+        </div> */}
 
         {!get("tab") && (
           <>
@@ -173,7 +135,7 @@ const CommunityIntro = () => {
           {get("tab") === "about" ? <About /> : <Feeds />}
         </div>
       </div>
-    </>
+    </div>
   );
 };
 

@@ -495,3 +495,18 @@ export const reportReasons = [
     reason: "Abuse or harrasement",
   },
 ];
+
+export const communityRules = [
+  {
+    title: "Be civil and respectful",
+    desc: "Make sure you understand the full picture before responding to someone's post",
+  },
+  {
+    title: "Stay on topic",
+    desc: "Share content that aligns with the community&apo;s theme.",
+  },
+  {
+    title: "Report issues",
+    desc: "Report any concerns to moderators or administrators promptly.",
+  },
+];

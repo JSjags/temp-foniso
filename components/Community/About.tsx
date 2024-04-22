@@ -1,20 +1,6 @@
 import { HiLockClosed } from "react-icons/hi2";
 import { FaCalendarDay } from "react-icons/fa";
-
-const rules = [
-  {
-    title: "Be civil and respectful",
-    desc: "Make sure you understand the full picture before responding to someone's post",
-  },
-  {
-    title: "Stay on topic",
-    desc: "Share content that aligns with the community&apo;s theme.",
-  },
-  {
-    title: "Report issues",
-    desc: "Report any concerns to moderators or administrators promptly.",
-  },
-];
+import { communityRules } from "@/constants";
 
 const About = () => {
   return (
@@ -49,7 +35,7 @@ const About = () => {
       <div className="pb-5 border-b border-border">
         <p className="text-[20px] font-bold">Community rules</p>
         <ul className="mt-3 space-y-[18px]">
-          {rules.map(({ title, desc }, index) => (
+          {communityRules.map(({ title, desc }, index) => (
             <li key={title} className="flex">
               <p className="mr-3 text-center font-bold text-lg leading-none">
                 {index + 1}

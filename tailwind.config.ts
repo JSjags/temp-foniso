@@ -97,6 +97,12 @@ const config = {
       screens: {
         duo: "480px",
       },
+      fontSize: {
+        "30": "1.875rem",
+      },
+      space: {
+        "30px": "1.875rem",
+      },
     },
   },
   plugins: [require("tailwindcss-animate")],

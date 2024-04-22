@@ -9,7 +9,7 @@ import SidebarFooter from "./reusable/SidebarFooter";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 
-type Props = {};
+type Props = { className?: string };
 
 const RightSideBar = (props: Props) => {
   const pathname = usePathname();
@@ -18,7 +18,8 @@ const RightSideBar = (props: Props) => {
     <div
       className={cn(
         "hidden min-[860px]:block min-w-[200px] w-[30%] max-w-[480px] min-h-screen h-fit border-l border-border bg-background sticky",
-        pathname === "/explore" ? "top-0" : "-top-[642px]"
+        pathname === "/explore" ? "top-0" : "-top-[642px]",
+        props.className
       )}
     >
       <div className="pb-[30vh]">

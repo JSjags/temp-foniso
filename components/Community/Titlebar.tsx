@@ -5,14 +5,33 @@ import { cn } from "@/lib/utils";
 import { useTheme } from "next-themes";
 import Image from "next/image";
 import Link from "next/link";
-
-const icons = [
-  "/assets/app-icons/explore-inactive.svg",
-  "/assets/outline/add-users.svg",
-];
+import { useSearchParams, useRouter, usePathname } from "next/navigation";
+import MobileDesktopOverlay from "../Modal/MobileDesktopOverlay";
+import { CreateCommunityForm } from "@/types/community";
+import CreateCommunity from "./CreateCommunity";
 
 const Titlebar = () => {
   const { theme } = useTheme();
+  const { push, back } = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+
+  const openModal = () => {
+    push(`${pathname}?create=new`);
+  };
+
+  const onSubmit = (arg: CreateCommunityForm) => {
+    console.log(arg, "from main component");
+    push("/community/57899-66878-76788/grow-community");
+  };
+
+  const icons = [
+    { icon: "/assets/app-icons/explore-inactive.svg", onClick: () => {} },
+    {
+      icon: "/assets/outline/add-users.svg",
+      onClick: openModal,
+    },
+  ];
 
   return (
     <div className="flex items-center justify-between px-4 h-12 duo:h-20 sticky top-0 z-50 bg-background border-b border-border">
@@ -40,12 +59,24 @@ const Titlebar = () => {
             key={i}
             width={24}
             height={24}
-            className={cn("size-[24px]", theme === "light" ? "invert" : "")}
+            className={cn(
+              "size-[24px] cursor-pointer",
+              theme === "light" ? "invert" : ""
+            )}
             alt="icon"
-            src={item}
+            src={item.icon}
+            onClick={item.onClick}
           />
         ))}
       </div>
+
+      <MobileDesktopOverlay
+        title=" Create new community"
+        open={searchParams.get("create") === "new"}
+        handleClose={() => back()}
+      >
+        <CreateCommunity onSubmit={onSubmit} />
+      </MobileDesktopOverlay>
     </div>
   );
 };

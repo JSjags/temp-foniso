@@ -1,7 +1,9 @@
 "use client";
 
 import CommunityCard from "@/components/Community/CommunityCard";
-import PendingRequestHeader from "@/components/Community/PendingRequestHeader";
+import HeaderWithBackBtn from "@/components/reusable/HeaderWithBackBtn";
+import CancelRequestModal from "@/components/Modal/CancelRequestModal";
+import RightSideBar from "@/components/RightSideBar";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { useState } from "react";
@@ -61,45 +63,28 @@ const Page = () => {
   };
 
   return (
-    <div>
-      <PendingRequestHeader />
+    <div className="flex duo:gap-3">
+      <div className="w-full">
+        <HeaderWithBackBtn title="Pending requests" />
 
-      <div className="mt-6 space-y-5">
-        {communities_list.map((item, index) => (
-          <CommunityCard
-            key={index}
-            {...item}
-            btnOnClick={() => handleOnClick(item)}
-          />
-        ))}
+        <div className="mt-6 space-y-5">
+          {communities_list.map((item, index) => (
+            <CommunityCard
+              key={index}
+              {...item}
+              btnOnClick={() => handleOnClick(item)}
+            />
+          ))}
+        </div>
       </div>
 
-      <Dialog open={open_modal} onOpenChange={() => setOpenModal(false)}>
-        <DialogContent className="duo:!max-w-[412px] h-[321px]">
-          <div>
-            <p className="text-center text-xl font-bold">Cancel request</p>
-            <p className="mt-[10px] text-center">
-              Are you sure you want to cancel your request to join{" "}
-              <span className="font-semibold">{selected_community?.name}?</span>
-            </p>
+      <RightSideBar className="min-w-[300px] lg:min-w-[380px]" />
 
-            <div className="mt-9 flex flex-col gap-4">
-              <Button
-                className="w-full rounded-full !bg-[#C60D25] !text-white h-14 font-bold"
-                onClick={() => setOpenModal(false)}
-              >
-                Yes
-              </Button>
-              <Button
-                className="w-full rounded-full !bg-transparent border border-[#DADADA] h-14 !text-white font-bold"
-                onClick={() => setOpenModal(false)}
-              >
-                Back
-              </Button>
-            </div>
-          </div>
-        </DialogContent>
-      </Dialog>
+      <CancelRequestModal
+        name={selected_community?.name}
+        open={open_modal}
+        handleClose={() => setOpenModal(false)}
+      />
     </div>
   );
 };

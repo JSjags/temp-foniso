@@ -17,7 +17,7 @@ type ItemContext = {
 const communities_list = [
   {
     name: "Manchester United FC",
-    desc: `Welcome to the Red Devils&apos; Haven! Join our passionate community of Manchester United fans`,
+    desc: `Welcome to the Red Devils' Haven! Join our passionate community of Manchester United fans`,
     membersCount: 3800,
     isLocked: false,
     hasJoined: false,
@@ -25,7 +25,7 @@ const communities_list = [
   },
   {
     name: "Cr7 goat",
-    desc: `Welcome to the Red Devils&apos; Haven! Join our passionate community of Manchester United fans`,
+    desc: `Welcome to the Red Devils' Haven! Join our passionate community of Manchester United fans`,
     membersCount: 5000,
     isLocked: false,
     hasJoined: true,
@@ -33,7 +33,7 @@ const communities_list = [
   },
   {
     name: "UFC",
-    desc: `Welcome to the Red Devils&apos; Haven! Join our passionate community of Manchester United fans`,
+    desc: `Welcome to the Red Devils' Haven! Join our passionate community of Manchester United fans`,
     membersCount: 500000,
     isLocked: true,
     hasJoined: false,
@@ -41,7 +41,7 @@ const communities_list = [
   },
   {
     name: "Boy from akron",
-    desc: `Welcome to the Red Devils&apos; Haven! Join our passionate community of Manchester United fans`,
+    desc: `Welcome to the Red Devils' Haven! Join our passionate community of Manchester United fans`,
     membersCount: 350000,
     isLocked: false,
     hasJoined: false,
