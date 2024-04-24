@@ -77,7 +77,7 @@ const AddRule = (props: Props) => {
       </div>
 
       <Button className="w-full rounded-full mt-[131px] bg-[#676666] h-14 mb-6">
-        Create community
+        {searchParams.get("edit") ? "Edit rule" : "Create rule"}
       </Button>
     </form>
   );

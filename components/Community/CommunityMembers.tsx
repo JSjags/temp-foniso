@@ -17,6 +17,7 @@ const CommunityMembers = () => {
     username: "@sportsOn3",
     action: "",
   });
+
   const [openModal, setOpenModal] = useState(false);
 
   const options = [

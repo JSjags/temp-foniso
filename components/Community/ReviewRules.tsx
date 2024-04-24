@@ -4,7 +4,12 @@ import { communityRules } from "@/constants";
 import { usePathname, useRouter } from "next/navigation";
 import { IoIosAddCircle } from "react-icons/io";
 
-const ReviewRules = () => {
+type Props = {
+  editOnClick?: (arg?: number) => void;
+  addOnClick?: () => void;
+};
+
+const ReviewRules = ({ editOnClick, addOnClick }: Props) => {
   const { push } = useRouter();
   const pathname = usePathname();
 
@@ -37,7 +42,11 @@ const ReviewRules = () => {
             <button
               type="button"
               className="text-[#22C55E] font-medium"
-              onClick={() => openModal(index)}
+              onClick={() =>
+                typeof editOnClick === "function"
+                  ? editOnClick(index)
+                  : openModal(index)
+              }
             >
               Edit
             </button>
@@ -48,7 +57,9 @@ const ReviewRules = () => {
       <button
         type="button"
         className="flex w-fit mx-auto mt-9 text-[#22C55E] font-medium"
-        onClick={() => openModal()}
+        onClick={() =>
+          typeof addOnClick === "function" ? addOnClick() : openModal()
+        }
       >
         Add new rule
         <IoIosAddCircle className="w-6 h-6 fill-[#22C55E] ml-[2px]" />

@@ -13,6 +13,8 @@ import MemberRequest from "./MemberRequest";
 import CommunitySettings from "./CommunitySettings";
 import NavList from "./NavList";
 import CommunityMembers from "./CommunityMembers";
+import ManageCommunityRules from "./ManageCommunityRules";
+import HiddenPosts from "./HiddenPosts";
 
 const item_list = [
   {
@@ -56,7 +58,7 @@ const ManageCommunity = () => {
   const { back } = useRouter();
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-[0.8fr_1fr] gap-[10px] items-stretch">
+    <div className="grid grid-cols-1 md:grid-cols-[0.8fr_1fr] lg:grid-cols-[0.7fr_1fr] gap-[10px] items-stretch">
       <div className="">
         <HeaderWithBackBtn title="Manage community" />
 
@@ -83,8 +85,8 @@ const ManageCommunity = () => {
       </div>
 
       {Boolean(searchParams.get("tab")) && (
-        <ManageCommunitySidebar className="border-l h-full border-[#D9D9D9] dark:border-[#222522] px-5">
-          <div className="flex items-center h-[66px] md:h-20 md:mt-3 gap-[28px]">
+        <ManageCommunitySidebar className="border-l h-[100dvh] overflow-y-auto hide-scrollbar border-[#D9D9D9] dark:border-[#222522] px-5">
+          <div className="flex items-center h-[66px] md:h-20 md:mt-3 gap-[28px] border-b border-border">
             <FaArrowLeft className="text-2xl md:hidden" onClick={back} />
 
             <p className="text-xl md:text-2xl font-bold">
@@ -100,6 +102,8 @@ const ManageCommunity = () => {
             <CommunitySettings />
           )}
           {searchParams.get("tab") === "members" && <CommunityMembers />}
+          {searchParams.get("tab") === "rules" && <ManageCommunityRules />}
+          {searchParams.get("tab") === "hidden-post" && <HiddenPosts />}
         </ManageCommunitySidebar>
       )}
     </div>
