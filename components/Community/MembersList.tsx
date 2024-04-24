@@ -9,8 +9,8 @@ const MembersList = () => {
   return (
     <div className="mt-5 px-4">
       <div className="relative flex items-center">
-        <CiSearch className="absolute left-2 text-2xl" />
-        <Input className="pl-9 bg-[#656464] dark:bg-[#020302] dark:border-[#222623]" />
+        <CiSearch className="absolute left-2 text-2xl fill-[#656464] dark:fill-[#7C7C7C]" />
+        <Input className="pl-9 bg-[#E0E5E2] dark:bg-[#020302] dark:border-[#222623]" />
       </div>
 
       <div className="mt-5">

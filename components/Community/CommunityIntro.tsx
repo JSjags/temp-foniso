@@ -1,6 +1,11 @@
 "use client";
 
-import { useRouter, usePathname, useSearchParams } from "next/navigation";
+import {
+  useRouter,
+  usePathname,
+  useSearchParams,
+  useParams,
+} from "next/navigation";
 import { Lock } from "lucide-react";
 import { useTheme } from "next-themes";
 import { formatNumber } from "@/utils";
@@ -13,8 +18,8 @@ import HeaderWithImage from "../reusable/HeaderWithImage";
 const CommunityIntro = () => {
   const { push } = useRouter();
   const pathName = usePathname();
+  const { community_id } = useParams();
   const { get } = useSearchParams();
-  const { resolvedTheme } = useTheme();
 
   const moreOptions = [
     {
@@ -41,19 +46,19 @@ const CommunityIntro = () => {
     {
       label: "Invite new member",
       callback: () => {
-        push(`${pathName}?tab=invite-new`);
+        push(`/community/${community_id}/grow-community/invite-members`);
       },
     },
     {
       label: "Create buzz",
       callback: () => {
-        push(`${pathName}?tab=buzz`);
+        push(`/community/${community_id}/create-buzz`);
       },
     },
     {
       label: "Manage community",
       callback: () => {
-        push(`${pathName}?tab=manage`);
+        push(`/community/${community_id}/manage-community`);
       },
     },
     {

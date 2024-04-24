@@ -10,7 +10,7 @@ import MobileDesktopOverlay from "../Modal/MobileDesktopOverlay";
 import { CreateCommunityForm } from "@/types/community";
 import CreateCommunity from "./CreateCommunity";
 
-const Titlebar = () => {
+const Titlebar = ({ title }: { title: string }) => {
   const { theme } = useTheme();
   const { push, back } = useRouter();
   const pathname = usePathname();
@@ -26,7 +26,12 @@ const Titlebar = () => {
   };
 
   const icons = [
-    { icon: "/assets/app-icons/explore-inactive.svg", onClick: () => {} },
+    {
+      icon: "/assets/app-icons/explore-inactive.svg",
+      onClick: () => {
+        push("/community/search");
+      },
+    },
     {
       icon: "/assets/outline/add-users.svg",
       onClick: openModal,
@@ -50,7 +55,7 @@ const Titlebar = () => {
 
       <div className="flex-1">
         <p className="text-xl duo:text-2xl font-bold duo:text-left text-center">
-          Community
+          {title}
         </p>
       </div>
       <div className="flex items-center justify-end gap-x-4">

@@ -22,12 +22,20 @@ const CommunityCard = (props: Props) => {
   const { resolvedTheme } = useTheme();
   const { push } = useRouter();
 
+  const handleClick = () => {
+    let url = props.hasJoined
+      ? "/community/5879-66878-78798/"
+      : "/community/5879-66878-78798/view-community";
+
+    push(url);
+  };
+
   return (
     <div className="rounded-xl border border-border p-[10px] duo:p-5">
       <div className="flex justify-between gap-[18px]">
         <div
           className="flex-1 flex gap-[9px] cursor-pointer"
-          onClick={() => push("/community/5879-66878-78798/")}
+          onClick={handleClick}
         >
           <Image
             src={`https://source.unsplash.com/random/500x500/?soccer+${

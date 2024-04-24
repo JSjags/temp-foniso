@@ -8,7 +8,7 @@ const Community = () => {
   return (
     <div className="flex duo:gap-3">
       <div className="w-full">
-        <Titlebar />
+        <Titlebar title="Community" />
         <div className="px-4">
           <PendingRequests count={12} />
           <CommunitiesList />

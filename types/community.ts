@@ -14,3 +14,12 @@ export type AddRulesContext = {
   title: string;
   description: string;
 };
+
+export type ItemContext = {
+  name: string;
+  desc: string;
+  membersCount: number;
+  isLocked: boolean;
+  hasJoined: boolean;
+  hasRequested: boolean;
+};

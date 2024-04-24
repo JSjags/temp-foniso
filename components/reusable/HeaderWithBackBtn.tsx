@@ -7,7 +7,7 @@ import { FaArrowLeftLong } from "react-icons/fa6";
 const HeaderWithBackBtn = ({ title }: { title: ReactNode }) => {
   const { back } = useRouter();
   return (
-    <div className="flex h-[54px] items-center duo:h-20 border-b border-border px-4">
+    <div className="flex h-[54px] items-center duo:h-20 border-b border-border px-4 mt-2">
       <button
         type="button"
         className="size-[30px] duo:size-[45px] center-item rounded-full duo:dark:bg-[#222623] duo:bg-gray-100"

@@ -4,50 +4,8 @@ import Link from "next/link";
 import CommunityCard from "./CommunityCard";
 import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
-
-type ItemContext = {
-  name: string;
-  desc: string;
-  membersCount: number;
-  isLocked: boolean;
-  hasJoined: boolean;
-  hasRequested: boolean;
-};
-
-const communities_list = [
-  {
-    name: "Manchester United FC",
-    desc: `Welcome to the Red Devils' Haven! Join our passionate community of Manchester United fans`,
-    membersCount: 3800,
-    isLocked: false,
-    hasJoined: false,
-    hasRequested: false,
-  },
-  {
-    name: "Cr7 goat",
-    desc: `Welcome to the Red Devils' Haven! Join our passionate community of Manchester United fans`,
-    membersCount: 5000,
-    isLocked: false,
-    hasJoined: true,
-    hasRequested: true,
-  },
-  {
-    name: "UFC",
-    desc: `Welcome to the Red Devils' Haven! Join our passionate community of Manchester United fans`,
-    membersCount: 500000,
-    isLocked: true,
-    hasJoined: false,
-    hasRequested: false,
-  },
-  {
-    name: "Boy from akron",
-    desc: `Welcome to the Red Devils' Haven! Join our passionate community of Manchester United fans`,
-    membersCount: 350000,
-    isLocked: false,
-    hasJoined: false,
-    hasRequested: true,
-  },
-];
+import { communities_list } from "@/constants";
+import { ItemContext } from "@/types/community";
 
 const CommunitiesList = () => {
   const router = useRouter();

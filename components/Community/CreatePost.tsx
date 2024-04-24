@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { FormEvent, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import MobileDesktopOverlay from "../Modal/MobileDesktopOverlay";
 import { Button } from "../ui/button";
@@ -22,7 +22,9 @@ const CreatePost = () => {
   const { back } = useRouter();
   const [mobileModal, setMobileModal] = useState(false);
 
-  const onSubmit = () => {
+  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+
     console.log("object");
   };
 
@@ -30,11 +32,14 @@ const CreatePost = () => {
     back();
   };
 
-  const PostButton = () => {
+  const Title = () => {
     return (
       <div className="flex">
         <p className="flex-1">New post</p>
-        <Button className="md:hidden h-[36px] rounded-full px-5 bg-[#F2FFF769]">
+        <Button
+          type="submit"
+          className="md:hidden h-[36px] rounded-full px-5 bg-[#F2FFF769]"
+        >
           Post
         </Button>
       </div>
@@ -42,11 +47,14 @@ const CreatePost = () => {
   };
 
   return (
+    // <form onSubmit={handleSubmit}>
     <MobileDesktopOverlay
-      title={<PostButton />}
+      title={<Title />}
       open={searchParams.get("post") === "new"}
       handleClose={handleCloseModal}
       contentClass="flex-1 flex flex-col"
+      wrapperElement="form"
+      wrapperProps={{ onSubmit: handleSubmit }}
     >
       <>
         {/* For smaller screens */}
@@ -81,7 +89,7 @@ const CreatePost = () => {
               </div>
               <Input
                 name="post content"
-                className="!border-none !rounded-none !outline-none !ring-1 !placeholder-[#616161]"
+                className="!border-none !rounded-none !outline-none !ring-0 !placeholder-[#616161]"
                 placeholder="What’s on your mind?"
               />
             </div>
@@ -107,7 +115,7 @@ const CreatePost = () => {
                 <div className="size-[35px] center-item bg-[#188C43] rounded-xl">
                   <CiGlobe className="text-2xl text-white" />
                 </div>
-                <span className="text-base">Public</span>
+                <span className="text-sm">Public</span>
                 <RxCaretDown />
               </button>
             </DropdownMenuTrigger>
@@ -119,14 +127,17 @@ const CreatePost = () => {
             </DropdownMenuContent>
           </DropdownMenu>
 
-          <div className="mt-10 flex items-center gap-10">
+          <div className="mt-12 flex items-center gap-10">
             <Input
               name="post content"
-              className="!border-none !rounded-none !outline-none !ring-1 !placeholder-[#616161] flex-1"
+              className="!border-none px-0 !rounded-none !outline-none !ring-0 !placeholder-[#616161] flex-1"
               placeholder="What’s on your mind?"
             />
 
-            <Button className="h-[36px] rounded-full px-5 bg-[#F2FFF769]">
+            <Button
+              type="submit"
+              className="h-[36px] rounded-full px-5 bg-[#F2FFF769]"
+            >
               Post
             </Button>
           </div>

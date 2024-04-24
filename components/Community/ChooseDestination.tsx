@@ -7,10 +7,10 @@ const ChooseDestination = () => {
       <p className="text-[20px] font-bold">Choose destination</p>
       <div className="mt-9">
         <div className="flex items-center gap-3">
-          <div className="size-[50px] center-item bg-[#188C43] rounded-xl">
-            <CiGlobe className="text-3xl text-white" />
+          <div className="size-[35px] center-item bg-[#188C43] rounded-xl">
+            <CiGlobe className="text-2xl text-white" />
           </div>
-          <span className="text-lg">Public</span>
+          <span className="">Public</span>
         </div>
 
         <div className="mt-[34px]">
@@ -30,7 +30,9 @@ const ChooseDestination = () => {
                     height={35}
                   />
                 </span>
-                <span className="text-sm font-semibold">Manchester united</span>
+                <span className="text-sm font-semibold dark:text-[#C8C8C8]">
+                  Manchester united
+                </span>
               </button>
             ))}
           </div>

@@ -6,6 +6,7 @@ import { VscLock } from "react-icons/vsc";
 import { Button } from "@/components/ui/button";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { CreateCommunityForm } from "@/types/community";
+import { useEffect } from "react";
 
 const radio_options = [
   {
@@ -22,6 +23,8 @@ const radio_options = [
 
 type Props = {
   onSubmit: (val: CreateCommunityForm) => void;
+  defaultValues?: CreateCommunityForm;
+  btnText?: string;
 };
 
 const CreateCommunity = (props: Props) => {
@@ -42,6 +45,14 @@ const CreateCommunity = (props: Props) => {
   const onSubmit: SubmitHandler<CreateCommunityForm> = (data) => {
     props.onSubmit(data);
   };
+
+  useEffect(() => {
+    if (props.defaultValues) {
+      setValue("community_name", props.defaultValues.community_name);
+      setValue("community_type", props.defaultValues.community_type);
+      setValue("description", props.defaultValues.description);
+    }
+  }, [props.defaultValues, setValue]);
   return (
     <form className="" onSubmit={handleSubmit(onSubmit)}>
       <div>
@@ -112,8 +123,8 @@ const CreateCommunity = (props: Props) => {
         ))}
       </RadioGroup>
 
-      <Button className="w-full rounded-full mt-14 bg-[#676666] h-14 mb-6">
-        Create community
+      <Button className="w-full rounded-full mt-14 bg-[#1A1A1A] dark:bg-white h-14 mb-6">
+        {props.btnText ?? "Create community"}
       </Button>
     </form>
   );
