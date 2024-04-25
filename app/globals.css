@@ -96,3 +96,8 @@
   -ms-overflow-style: none; /* IE and Edge */
   scrollbar-width: none; /* Firefox */
 }
+
+.carousel .slider-wrapper {
+  height: 100% !important;
+  max-height: 80vh;
+}

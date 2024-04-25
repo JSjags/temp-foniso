@@ -3,11 +3,12 @@
 import { cn } from "@/lib/utils";
 import { SearchIcon } from "lucide-react";
 import { usePathname } from "next/navigation";
-import React from "react";
+import React, { useState } from "react";
 import { Input } from "../ui/input";
 import Trending from "../reusable/Trending";
 import PeopleSuggestions from "../reusable/PeopleSuggestions";
 import SidebarFooter from "../reusable/SidebarFooter";
+import axiosInstance from "@/services/api/axiosInstance";
 
 type Props = {
   containerClassName?: string;

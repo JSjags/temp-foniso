@@ -8,7 +8,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../ui/select";
-import { userPlaceholderImage } from "@/constants";
+import { profileImageplaceholder, userPlaceholderImage } from "@/constants";
 import Image from "next/image";
 import { Button } from "../ui/button";
 import {
@@ -20,13 +20,17 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "../ui/alert-dialog";
-import { ChangeEvent, useState } from "react";
+import { ChangeEvent, useRef, useState } from "react";
 import { Textarea } from "../ui/textarea";
 import { Input } from "../ui/input";
 import { Label } from "../ui/label";
 import reduceImageQuality from "../reusable/FileReader";
 import { cn } from "@/lib/utils";
 import { IoCloseCircleSharp } from "react-icons/io5";
+import { useUserContext } from "@/context/UserContext";
+import useAutosizeTextArea from "@/hooks/useAutoSizeTextArea";
+import { WhoCanReply } from "../post/WhoCanReply";
+import { SelectDestination } from "../post/SelectDestination";
 
 type Props = {};
 
@@ -34,6 +38,15 @@ const CreatePost = (props: Props) => {
   const [showCreatePost, setShowCreatePost] = useState(false);
   // const [files, setFiles] = useState<FileList | null>(null);
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
+
+  const [value, setValue] = useState("");
+  const [replyOption, setReplyOption] = useState<string>("Everyone");
+
+  const textAreaRef = useRef<HTMLTextAreaElement>(null);
+
+  useAutosizeTextArea(textAreaRef.current, value);
+
+  const { userData } = useUserContext();
 
   const handleImageChange = async (e: ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
@@ -51,6 +64,12 @@ const CreatePost = (props: Props) => {
         return;
       }
     }
+  };
+
+  const handleChange = (evt: React.ChangeEvent<HTMLTextAreaElement>) => {
+    const val = evt.target?.value;
+
+    setValue(val);
   };
 
   const handleImageRemoval = (index: number) => {
@@ -84,34 +103,7 @@ const CreatePost = (props: Props) => {
                 New post
               </AlertDialogTitle>
               <AlertDialogDescription className="mt-8 text-inactive px-4 pb-6 pt-3">
-                <div className="flex items-center">
-                  <div className="bg-colorPrimary size-[35px] flex gap-x-4 justify-center items-center rounded-md">
-                    <Globe color="white" size={20} />
-                  </div>
-                  <Select defaultValue="public" value="public">
-                    <SelectTrigger className="w-fit border-none text-textNav bg-transparent h-[35px] font-semibold">
-                      <SelectValue
-                        //   placeholder="Who can view tweet"
-                        className="text-white text-base text-semibold placeholder:text-textNav font-semibold"
-                        color="white"
-                      />
-                    </SelectTrigger>
-                    <SelectContent className="bg-darkGrey border-border">
-                      <SelectItem
-                        className="text-sm text-textNav font-semibold data-[highlighted]:text-black data-[highlighted]:bg-white"
-                        value="public"
-                      >
-                        Public
-                      </SelectItem>
-                      <SelectItem
-                        className="text-sm text-textNav font-semibold data-[highlighted]:text-black data-[highlighted]:bg-white"
-                        value="only_followers"
-                      >
-                        Only followers
-                      </SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
+                <SelectDestination />
                 <div>
                   <div className="flex mt-4 gap-x-1 sm:gap-x-2 items-start">
                     <Image
@@ -122,8 +114,10 @@ const CreatePost = (props: Props) => {
                       src={userPlaceholderImage}
                     />
                     <Textarea
+                      ref={textAreaRef}
+                      onChange={handleChange}
                       placeholder="What’s on your mind?"
-                      className="text-white ring-offset-contentBg focus-visible:ring-contentBg ring-offset-0 placeholder:text-inactive border-none flex-1 text-sm sm:text-base font-normal bg-transparent py-4 pt-2 resize-none"
+                      className="text-white focus:ring-transparent focus-visible:ring-transparent ring-transparent ring-offset-transparent focus-visible:ring-offset-transparent focus:ring-offset-transparent focus-visible:ring-contentBg ring-offset-0 placeholder:text-inactive border-none flex-1 text-sm sm:text-base font-normal bg-transparent py-4 pt-2 resize-none"
                     />
                   </div>
                   {/* display images if any */}
@@ -163,8 +157,8 @@ const CreatePost = (props: Props) => {
                     </div>
                   ) : null}
 
-                  <div className="flex justify-between gap-4 items-center mt-2 flex-wrap">
-                    <div className="flex flex-1 gap-x-6 items-center">
+                  <div className="flex justify-between items-center mt-2 flex-wrap">
+                    <div className="flex flex-1 gap-x-4 items-center">
                       <Label
                         className="group p-0 flex gap-2 hover:bg-transparent py-0 items-center"
                         htmlFor="media"
@@ -177,18 +171,10 @@ const CreatePost = (props: Props) => {
                           Add media
                         </p>
                       </Label>
-                      <Label
-                        className="group p-0 flex gap-2 hover:bg-transparent py-0 items-center"
-                        htmlFor="media"
-                      >
-                        <Globe
-                          size={20}
-                          className="text-inactive group-hover:text-colorPrimary"
-                        />
-                        <p className="font-normal  text-xs sm:text-base text-inactive whitespace-nowrap group-hover:text-colorPrimary">
-                          Everyone can reply
-                        </p>
-                      </Label>
+                      <WhoCanReply
+                        replyOption={replyOption}
+                        setReplyOption={setReplyOption}
+                      />
                     </div>
                     <div className="flex justify-end flex-1">
                       <Button
@@ -241,9 +227,9 @@ const CreatePost = (props: Props) => {
           <Image
             width={45}
             height={45}
-            className="size-[45px] rounded-full object-cover"
+            className="size-[45px] rounded-full object-cover border border-border/50 bg-foreground/5"
             alt="icon"
-            src={userPlaceholderImage}
+            src={userData?.user.usermeta?.avatar ?? profileImageplaceholder}
           />
           <Button
             onClick={() => setShowCreatePost(true)}

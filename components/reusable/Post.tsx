@@ -2,15 +2,16 @@
 
 import Image from "next/image";
 import SportIcon from "./SportIcon";
-import { MoreVertical, X } from "lucide-react";
+import { Heart, MoreVertical, X } from "lucide-react";
 import { Button } from "../ui/button";
 import { Carousel } from "react-responsive-carousel";
 import "react-responsive-carousel/lib/styles/carousel.min.css"; // requires a loader
-import { cn } from "@/lib/utils";
+import { cn, formatNumberCount, handlePostLikeIncrement } from "@/lib/utils";
 import { IoArrowBackCircle, IoArrowForwardCircle } from "react-icons/io5";
 import { IoIosCheckmarkCircle } from "react-icons/io";
 import {
   placeholderComments,
+  profileImageplaceholder,
   reportReasons,
   userPlaceholderImage,
 } from "@/constants";
@@ -49,6 +50,7 @@ import { PostProps } from "@/types";
 import PostViewer from "./PostViewer";
 import VideoPlayer from "./VideoPlayer";
 import { image } from "@cloudinary/url-gen/qualifiers/source";
+import moment from "moment";
 
 const Post = ({ post }: PostProps) => {
   const [showViewModal, setShowViewModal] = useState(false);
@@ -57,6 +59,10 @@ const Post = ({ post }: PostProps) => {
   const [showFullScreenPost, setShowFullScreenPost] = useState(false);
   const [isTruncated, setIsTruncated] = useState(false);
   const [isShowingMore, setIsShowingMore] = useState(false);
+
+  const [postLikedByMe, setPostLikedByMe] = useState<boolean>(
+    post.likedByMe.length > 0
+  );
 
   const ref = useRef(null);
 
@@ -229,12 +235,13 @@ const Post = ({ post }: PostProps) => {
                     height={45}
                     className="size-[36px] sm:size-[45px] rounded-full object-cover"
                     alt="avatar"
-                    src={post.avatar}
+                    src={post?.user?.usermeta?.avatar ?? ""}
                   />
                   <div>
                     <div className="flex gap-x-2 items-center">
                       <p className="text-foreground font-semibold text-base line-clamp-1 text-ellipsis">
-                        {post.displayName}
+                        {post?.user?.usermeta?.firstname}{" "}
+                        {post?.user?.usermeta?.lastname}
                       </p>
                       <div className="flex gap-x-1 items-center">
                         <Image
@@ -244,16 +251,18 @@ const Post = ({ post }: PostProps) => {
                           alt="avatar"
                           src={"/assets/app-icons/verified-icon.svg"}
                         />
-                        <SportIcon category={post.favorite_sport} />
+                        <SportIcon
+                          category={post?.user?.usermeta?.favorite_sport}
+                        />
                       </div>
                     </div>
-                    <p className="text-inactive">@{post.username}</p>
+                    <p className="text-inactive">@{post?.user?.username}</p>
                   </div>
                 </div>
                 <div className="mt-4">
                   <p
                     ref={ref}
-                    dangerouslySetInnerHTML={{ __html: post.content }}
+                    dangerouslySetInnerHTML={{ __html: post?.content }}
                     className={cn(
                       "text-foreground text-ellipsis",
                       !isShowingMore && "line-clamp-2"
@@ -284,13 +293,13 @@ const Post = ({ post }: PostProps) => {
                     <div className="flex gap-x-4 mt-4 items-center">
                       <div className="flex items-center text-inactive">
                         <p className="text-foreground pr-1 font-bold">
-                          {post.likes_count}
+                          {post?.likesCount}
                         </p>{" "}
                         Likes
                       </div>
                       <div className="flex items-center text-inactive">
                         <p className="text-foreground pr-1 font-bold ">
-                          {post.comment_count}
+                          {post?.commentsCount}
                         </p>{" "}
                         Comments
                       </div>
@@ -306,7 +315,7 @@ const Post = ({ post }: PostProps) => {
                           src={"/assets/post-icons/views.svg"}
                         />
                         <p className="pr-1 font-bold text-foreground">
-                          {post.views_count}
+                          {post?.viewsCount}
                         </p>{" "}
                         Views
                       </div>
@@ -581,12 +590,16 @@ const Post = ({ post }: PostProps) => {
               height={45}
               className="size-[36px] sm:size-[45px] rounded-full object-cover"
               alt="avatar"
-              src={post.avatar}
+              src={
+                post?.user?.usermeta?.avatar !== null
+                  ? post?.user?.usermeta?.avatar
+                  : profileImageplaceholder
+              }
             />
             <div>
               <div className="flex gap-x-2 items-center">
                 <p className="text-foreground font-semibold text-base line-clamp-1 text-ellipsis">
-                  {post.displayName}
+                  {post?.user?.username}
                 </p>
                 <div className="flex gap-x-1 items-center">
                   <Image
@@ -596,14 +609,14 @@ const Post = ({ post }: PostProps) => {
                     alt="avatar"
                     src={"/assets/app-icons/verified-icon.svg"}
                   />
-                  <SportIcon category={post.favorite_sport} />
+                  <SportIcon category={post?.user?.usermeta?.favorite_sport} />
                 </div>
                 <p className="text-sm text-inactive align-middle whitespace-nowrap">
                   {" "}
-                  • {post.created_at}
+                  • {moment(post?.created_at).fromNow()}
                 </p>
               </div>
-              <p className="text-inactive">@{post.username}</p>
+              <p className="text-inactive">@{post?.user?.username}</p>
             </div>
           </div>
           {/* <Button variant={"ghost"} className=" bg-transparent px-0"> */}
@@ -724,40 +737,72 @@ const Post = ({ post }: PostProps) => {
           </div>
           {/* media box */}
           <div className="mt-3">
-            <PostViewer
-              post={post}
-              setShowFullScreenPost={(value: boolean) =>
-                setShowFullScreenPost(value)
-              }
-              showFullScreenPost={showFullScreenPost}
-            />
+            {Boolean(post.media && post.media.length) && (
+              <PostViewer
+                post={post}
+                setShowFullScreenPost={(value: boolean) =>
+                  setShowFullScreenPost(value)
+                }
+                showFullScreenPost={showFullScreenPost}
+              />
+            )}
           </div>
           <div>
-            <div className="text-colorWhite mt-2 text-base flex gap-x-2 item-center">
-              <Image
-                width={25}
-                height={25}
-                className="size-[25px] rounded-full object-cover"
-                alt="icon"
-                src={userPlaceholderImage}
-              />
-              <p className="text-foreground/70">
-                Liked by{" "}
-                <span className="font-bold text-foreground">Janedoe</span> and{" "}
-                <span className="font-bold text-foreground">499</span> others
-              </p>
-            </div>
-            <div className="flex mt-4 items-center">
-              <div className="flex items-center">
+            {Boolean(post.likes && post.likes.length) && (
+              <div className="text-colorWhite mt-2 text-base flex gap-x-2 item-center">
                 <Image
-                  width={20}
-                  height={20}
-                  className="size-[20px] object-cover"
+                  width={25}
+                  height={25}
+                  className="size-[25px] rounded-full object-cover"
                   alt="icon"
-                  src={"/assets/post-icons/like.svg"}
+                  src={post.likes[0]?.user?.usermeta.avatar ?? ""}
                 />
-                <p className="text-red-600 px-2 font-medium">
-                  {post.likes_count}
+                <p className="text-foreground/70">
+                  Liked by{" "}
+                  <span className="font-bold text-foreground">
+                    {post.likes[0]?.user?.username}
+                  </span>{" "}
+                  {Boolean(post.likesCount - 1 >= 1) && (
+                    <span>
+                      and{" "}
+                      <span className="font-bold text-foreground">
+                        {post.likesCount - 1}
+                      </span>{" "}
+                      {post.likesCount - 1 > 1 ? "others" : "other"}
+                    </span>
+                  )}
+                </p>
+              </div>
+            )}
+            <div className="flex mt-4 items-center">
+              <div
+                className="flex items-center cursor-pointer"
+                role="button"
+                onClick={() => setPostLikedByMe((prev) => !prev)}
+              >
+                <Heart
+                  className={cn(
+                    "size-[20px]",
+                    postLikedByMe
+                      ? "text-red-600 fill-red-600"
+                      : "text-foreground/50"
+                  )}
+                />
+                <p
+                  className={cn(
+                    "text-red-600 px-2 font-medium",
+                    postLikedByMe
+                      ? "text-red-600 fill-red-600"
+                      : "text-foreground/50"
+                  )}
+                >
+                  {formatNumberCount(
+                    handlePostLikeIncrement(
+                      post.likesCount,
+                      post.likedByMe,
+                      postLikedByMe
+                    )
+                  )}
                 </p>
               </div>
               <div className="flex items-center border-x border-border px-3">
@@ -769,7 +814,7 @@ const Post = ({ post }: PostProps) => {
                   src={"/assets/post-icons/comment.svg"}
                 />
                 <p className="text-foreground/60 px-2 font">
-                  {post.comment_count}
+                  {formatNumberCount(post.commentsCount)}
                 </p>
               </div>
               <div
@@ -784,7 +829,7 @@ const Post = ({ post }: PostProps) => {
                   src={"/assets/post-icons/views.svg"}
                 />
                 <p className="text-foreground/60 px-2 font">
-                  {post.views_count}
+                  {formatNumberCount(post.viewsCount)}
                 </p>
               </div>
             </div>

@@ -6,8 +6,14 @@ import "react-toastify/dist/ReactToastify.css";
 // import { DownloadModal } from "@/components/Modal/downloadModal";
 import { DM_Sans } from "next/font/google";
 import { ThemeProvider } from "@/components/ThemeProvider";
+import { cn } from "@/lib/utils";
 
-const global_font = DM_Sans({ subsets: ["latin"] });
+// const global_font = DM_Sans({ subsets: ["latin"] });
+
+const fontSans = DM_Sans({
+  subsets: ["latin"],
+  variable: "--font-sans",
+});
 
 export const metadata: Metadata = {
   title: "Foniso",
@@ -27,7 +33,7 @@ export default function RootLayout({
     //     type="image/<generated>"
     //     sizes="<generated>"
     //   />
-    <div className={global_font.className}>
+    <div className={cn(fontSans.variable)}>
       <AppProvider>
         <ThemeProvider
           attribute="class"

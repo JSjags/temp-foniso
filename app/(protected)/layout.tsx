@@ -11,8 +11,13 @@ import RightSideBar from "@/components/RightSideBar";
 import { headers } from "next/headers";
 import Titlebar from "@/components/Titlebar";
 import { ThemeProvider } from "@/components/ThemeProvider";
+import ProtectedRoute from "@/guards/ProtectedRoute";
+import { cn } from "@/lib/utils";
 
-const global_font = DM_Sans({ subsets: ["latin"] });
+const fontSans = DM_Sans({
+  subsets: ["latin"],
+  variable: "--font-sans",
+});
 
 export const metadata: Metadata = {
   title: "Foniso",
@@ -37,28 +42,30 @@ export default function RootLayout({
     //     type="image/<generated>"
     //     sizes="<generated>"
     //   />
-    <div className={global_font.className}>
-      <Analytics />
-      <AppProvider>
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="system"
-          enableSystem
-          disableTransitionOnChange
-        >
-          <div className="mx-auto w-full flex justify-center gap-0 min-[480px]:gap-2 bg-[##E0E5E2] dark:bg-bgEffect max-w-[1560px] h-screen overflow-y-scroll">
-            <LeftSideBar />
-            {/* max-w-[740px] */}
-            <div className="flex-1 min-w-[240px] h-fit bg-background sm:bg-transparent pb-20 sm:pb-4">
-              {/* Titlebar is only for mobile devices */}
-              <Titlebar />
-              {children}
+    <ProtectedRoute>
+      <div className={cn(fontSans.variable)}>
+        <Analytics />
+        <AppProvider>
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="system"
+            enableSystem
+            disableTransitionOnChange
+          >
+            <div className="mx-auto w-full flex justify-center gap-0 min-[480px]:gap-2 bg-[##E0E5E2] dark:bg-bgEffect max-w-[1560px] h-screen overflow-y-scroll">
+              <LeftSideBar />
+              {/* max-w-[740px] */}
+              <div className="flex-1 min-w-[240px] h-fit bg-background sm:bg-transparent pb-20 sm:pb-4">
+                {/* Titlebar is only for mobile devices */}
+                <Titlebar />
+                {children}
+              </div>
             </div>
-          </div>
-          <ToastContainer />
-        </ThemeProvider>
-      </AppProvider>
-    </div>
+            <ToastContainer />
+          </ThemeProvider>
+        </AppProvider>
+      </div>
+    </ProtectedRoute>
     // </html>
   );
 }

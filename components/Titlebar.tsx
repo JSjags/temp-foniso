@@ -1,6 +1,11 @@
 "use client";
 
-import { titleBarItems, userPlaceholderImage } from "@/constants";
+import {
+  profileImageplaceholder,
+  titleBarItems,
+  userPlaceholderImage,
+} from "@/constants";
+import { useUserContext } from "@/context/UserContext";
 import { cn } from "@/lib/utils";
 import { Cloudinary } from "@cloudinary/url-gen/index";
 import { useTheme } from "next-themes";
@@ -12,6 +17,7 @@ import { useEffect, useState } from "react";
 type Props = {};
 
 const Titlebar = (props: Props) => {
+  const { userData } = useUserContext();
   const { theme } = useTheme();
   const pathname = usePathname();
 
@@ -40,7 +46,7 @@ const Titlebar = (props: Props) => {
                 height={36}
                 className="size-[36px] rounded-full object-cover"
                 alt="icon"
-                src={userPlaceholderImage}
+                src={userData?.user.usermeta?.avatar ?? profileImageplaceholder}
               />
             </div>
           </Link>

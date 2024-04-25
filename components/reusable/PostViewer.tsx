@@ -16,10 +16,7 @@ const PostViewer = ({
   showFullScreenPost,
 }: PostViewerProps) => {
   return (
-    <div
-      className="w-full aspect-video bg-background rounded overflow-hidden cursor-pointer"
-      onClick={() => setShowFullScreenPost(true)}
-    >
+    <div className="w-full aspect-video bg-background rounded overflow-[visible_!important] cursor-pointer">
       <Carousel
         dynamicHeight={true}
         showThumbs={false}
@@ -92,14 +89,25 @@ const PostViewer = ({
             </div>
           </div>
         )}
-        className="rounded h-fit"
+        className="rounded min-h-fit max-h-[80vh]"
       >
         {post.media.map((media, i) => (
-          <div key={i}>
-            {media.type === "video" ? (
-              <VideoPlayer src={media.url} />
+          <div
+            key={i}
+            className={cn(media.mediatype === "video" ? "bg-red-500" : "")}
+          >
+            {media.mediaType === "video" ? (
+              <VideoPlayer
+                src={media.media}
+                poster={media.posterImage}
+                showFullScreenPost={() => setShowFullScreenPost(true)}
+              />
             ) : (
-              <img src={media.url} />
+              // <p>Video</p>
+              <img
+                src={media.media}
+                onClick={() => setShowFullScreenPost(true)}
+              />
             )}
           </div>
         ))}

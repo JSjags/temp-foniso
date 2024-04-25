@@ -3,6 +3,7 @@
 import {
   bottomNavItems,
   leftSideBarItems,
+  profileImageplaceholder,
   userPlaceholderImage,
 } from "@/constants";
 import { cn } from "@/lib/utils";
@@ -14,10 +15,13 @@ import { usePathname } from "next/navigation";
 import { ModeToggle } from "./ThemeToggle";
 import { useTheme } from "next-themes";
 import { useEffect, useState } from "react";
+import { useUserContext } from "@/context/UserContext";
 
 type Props = {};
 
 const LeftSideBar = (props: Props) => {
+  const { userData } = useUserContext();
+
   const { theme } = useTheme();
   const pathname = usePathname();
 
@@ -60,9 +64,12 @@ const LeftSideBar = (props: Props) => {
                     <Image
                       width={30}
                       height={30}
-                      className="size-[30px] rounded-full object-cover border border-border"
+                      className="size-[30px] rounded-full object-cover border border-border/50 bg-foreground/5"
                       alt="icon"
-                      src={userPlaceholderImage}
+                      src={
+                        userData?.user.usermeta?.avatar ??
+                        profileImageplaceholder
+                      }
                     />
                   </div>
                 ) : (
@@ -159,7 +166,10 @@ const LeftSideBar = (props: Props) => {
                       height={30}
                       className="size-[30px] rounded-full object-cover border border-border"
                       alt="icon"
-                      src={userPlaceholderImage}
+                      src={
+                        userData?.user.usermeta?.avatar ??
+                        profileImageplaceholder
+                      }
                     />
                   </div>
                 ) : (
@@ -227,7 +237,9 @@ const LeftSideBar = (props: Props) => {
                     height={18}
                     className="h-[18px_!important] rounded-full object-cover border border-border"
                     alt="icon"
-                    src={userPlaceholderImage}
+                    src={
+                      userData?.user.usermeta?.avatar ?? profileImageplaceholder
+                    }
                   />
                 </div>
               ) : (

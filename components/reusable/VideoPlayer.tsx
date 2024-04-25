@@ -4,9 +4,15 @@ import { FaVolumeHigh, FaVolumeXmark } from "react-icons/fa6";
 
 interface VideoPlayerProps {
   src: string;
+  poster?: string;
+  showFullScreenPost?: () => void;
 }
 
-const VideoPlayer: React.FC<VideoPlayerProps> = ({ src }) => {
+const VideoPlayer: React.FC<VideoPlayerProps> = ({
+  src,
+  poster,
+  showFullScreenPost,
+}) => {
   const videoRef = useRef<HTMLVideoElement>(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
@@ -98,13 +104,19 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ src }) => {
     <div className="">
       {/* Video element */}
       <video
-        className="w-full"
+        className="w-full h-full max-h-[80vh]"
+        poster={poster}
         controls={false}
         ref={videoRef}
         src={src}
         autoPlay={isPlaying}
         loop
-        muted
+        onClick={() => {
+          if (showFullScreenPost) {
+            showFullScreenPost();
+          }
+        }}
+        muted={isMuted}
         onTimeUpdate={() => setCurrentTime(videoRef.current!.currentTime)}
       ></video>
 
@@ -136,7 +148,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ src }) => {
         </div>
         <div className="w-full h-fit bg-gradient-to-b from-black/0 to-black/70 flex justify-between p-3 px-4 pb-5">
           <button
-            className="hover:bg-blue-700 text-white font-bold py-0 px-4 rounded relative z-50"
+            className="hover:bg-transparent text-white font-bold py-0 px-4 rounded relative z-50"
             onClick={handlePlayPause}
           >
             {isPlaying ? <PauseIcon /> : <Play />}

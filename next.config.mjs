@@ -13,6 +13,31 @@ const nextConfig = {
         hostname: "th.bing.com",
         port: "",
       },
+      {
+        protocol: "https",
+        hostname: "foniso-assets.nyc3.cdn.digitaloceanspaces.com",
+        port: "",
+      },
+      {
+        protocol: "https",
+        hostname: "foniso-assets.nyc3.digitaloceanspaces.com",
+        port: "",
+      },
+      {
+        protocol: "https",
+        hostname: "img.youtube.com",
+        port: "",
+      },
+      {
+        protocol: "https",
+        hostname: "lh3.googleusercontent.com",
+        port: "",
+      },
+      {
+        protocol: "https",
+        hostname: "i.ytimg.com",
+        port: "",
+      },
     ],
   },
   //   output: "export",

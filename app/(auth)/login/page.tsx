@@ -10,11 +10,13 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useTheme } from "next-themes";
 import { footerLinks } from "@/constants";
 import { useMutation } from "@tanstack/react-query";
-import { LoginCredentials, LoginResponse } from "@/types";
+import { LoginCredentials, LoginResponse, UserData } from "@/types";
 import { loginUser } from "@/services/api/userService";
 import toast from "react-hot-toast";
 import ErrorToast from "@/components/reusable/toasts/ErrorToast";
 import { signIn, signOut, useSession } from "next-auth/react";
+import { RotateSpinner } from "react-spinners-kit";
+import { useUserContext } from "@/context/UserContext";
 
 const page = () => {
   const router = useRouter();
@@ -22,6 +24,8 @@ const page = () => {
   const searchParams = useSearchParams();
 
   const [logoPath, setLogoPath] = useState("/assets/logo-dark.svg");
+
+  const { userData, setUserData } = useUserContext();
 
   const { data: session } = useSession();
 
@@ -33,14 +37,34 @@ const page = () => {
 
   const loginMutation = useMutation<LoginResponse, Error, LoginCredentials>({
     mutationFn: loginUser,
+    onSuccess: (data: LoginResponse) => {
+      setUserData(data?.data);
+      localStorage.setItem("token", data?.data?.access_token);
+      localStorage.setItem("userData", JSON.stringify(data?.data));
+
+      console.log(data?.data?.user);
+      if (data?.data?.user?.usermeta === null) {
+        return router.replace("/account-setup", { scroll: false });
+      }
+      router.replace("/home", { scroll: false });
+    },
+    onError: (error) => {
+      toast.custom((t) => (
+        <ErrorToast
+          t={t}
+          message={error?.message ?? "Couldn't log you in at the moment."}
+        />
+      ));
+    },
   });
 
   const handleLogin = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    console.log(email, password);
+
     try {
-      await loginMutation.mutateAsync({ email, password });
+      loginMutation.mutate({ email, password });
       // Redirect or handle successful login
-      router.push("/home", { scroll: false });
     } catch (error: any) {
       // setError(error?.message ?? "Error");
       // alert(error?.message ?? "Error");
@@ -126,9 +150,17 @@ const page = () => {
                     </div>
                   </div>
                   <Button className="w-full hover:bg-foreground hover:scale-[1.01] transition-all hover:shadow-xl bg-foreground border border-border text-background rounded-full flex justify-center items-center mt-6 h-12">
-                    <span className="text-base font-bold block p-0 align-middle -translate-y-[2px]">
-                      Log in
-                    </span>
+                    {loginMutation.isPending ? (
+                      <RotateSpinner
+                        size={30}
+                        color="#188C43"
+                        loading={loginMutation.isPending}
+                      />
+                    ) : (
+                      <span className="text-base font-bold block p-0 align-middle -translate-y-[2px]">
+                        Log in
+                      </span>
+                    )}
                   </Button>
                 </form>
                 <p className="text-foreground/50 mt-4 text-base font-semibold text-end">
