@@ -12,17 +12,3 @@ export type PostProps = {
     views_count: string;
   };
 };
-
-export interface LoginCredentials {
-  email: string;
-  password: string;
-}
-
-export interface LoginResponse {
-  token: string;
-  // You can add other properties returned by your API if needed
-}
-
-export interface ApiErrorResponse {
-  message: string;
-}

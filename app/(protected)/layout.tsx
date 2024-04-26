@@ -51,7 +51,7 @@ export default function RootLayout({
             {/* max-w-[740px] */}
             <div className="flex-1 min-w-[240px] h-fit bg-background sm:bg-transparent pb-20 sm:pb-4">
               {/* Titlebar is only for mobile devices */}
-              <Titlebar />
+              {/* <Titlebar /> */}
               {children}
             </div>
           </div>

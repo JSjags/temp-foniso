@@ -210,9 +210,9 @@ const Post = ({ post }: PostProps) => {
         open={showFullScreenPost}
         onOpenChange={() => setShowFullScreenPost(false)}
       >
-        <DialogContent className="w-full h-full sm:min-w-[85%] sm:h-[85dvh] sm:max-h-[85dvh] p-0 bg-background border-border sm:rounded-3xl overflow-hidden">
+        <DialogContent className="w-full h-full sm:min-w-[85%] sm:h-[85dvh] sm:max-h-[85dvh] p-0 bg-background border-border rounded-3xl overflow-hidden">
           <div className="w-full mx-auto flex">
-            <div className="w-full sm:w-3/5 h-full sm:h-[85dvh] sm:max-h-[85dvh] bg-background border-r border-border flex justify-center items-center">
+            <div className="w-3/5 h-full sm:h-[85dvh] sm:max-h-[85dvh] bg-background border-r border-border flex justify-center items-center">
               <PostViewer
                 post={post}
                 setShowFullScreenPost={(value: boolean) =>
@@ -221,7 +221,7 @@ const Post = ({ post }: PostProps) => {
                 showFullScreenPost={showFullScreenPost}
               />
             </div>
-            <div className="hidden w-2/5 h-full sm:h-[85dvh] sm:max-h-[85dvh] relative overflow-y-scroll">
+            <div className="w-2/5 h-full sm:h-[85dvh] sm:max-h-[85dvh] relative overflow-y-scroll">
               <div className="p-4 border-b border-border">
                 <div className="flex gap-x-3">
                   <Image
