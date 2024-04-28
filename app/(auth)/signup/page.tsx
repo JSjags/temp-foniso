@@ -9,7 +9,7 @@ import Image from "next/image";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
 
-const page = () => {
+const Page = () => {
   const { theme } = useTheme();
 
   const [logoPath, setLogoPath] = useState("/assets/logo-dark.svg");
@@ -278,4 +278,4 @@ const page = () => {
   );
 };
 
-export default page;
+export default Page;

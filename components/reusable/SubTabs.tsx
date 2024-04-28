@@ -12,6 +12,7 @@ const SubTabs = ({ tabs }: Props) => {
   const router = useRouter();
 
   const tab = searchParams.get("tab");
+  const searchQuery = searchParams.get("search");
 
   const styleActiveTab = (currentTab: string) => {
     if (tab === currentTab) {
@@ -35,7 +36,15 @@ const SubTabs = ({ tabs }: Props) => {
       {tabs.map((tab, i) => (
         <div key={i} className="relative flex flex-col items-center w-fit">
           <Button
-            onClick={() => router.push(`?tab=${tab.toLowerCase()}`)}
+            onClick={() => {
+              if (searchQuery !== null) {
+                return router.push(
+                  `?search=${searchQuery}&tab=${tab.toLowerCase()}`
+                );
+              }
+
+              return router.push(`?tab=${tab.toLowerCase()}`);
+            }}
             className={cn(
               "rounded-none min-w-20 bg-background hover:bg-background text-foreground/70 text-base sm:text-lg font-medium",
               styleActiveTab(tab.toLowerCase())

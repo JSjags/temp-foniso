@@ -5,21 +5,23 @@ import { FaVolumeHigh, FaVolumeXmark } from "react-icons/fa6";
 interface VideoPlayerProps {
   src: string;
   poster?: string;
-  showFullScreenPost?: () => void;
+  autoPlay?: boolean;
+  stopOuterPlay?: boolean;
 }
 
 const VideoPlayer: React.FC<VideoPlayerProps> = ({
   src,
   poster,
-  showFullScreenPost,
+  stopOuterPlay = false,
 }) => {
   const videoRef = useRef<HTMLVideoElement>(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
-  const [isMuted, setIsMuted] = useState(false);
+  const [isMuted, setIsMuted] = useState(true);
   const [isFullScreen, setIsFullScreen] = useState(false);
 
   useEffect(() => {
+    const currentVideoRef = videoRef.current;
     const options = {
       root: null,
       rootMargin: "0px",
@@ -29,23 +31,25 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
     const observer = new IntersectionObserver((entries) => {
       entries.forEach((entry) => {
         if (entry.isIntersecting) {
-          videoRef.current?.play();
+          // if (autoPlay) {
+          currentVideoRef?.play();
           setIsPlaying(true);
+          // }
         } else {
-          videoRef.current?.pause();
+          currentVideoRef?.pause();
           setIsPlaying(false);
         }
       });
     }, options);
 
-    if (videoRef.current) {
-      observer.observe(videoRef.current);
+    if (currentVideoRef) {
+      observer.observe(currentVideoRef);
     }
 
     // Cleanup
     return () => {
-      if (videoRef.current) {
-        observer.unobserve(videoRef.current);
+      if (currentVideoRef) {
+        observer.unobserve(currentVideoRef);
       }
     };
   }, []);
@@ -101,28 +105,23 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
   };
 
   return (
-    <div className="">
+    <div className="rounded-md">
       {/* Video element */}
       <video
-        className="w-full h-full max-h-[80vh]"
+        className="w-full h-full max-h-[80vh] rounded-md"
         poster={poster}
         controls={false}
         ref={videoRef}
         src={src}
-        autoPlay={isPlaying}
+        autoPlay={stopOuterPlay ?? isPlaying}
         loop
-        onClick={() => {
-          if (showFullScreenPost) {
-            showFullScreenPost();
-          }
-        }}
         muted={isMuted}
         onTimeUpdate={() => setCurrentTime(videoRef.current!.currentTime)}
       ></video>
 
       {/* Custom UI overlay */}
-      <div className="absolute bottom-0 inset-0 flex flex-col items-start justify-end h-full">
-        <div className="w-full">
+      <div className="absolute bottom-0 inset-0 flex flex-col items-start justify-end h-full rounded-md">
+        <div onClick={(e) => e.stopPropagation()} className="w-full">
           {/* Seek bar */}
           <div className="flex items-center px-4" onClick={handleSeek}>
             <div className="bg-gray-400 h-1 w-full relative rounded-full">
@@ -146,9 +145,12 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
             </div>
           </div>
         </div>
-        <div className="w-full h-fit bg-gradient-to-b from-black/0 to-black/70 flex justify-between p-3 px-4 pb-5">
+        <div
+          onClick={(e) => e.stopPropagation()}
+          className="w-full h-fit bg-gradient-to-b from-black/0 to-black/70 flex justify-between p-3 px-4 pb-5 rounded-b-md"
+        >
           <button
-            className="hover:bg-transparent text-white font-bold py-0 px-4 rounded relative z-50"
+            className="hover:bg-transparent text-white font-bold py-0 px-4 rounded relative z-50 focus:ring-colorPrimary active:ring-colorPrimary focus:ring-offset-colorPrimary"
             onClick={handlePlayPause}
           >
             {isPlaying ? <PauseIcon /> : <Play />}
@@ -171,9 +173,9 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
               onClick={toggleMute}
             >
               {isMuted ? (
-                <FaVolumeHigh size={14} fill="white" />
-              ) : (
                 <FaVolumeXmark size={14} fill="white" />
+              ) : (
+                <FaVolumeHigh size={14} fill="white" />
               )}
             </button>
           </div>

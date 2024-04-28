@@ -1,10 +1,10 @@
+import PageLoadingSpinner from "@/components/Spinner/PageLoadingSpinner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { UseMutationResult } from "@tanstack/react-query";
 import { AxiosResponse } from "axios";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { RotateSpinner } from "react-spinners-kit";
 import validator from "validator";
 
 type Props = {
@@ -100,11 +100,7 @@ const SetPassword = ({ email, submitPassword }: Props) => {
         className="group w-full hover:scale-[1.01] transition-all hover:shadow-xl bg-foreground text-background border border-border rounded-full flex justify-center items-center mt-10 h-[54px]"
       >
         {submitPassword.isPending ? (
-          <RotateSpinner
-            size={30}
-            color="#188C43"
-            loading={submitPassword.isPending}
-          />
+          <PageLoadingSpinner spinnerExtraClass="w-7 h-7" />
         ) : (
           <span className="text-base font-bold block p-0 align-middle -translate-y-[2px]">
             Continue

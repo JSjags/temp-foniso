@@ -18,7 +18,7 @@ import {
 } from "@/components/sub-pages/registration";
 import MainFooter from "@/components/MainFooter";
 
-const page = () => {
+const Page = () => {
   const { theme } = useTheme();
 
   const searchParams = useSearchParams();
@@ -56,6 +56,7 @@ const page = () => {
     },
     onSuccess: (data) => {
       console.log(data);
+      if (data.data.data.verified === false) return verifyEmail();
       if (data.data.data.username === null) return createUsername();
       if (!data.data.data.isPasswordSet) return setPassword();
       verifyEmail();
@@ -205,4 +206,4 @@ const page = () => {
   );
 };
 
-export default page;
+export default Page;

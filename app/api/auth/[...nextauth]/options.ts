@@ -1,9 +1,10 @@
 import GoogleProvider from "next-auth/providers/google";
-import type { Account, NextAuthOptions, Profile } from "next-auth";
+import type { Account, NextAuthOptions, Profile, User } from "next-auth";
 import CredentialProvider from "next-auth/providers/credentials";
 import axios, { AxiosError, AxiosResponse } from "axios";
 import axiosInstance from "@/services/api/axiosInstance";
 import { redirect } from "next/navigation";
+import { AdapterUser } from "next-auth/adapters";
 
 interface CustomProfile extends Profile {
   given_name?: string;
@@ -26,24 +27,25 @@ export const options: NextAuthOptions = {
       profile: async (profile) => {
         const { sub: id, name, email, picture: image } = profile;
         const baseData = { id, name, email, image };
+        console.log(profile);
         const data = {
           imageUrl: profile?.picture,
           email: profile.email,
           socialId: id,
-          firstname: profile?.name?.split(" ")[0],
-          lastname: profile?.name?.split(" ")[1],
+          firstname: profile?.given_name,
+          lastname: profile?.family_name,
         };
 
-        try {
-          const response = await axios.post(
-            "https://stagingapi.foniso.team/api/v1/auth/social-login",
-            data
-          );
-          console.log(response);
-          if (response.status === 500 || response.status === 201) {
-            redirect("/home");
-          }
-        } catch (error: any) {}
+        // try {
+        //   const response = await axios.post(
+        //     "https://stagingapi.foniso.team/api/v1/auth/social-login",
+        //     data
+        //   );
+        //   console.log(response);
+        //   if (response.status === 500 || response.status === 201) {
+        //     return redirect("/home");
+        //   }
+        // } catch (error: any) {}
         // Assuming yourData is fetched correctly and includes necessary User properties
         try {
           const response = await axios.post(
@@ -51,12 +53,12 @@ export const options: NextAuthOptions = {
             data
           );
           console.log(response);
-          if (response.status === 500 || response.status === 201) {
-            redirect("/home");
-          } // Fetch or compute additional data here
+          // if (response.status === 500 || response.status === 201) {
+          //   redirect("/home");
+          // } // Fetch or compute additional data here
           return { ...baseData, ...response.data }; // Ensure this object conforms to the User type
         } catch (error: any) {
-          console.error(error);
+          console.error("EEEEEEEEEEEEE", error);
           //   if (error?.response?.data.statusCode) {
           //     return (
           //       error?.response?.data.message ?? "Error logging in with Google"
@@ -81,9 +83,10 @@ export const options: NextAuthOptions = {
       if (user === null || !user.id) {
         throw new Error("No provider account id");
       }
-      const { error } = user;
-      console; // Defined by google provider profile callback
-      if (!error) return true; // User is good to go
+      const { error } = user as (User | AdapterUser) & { error: string };
+      // Defined by google provider profile callback
+      if (!error)
+        return `/redirect?udat=${JSON.stringify((user as any)?.data!)}`; // User is good to go
       switch (account?.provider) {
         case "google":
         default:

@@ -19,9 +19,14 @@ export const useUserContext = () => useContext(UserContext);
 export const UserProvider: React.FC<{ children: ReactNode }> = ({
   children,
 }) => {
-  const [userData, setUserData] = useState<UserData | null>(
-    JSON.parse(localStorage.getItem("userData") || "null")
-  );
+  let storedUserData: UserData | null = null;
+
+  if (typeof window !== "undefined") {
+    const item = localStorage.getItem("userData");
+    storedUserData = item ? JSON.parse(item) : null;
+  }
+
+  const [userData, setUserData] = useState<UserData | null>(storedUserData);
 
   return (
     <UserContext.Provider value={{ userData, setUserData }}>

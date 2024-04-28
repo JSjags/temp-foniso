@@ -8,7 +8,7 @@ import React, { useEffect, useState } from "react";
 
 type Props = {};
 
-const page = (props: Props) => {
+const Page = (props: Props) => {
   const { theme } = useTheme();
   const [logoPath, setLogoPath] = useState("/assets/logo-dark.svg");
 
@@ -46,4 +46,4 @@ const page = (props: Props) => {
   );
 };
 
-export default page;
+export default Page;

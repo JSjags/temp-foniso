@@ -38,6 +38,11 @@ const nextConfig = {
         hostname: "i.ytimg.com",
         port: "",
       },
+      {
+        protocol: "https",
+        hostname: "url%20path",
+        port: "",
+      },
     ],
   },
   //   output: "export",

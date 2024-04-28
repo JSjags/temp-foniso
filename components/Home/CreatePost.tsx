@@ -16,7 +16,6 @@ import {
   AlertDialogCancel,
   AlertDialogContent,
   AlertDialogDescription,
-  AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
 } from "../ui/alert-dialog";
@@ -31,6 +30,7 @@ import { useUserContext } from "@/context/UserContext";
 import useAutosizeTextArea from "@/hooks/useAutoSizeTextArea";
 import { WhoCanReply } from "../post/WhoCanReply";
 import { SelectDestination } from "../post/SelectDestination";
+import MessageBox from "../reusable/MessageBox";
 
 type Props = {};
 
@@ -111,20 +111,46 @@ const CreatePost = (props: Props) => {
                       height={45}
                       className="size-[30px] sm:size-[45px] rounded-full object-cover"
                       alt="icon"
-                      src={userPlaceholderImage}
+                      src={
+                        userData?.user?.usermeta?.avatar ??
+                        profileImageplaceholder
+                      }
                     />
-                    <Textarea
+                    <MessageBox
+                      value={value}
+                      handleChange={(
+                        e,
+                        newValue,
+                        newPlainTextValue,
+                        mentions
+                      ) => {
+                        console.log(e);
+                        console.log(newValue);
+                        console.log(newPlainTextValue);
+                        console.log(mentions);
+                        console.log(mentions);
+                        setValue(newPlainTextValue);
+                        // setTags
+                        return {
+                          e,
+                          newValue,
+                          newPlainTextValue,
+                          mentions,
+                        };
+                      }}
+                    />
+                    {/* <Textarea
                       ref={textAreaRef}
                       onChange={handleChange}
-                      placeholder="What’s on your mind?"
+                      placeholder="What's on your mind?"
                       className="text-white focus:ring-transparent focus-visible:ring-transparent ring-transparent ring-offset-transparent focus-visible:ring-offset-transparent focus:ring-offset-transparent focus-visible:ring-contentBg ring-offset-0 placeholder:text-inactive border-none flex-1 text-sm sm:text-base font-normal bg-transparent py-4 pt-2 resize-none"
-                    />
+                    /> */}
                   </div>
                   {/* display images if any */}
                   {selectedFiles?.length ? (
                     <div
                       className={cn(
-                        "aspect-video w-full h-full size gap-2 max-h-[180px]",
+                        "mt-4 aspect-video w-full h-full size gap-2 max-h-[180px]",
                         selectedFiles.length == 2 && "flex",
                         selectedFiles.length == 3 && "grid grid-cols-2",
                         selectedFiles.length == 4 && "grid grid-cols-2"
@@ -147,10 +173,11 @@ const CreatePost = (props: Props) => {
                             size={24}
                             className="absolute top-3 right-3 hidden group-hover:block hover:text-red-500 cursor-pointer"
                           />
-                          <img
+                          <Image
                             src={URL.createObjectURL(file)}
                             alt={file.name}
                             className="w-full h-full object-cover"
+                            layout="responsive"
                           />
                         </div>
                       ))}
@@ -229,7 +256,7 @@ const CreatePost = (props: Props) => {
             height={45}
             className="size-[45px] rounded-full object-cover border border-border/50 bg-foreground/5"
             alt="icon"
-            src={userData?.user.usermeta?.avatar ?? profileImageplaceholder}
+            src={userData?.user?.usermeta?.avatar ?? profileImageplaceholder}
           />
           <Button
             onClick={() => setShowCreatePost(true)}
@@ -239,7 +266,7 @@ const CreatePost = (props: Props) => {
             What’s on your mind?
           </Button>
         </div>
-        <div className="flex justify-between gap-x-4 mt-4 items-center">
+        {/* <div className="flex justify-between gap-x-4 mt-4 items-center">
           <div className="flex flex-1 gap-x-6">
             <Button
               variant={"ghost"}
@@ -266,7 +293,7 @@ const CreatePost = (props: Props) => {
               Post
             </span>
           </Button>
-        </div>
+        </div> */}
       </div>
 
       {/* floating action button for mobile devices */}

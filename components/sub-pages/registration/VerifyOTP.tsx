@@ -1,13 +1,13 @@
 import ErrorToast from "@/components/reusable/toasts/ErrorToast";
 import SuccessToast from "@/components/reusable/toasts/SuccessToast";
+import PageLoadingSpinner from "@/components/Spinner/PageLoadingSpinner";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import axiosInstance from "@/services/api/axiosInstance";
 import { useMutation, UseMutationResult } from "@tanstack/react-query";
 import { AxiosResponse } from "axios";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import toast from "react-hot-toast";
-import { RotateSpinner } from "react-spinners-kit";
 import VerificationInput from "react-verification-input";
 
 type Props = {
@@ -16,7 +16,7 @@ type Props = {
 };
 
 const VerifyOTP = ({ email, submitOTP }: Props) => {
-  let interval: NodeJS.Timeout | undefined;
+  let interval = useRef<NodeJS.Timeout | null>(null);
 
   const [timer, setTimer] = useState(60);
 
@@ -46,21 +46,23 @@ const VerifyOTP = ({ email, submitOTP }: Props) => {
   });
 
   useEffect(() => {
-    interval = setInterval(() => {
+    interval.current = setInterval(() => {
       if (timer <= 0) {
-        clearInterval(interval);
-        interval = undefined;
+        if (interval.current) {
+          clearInterval(interval.current);
+        }
+        interval.current = null;
       } else {
         setTimer((prev) => prev - 1);
       }
     }, 1000);
 
     return () => {
-      if (interval) {
-        clearInterval(interval);
+      if (interval.current) {
+        clearInterval(interval.current);
       }
     };
-  }, []);
+  }, [timer]);
 
   return (
     <div className="w-full max-w-[571px] p-6 pb-8 pt-4 border border-border bg-background rounded-xl mt-6 mb-20">
@@ -112,11 +114,7 @@ const VerifyOTP = ({ email, submitOTP }: Props) => {
             onClick={() => resendOTP.mutate()}
           >
             {resendOTP.isPending ? (
-              <RotateSpinner
-                size={16}
-                color="#188C43"
-                loading={resendOTP.isPending}
-              />
+              <PageLoadingSpinner spinnerExtraClass="w-7 h-7" />
             ) : (
               <span className="font-bold">Resend OTP</span>
             )}

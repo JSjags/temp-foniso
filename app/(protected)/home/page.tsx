@@ -4,6 +4,7 @@ import CreatePost from "@/components/Home/CreatePost";
 import Post from "@/components/reusable/Post";
 import HomeSidebar from "@/components/right-sidebar/HomeSidebar";
 import RightSideBar from "@/components/RightSideBar";
+import PageLoadingSpinner from "@/components/Spinner/PageLoadingSpinner";
 import { placeholderPosts } from "@/constants";
 import { useUserContext } from "@/context/UserContext";
 import axiosInstance from "@/services/api/axiosInstance";
@@ -11,7 +12,6 @@ import { PostMeta } from "@/types";
 import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
-import { RotateSpinner } from "react-spinners-kit";
 
 type Props = {};
 
@@ -66,7 +66,7 @@ const Home = (props: Props) => {
         <div className=" flex flex-col gap-y-2 bg-background sm:bg-inherit">
           {isLoading && (
             <div className="mt-10 flex justify-center">
-              <RotateSpinner size={30} color="#188C43" loading={isLoading} />
+              <PageLoadingSpinner />
             </div>
           )}
           {Boolean(posts && posts.length) &&

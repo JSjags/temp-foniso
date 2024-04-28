@@ -16,7 +16,7 @@ export interface ApiErrorResponse {
   message: string;
 }
 
-interface User {
+export interface User {
   id: number;
   username: string;
   socialId: string | null;
@@ -69,14 +69,14 @@ interface User {
   };
 }
 
-interface UserData {
+export interface UserData {
   user: User;
   predict_date: string; // Date string
   show_prediction: boolean;
   access_token: string;
 }
 
-interface PostMeta {
+export interface PostMeta {
   id: number;
   userId: number;
   communityId: any; // Type not defined
@@ -103,3 +103,118 @@ interface PostMeta {
   commentsCount: number;
   likesCount: number;
 }
+
+interface Media {
+  id: number;
+  mediaType: number;
+  media: string;
+  original_media: string;
+  original_posterImage: string;
+  posterImage: string;
+  duration: number;
+}
+
+export interface HighlightMeta {
+  id: number;
+  userId: number;
+  communityId: number | null;
+  slug: string | null;
+  type: string | null;
+  content: string;
+  isPublished: string | boolean;
+  canReply: boolean | null;
+  title: string;
+  sport_type: string;
+  editted: boolean;
+  tags: string[] | null;
+  medias: object[];
+  tagedUsers: string[];
+  poll_duration: number | null;
+  viewsCount: number;
+  notification_pushed: boolean;
+  created_at: string;
+  updated_at: string;
+  user: User;
+  media: Media[];
+  likedByMe: object[];
+  savedPost: object[];
+  likes: { user: User }[];
+  pollOption: object[];
+  commentsCount: number;
+  likesCount: number;
+}
+
+export interface CommunityRule {
+  id: number;
+  communityId: number;
+  title: string;
+  description: string;
+  priority: number;
+  created_at: string;
+  updated_at: string;
+}
+
+export type CommunityMember = {
+  id: number;
+  communityId: number;
+  userId: number;
+  status: string;
+  created_at: string;
+  updated_at: string;
+};
+
+export type CommunityModerator = {
+  id: number;
+  communityId: number;
+  userId: number;
+  level: string;
+  created_at: string;
+  updated_at: string;
+};
+
+export interface CommunityMeta {
+  id: number;
+  userId: number;
+  type: string;
+  name: string;
+  description: string;
+  coverImage: string;
+  status: string;
+  created_at: string;
+  updated_at: string;
+  user: User;
+  rules: CommunityRule[];
+  members: CommunityMember[];
+  moderators: CommunityModerator[];
+  isMember: CommunityMember[];
+  memberCount: number;
+}
+
+export type CommentMeta = {
+  id: number;
+  userId: number;
+  postId: number;
+  comment: string;
+  viewsCount: number;
+  created_at: string;
+  updated_at: string;
+  user: User;
+  likes: { id: number; userId: number }[];
+  replyCount: number;
+  likesCount: number;
+};
+
+export type ReplyMeta = {
+  id: number;
+  userId: number;
+  commentId: number;
+  parentcommentId: null;
+  message: string;
+  type: string;
+  viewsCount: number;
+  created_at: string;
+  updated_at: string;
+  user: User;
+  likes: { id: number; userId: number }[];
+  likesCount: number;
+};

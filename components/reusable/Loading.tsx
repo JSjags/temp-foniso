@@ -1,9 +1,9 @@
-import { RotateSpinner } from "react-spinners-kit";
+import PageLoadingSpinner from "../Spinner/PageLoadingSpinner";
 
 const Loading = ({ isLoading }: { isLoading: boolean }) => {
   return (
     <div className="mt-0 flex justify-center items-center w-[200px] min-h-[160px]">
-      <RotateSpinner size={30} color="#188C43" loading={isLoading} />
+      <PageLoadingSpinner spinnerExtraClass="w-7 h-7" />
     </div>
   );
 };

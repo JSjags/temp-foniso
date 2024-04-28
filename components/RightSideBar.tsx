@@ -21,7 +21,8 @@ const RightSideBar = (props: Props) => {
     <div
       className={cn(
         "hidden min-[860px]:block min-w-[280px] w-[40%] max-w-[480px] min-h-screen h-fit border-l border-border bg-background sticky",
-        pathname === "/explore" ? "top-0" : "-top-[642px]",
+        pathname === "/explore" ? "top-0" : "top-0",
+        // pathname === "/explore" ? "top-0" : "-top-[642px]",
         props.containerClassName
       )}
     >

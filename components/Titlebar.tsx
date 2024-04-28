@@ -46,7 +46,9 @@ const Titlebar = (props: Props) => {
                 height={36}
                 className="size-[36px] rounded-full object-cover"
                 alt="icon"
-                src={userData?.user.usermeta?.avatar ?? profileImageplaceholder}
+                src={
+                  userData?.user?.usermeta?.avatar ?? profileImageplaceholder
+                }
               />
             </div>
           </Link>

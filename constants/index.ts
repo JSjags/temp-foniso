@@ -516,6 +516,7 @@ export const reportReasons = [
 ];
 
 export const notificationTabs = ["All", "News", "Livescore"];
+export const exploreTabs = ["Posts", "People", "Communities"];
 
 export const placeholderNewsNotification = [
   {
@@ -710,4 +711,32 @@ export const postReplyOptions = [
     icon: AtSign,
     title: "Account you mention",
   },
+];
+
+export const favoriteSports = [
+  { label: "American Football", value: "American Football" },
+  { label: "Athletics Medal", value: "Athletics Medal" },
+  { label: "Badminton", value: "Badminton" },
+  { label: "Baseball", value: "Baseball" },
+  { label: "Basketball", value: "Basketball" },
+  { label: "Bowling", value: "Bowling" },
+  { label: "Boxing", value: "Boxing" },
+  { label: "Cricket", value: "Cricket" },
+  { label: "Cycling", value: "Cycling" },
+  { label: "Field Hockey", value: "Field Hockey" },
+  { label: "Football", value: "Football" },
+  { label: "Golf", value: "Golf" },
+  { label: "Handball", value: "Handball" },
+  { label: "Ice Hockey", value: "Ice Hockey" },
+  { label: "Lacrosse", value: "Lacrosse" },
+  { label: "MMA", value: "MMA" },
+  { label: "Racing", value: "Racing" },
+  { label: "Rugby", value: "Rugby" },
+  { label: "Run", value: "Run" },
+  { label: "Skiing", value: "Skiing" },
+  { label: "Skipping", value: "Skipping" },
+  { label: "Surfing", value: "Surfing" },
+  { label: "Swimming", value: "Swimming" },
+  { label: "Tennis", value: "Tennis" },
+  { label: "Volleyball", value: "Volleyball" },
 ];

@@ -67,7 +67,7 @@ const LeftSideBar = (props: Props) => {
                       className="size-[30px] rounded-full object-cover border border-border/50 bg-foreground/5"
                       alt="icon"
                       src={
-                        userData?.user.usermeta?.avatar ??
+                        userData?.user?.usermeta?.avatar ??
                         profileImageplaceholder
                       }
                     />
@@ -167,7 +167,7 @@ const LeftSideBar = (props: Props) => {
                       className="size-[30px] rounded-full object-cover border border-border"
                       alt="icon"
                       src={
-                        userData?.user.usermeta?.avatar ??
+                        userData?.user?.usermeta?.avatar ??
                         profileImageplaceholder
                       }
                     />
@@ -238,7 +238,8 @@ const LeftSideBar = (props: Props) => {
                     className="h-[18px_!important] rounded-full object-cover border border-border"
                     alt="icon"
                     src={
-                      userData?.user.usermeta?.avatar ?? profileImageplaceholder
+                      userData?.user?.usermeta?.avatar ??
+                      profileImageplaceholder
                     }
                   />
                 </div>

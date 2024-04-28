@@ -4,7 +4,7 @@ import SportIcon from "./SportIcon";
 import { Button } from "../ui/button";
 import axiosInstance from "@/services/api/axiosInstance";
 import { useEffect, useState } from "react";
-import { RotateSpinner } from "react-spinners-kit";
+import PageLoadingSpinner from "../Spinner/PageLoadingSpinner";
 
 type Props = {};
 
@@ -40,11 +40,7 @@ const Trending = (props: Props) => {
                 key={i}
                 className="mt-0 flex justify-center items-center w-[200px] min-h-[160px]"
               >
-                <RotateSpinner
-                  size={30}
-                  color="#188C43"
-                  loading={isTrendingLoading}
-                />
+                <PageLoadingSpinner spinnerExtraClass="w-7 h-7" />
               </div>
             ))}
         {Boolean(
@@ -85,11 +81,7 @@ const Trending = (props: Props) => {
       <div className="px-2 sm:px-6 flex flex-col gap-y-5 mt-2">
         {isTrendingLoading && (
           <div className="mt-10 flex justify-center">
-            <RotateSpinner
-              size={30}
-              color="#188C43"
-              loading={isTrendingLoading}
-            />
+            <PageLoadingSpinner spinnerExtraClass="w-7 h-7" />
           </div>
         )}
         {Boolean(

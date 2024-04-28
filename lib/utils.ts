@@ -1,4 +1,5 @@
 import { type ClassValue, clsx } from "clsx";
+import moment from "moment";
 import { twMerge } from "tailwind-merge";
 import validator from "validator";
 
@@ -8,7 +9,7 @@ export function cn(...inputs: ClassValue[]) {
 
 export function formatString(input: string): string {
   // Capitalize the first letter
-  let formattedString = input.charAt(0).toUpperCase() + input.slice(1);
+  let formattedString = input?.charAt(0).toUpperCase() + input.slice(1);
 
   // Add a space after each comma
   formattedString = formattedString.replace(/,/g, ", ");
@@ -77,3 +78,13 @@ function formatDate(date: Date): string {
   return `${year}-${month}-${day}`;
 }
 // Output: "2024-04-15 - 2024-04-21"
+
+export function formatDateTime(dateTimeString: string) {
+  // Parse the input datetime string using Moment.js
+  const dateTime = moment(dateTimeString);
+
+  // Format the datetime in the desired format
+  const formattedDateTime = dateTime.format("h:mmA, D MMM YYYY");
+
+  return formattedDateTime;
+}

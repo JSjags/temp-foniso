@@ -101,3 +101,19 @@
   height: 100% !important;
   max-height: 80vh;
 }
+
+.rdp-vhidden {
+  @apply hidden;
+}
+
+.carousel .carousel-status {
+  @apply rounded-3xl bg-darkGrey top-1 right-1 text-[8px] px-2 py-1 !important;
+}
+
+.w-full__input:focus-visible {
+  outline: none;
+}
+
+.w-full__suggestions:focus-visible {
+  background-color: transparent;
+}

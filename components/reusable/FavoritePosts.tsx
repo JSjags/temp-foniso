@@ -21,8 +21,8 @@ const FavoritePosts = (props: Props) => {
   if (favoriteSports.isSuccess && Boolean(favoriteSports.data.data.data.length))
     return favoriteSports.data.data.data.map(
       (favoriteSport: any, i: number) => (
-        <div key={i} className="mb-5 border-b border-border">
-          <p className="text-foreground font-bold px-2 sm:px-6 text-2xl py-6 flex gap-x-2 items-center">
+        <div key={i} className="border-b border-border">
+          <p className="text-foreground font-bold px-2 sm:px-6 text-2xl py-6 pb-4 flex gap-x-2 items-center">
             <SportIcon
               category={favoriteSport.favoriteSport.split("-").join(" ")}
               size={30}

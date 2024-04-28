@@ -15,10 +15,10 @@ import { loginUser } from "@/services/api/userService";
 import toast from "react-hot-toast";
 import ErrorToast from "@/components/reusable/toasts/ErrorToast";
 import { signIn, signOut, useSession } from "next-auth/react";
-import { RotateSpinner } from "react-spinners-kit";
 import { useUserContext } from "@/context/UserContext";
+import PageLoadingSpinner from "@/components/Spinner/PageLoadingSpinner";
 
-const page = () => {
+const Page = () => {
   const router = useRouter();
   const { theme } = useTheme();
   const searchParams = useSearchParams();
@@ -37,7 +37,7 @@ const page = () => {
 
   const loginMutation = useMutation<LoginResponse, Error, LoginCredentials>({
     mutationFn: loginUser,
-    onSuccess: (data: LoginResponse) => {
+    onSuccess: (data: LoginResponse | any) => {
       setUserData(data?.data);
       localStorage.setItem("token", data?.data?.access_token);
       localStorage.setItem("userData", JSON.stringify(data?.data));
@@ -98,7 +98,7 @@ const page = () => {
         { id: googleCallbackError }
       );
     }
-  }, []);
+  }, [googleCallbackError]);
 
   return (
     <div className="bg-bgEffect min-h-screen p-2">
@@ -151,11 +151,7 @@ const page = () => {
                   </div>
                   <Button className="w-full hover:bg-foreground hover:scale-[1.01] transition-all hover:shadow-xl bg-foreground border border-border text-background rounded-full flex justify-center items-center mt-6 h-12">
                     {loginMutation.isPending ? (
-                      <RotateSpinner
-                        size={30}
-                        color="#188C43"
-                        loading={loginMutation.isPending}
-                      />
+                      <PageLoadingSpinner spinnerExtraClass="w-7 h-7" />
                     ) : (
                       <span className="text-base font-bold block p-0 align-middle -translate-y-[2px]">
                         Log in
@@ -168,7 +164,7 @@ const page = () => {
                 </p>
                 <div className="h-5 mt-1 relative after:content-['or'] after:block after:w-6 after:text-center after:text-foreground/50 after:bg-background after:absolute after:left-1/2 after:-translate-x-1/2 after:top-2/3 after:-translate-y-1/3 before:block before:w-full before:bg-foreground/20 before:h-[1px] before:absolute before:bottom-0" />
 
-                {session && session.user && (
+                {/* {session && session.user && (
                   <Button
                     onClick={() =>
                       signOut({ redirect: true, callbackUrl: "/login" })
@@ -186,7 +182,8 @@ const page = () => {
                       Logout from Google
                     </span>
                   </Button>
-                )}
+                )} */}
+
                 <Button
                   onClick={() => signIn("google")}
                   className="w-full hover:bg-colorGrey/10 bg-transparent border border-border text-foreground rounded-full flex justify-center gap-x-2 items-center mt-6 h-12"
@@ -202,6 +199,19 @@ const page = () => {
                     Continue with Google
                   </span>
                 </Button>
+                <div className="pt-2 flex items-center justify-center gap-1">
+                  <p className="text-foreground text-sm w-fit">
+                    Don't have an account?
+                  </p>
+                  <Link href={"/register"}>
+                    {" "}
+                    <Button className="w-fit h-fit inline hover:scale-[1.01] hover:bg-transparent p-0 bg-transparent text-foreground/80 hover:text-foreground/100">
+                      <span className="text-sm font-bold block p-0 align-middle -translate-y-[2px]">
+                        Log in
+                      </span>
+                    </Button>
+                  </Link>
+                </div>
               </div>
               <p className="text-foreground mt-4 text-base font-semibold">
                 Get app on:
@@ -313,4 +323,4 @@ const page = () => {
   );
 };
 
-export default page;
+export default Page;

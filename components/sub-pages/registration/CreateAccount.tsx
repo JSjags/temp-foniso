@@ -5,11 +5,11 @@ import { Label } from "@/components/ui/label";
 import { validateSignupForm } from "@/lib/signupValidation";
 import { validatePhoneNumber } from "@/lib/utils";
 import { useState } from "react";
-import { RotateSpinner } from "react-spinners-kit";
 import validator from "validator";
 import { Country } from "country-state-city";
 import { UseMutationResult } from "@tanstack/react-query";
 import { AxiosResponse } from "axios";
+import PageLoadingSpinner from "@/components/Spinner/PageLoadingSpinner";
 
 type Props = {
   submitFormData: UseMutationResult<AxiosResponse<any, any>, any, any, unknown>;
@@ -228,11 +228,7 @@ const CreateAccount = ({ submitFormData }: Props) => {
         className="w-full hover:bg-foreground hover:text-background hover:scale-[1.01] transition-all hover:shadow-xl bg-foreground border border-border text-foreground rounded-full flex justify-center items-center mt-10 h-[54px]"
       >
         {submitFormData.isPending ? (
-          <RotateSpinner
-            size={30}
-            color="#188C43"
-            loading={submitFormData.isPending}
-          />
+          <PageLoadingSpinner spinnerExtraClass="w-7 h-7" />
         ) : (
           <span className="text-base font-bold block p-0 align-middle -translate-y-[2px] text-background">
             Create account

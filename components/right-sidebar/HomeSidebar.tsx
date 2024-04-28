@@ -9,6 +9,7 @@ import Trending from "../reusable/Trending";
 import PeopleSuggestions from "../reusable/PeopleSuggestions";
 import SidebarFooter from "../reusable/SidebarFooter";
 import axiosInstance from "@/services/api/axiosInstance";
+import ExploreSearch from "../reusable/ExploreSearch";
 
 type Props = {
   containerClassName?: string;
@@ -18,23 +19,13 @@ const HomeSidebar = (props: Props) => {
   const pathname = usePathname();
   return (
     <div className="pb-[30vh]">
+      {/* hide for now */}
       {pathname !== "/explore" ? (
         <>
           <div className="py-5 px-6 relative">
-            <div className="relative">
-              <SearchIcon
-                size={18}
-                color="#888888"
-                className="absolute left-4 top-[18px]"
-              />
-              <Input
-                id="search"
-                placeholder="Search"
-                className="bg-transparent mt-2 pl-10 text-foreground border-border h-[54px] text-base placeholder:text-foreground/40 rounded-xl"
-              />
-            </div>
+            <ExploreSearch inputStyle="bg-transparent mt-2 pl-10 text-foreground border-border h-[54px] text-base placeholder:text-foreground/40 rounded-xl" />
           </div>
-          <Trending />
+          {/* <Trending /> */}
         </>
       ) : null}
       <PeopleSuggestions />
