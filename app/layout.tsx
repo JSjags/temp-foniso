@@ -9,12 +9,12 @@ import { Toaster } from "react-hot-toast";
 import NextAuthProvider from "@/providers/NextAuthProvider";
 import { UserProvider } from "@/context/UserContext";
 
-const fontSans = FontSans({
-  subsets: ["latin"],
-  variable: "--font-sans",
-  display: "swap",
-  adjustFontFallback: false,
-});
+// const fontSans = FontSans({
+//   subsets: ["latin"],
+//   variable: "--font-sans",
+//   display: "swap",
+//   adjustFontFallback: false,
+// });
 
 export const metadata: Metadata = {
   title: "Foniso",
@@ -36,8 +36,8 @@ export default function RootLayout({
       />
       <body
         className={cn(
-          "min-h-screen bg-background font-sans antialiased",
-          fontSans.variable
+          "min-h-screen bg-background font-sans antialiased"
+          // fontSans.variable
         )}
       >
         <UserProvider>
