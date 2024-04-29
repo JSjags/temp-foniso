@@ -15,6 +15,11 @@ const nextConfig = {
       },
       {
         protocol: "https",
+        hostname: "th.bing.com",
+        port: "",
+      },
+      {
+        protocol: "https",
         hostname: "foniso-assets.nyc3.cdn.digitaloceanspaces.com",
         port: "",
       },

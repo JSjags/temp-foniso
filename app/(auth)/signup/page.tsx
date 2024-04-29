@@ -4,9 +4,10 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { AdvancedImage } from "@cloudinary/react";
 import { Cloudinary } from "@cloudinary/url-gen";
+import { useTheme } from "next-themes";
 import Image from "next/image";
 import Link from "next/link";
-import React from "react";
+import React, { useEffect, useState } from "react";
 
 const Page = () => {
   const { theme } = useTheme();
@@ -26,9 +27,12 @@ const Page = () => {
       <div className="max-w-[1812px] flex flex-col ju min-h-screen">
         <div className="flex mt-[15vh] px-2">
           <div className="hidden w-1/2 md:flex justify-center items-center px-10">
-            <AdvancedImage
+            <Image
+              alt="logo"
+              src={logoPath}
               className="w-full max-w-[231px] -translate-y-[120%]"
-              cldImg={cld.image("foniso/logo")}
+              width={231}
+              height={46}
             />
           </div>
           <div className=" w-full md:w-1/2 flex flex-col justify-center items-center">

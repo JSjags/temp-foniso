@@ -103,7 +103,7 @@ const Page = (props: Props) => {
 
   return (
     <div className="flex gap-0 min-[480px]:gap-2">
-      <div className="min-h-screen relative w-full flex-1">
+      <div className="min-h-screen bg-background relative w-full flex-1">
         {/* Push notification dialog */}
         <Dialog
           open={showPushNotificationDialog}

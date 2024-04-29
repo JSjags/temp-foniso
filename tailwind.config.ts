@@ -72,6 +72,9 @@ const config = {
           foreground: "hsl(var(--card-foreground))",
         },
       },
+      backgroundImage: {
+        bgEffect: "var(--bg-effect)",
+      },
       fontFamily: {
         sans: ["var(--font-sans)", ...fontFamily.sans],
       },

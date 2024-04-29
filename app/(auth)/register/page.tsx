@@ -183,9 +183,12 @@ const Page = () => {
       <div className="max-w-[1812px] flex flex-col min-h-screen">
         <div className="mt-20">
           <div className="max-w-[188px] flex justify-center items-center sm:px-10">
-            <AdvancedImage
+            <Image
+              alt="logo"
+              src={logoPath}
               className="w-full max-w-[231px] -translate-y-[120%]"
-              cldImg={cld.image("foniso/logo")}
+              width={165.65}
+              height={23}
             />
           </div>
           <div className="w-full flex flex-col items-center mt-10">

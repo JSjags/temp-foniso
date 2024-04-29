@@ -6,6 +6,20 @@ export { profileImageplaceholder };
 export const userPlaceholderImage =
   "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wCEAAkGBxAQEhUPEBAVFhUVFRUVFxcWFxUWFhYVGBUWFhUXFhYYHSggGBolHRcWITEhJSkrLi4uFx8zODMtNygtLisBCgoKBQUFDgUFDisZExkrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrK//AABEIAPsAyQMBIgACEQEDEQH/xAAcAAACAgMBAQAAAAAAAAAAAAAAAQIFAwQHCAb/xABDEAACAQIDBQUEBgYJBQAAAAAAAQIDEQQhMQUSQVFhBgdxgfATkaGxFCIycsHhQlJigtHxCBUjQ2OSorLCFyRUk8P/xAAUAQEAAAAAAAAAAAAAAAAAAAAA/8QAFBEBAAAAAAAAAAAAAAAAAAAAAP/aAAwDAQACEQMRAD8A7IIAAQxMaAaJkETQEkNCQ0BIQAAxiGAxoiSQDAEADASGAAAAAAAAAAAAAAaIAIAYAICaJohEmBJDEhgMAABoaEMBjEMBoAQAAxIYAAAAAAAAAAAAABoAAgABDAlEmiCJoCSJEETQDAEMAGIYDGJDAYAADAAAAAAAAAAAAAAAAK8BAAIYhgSRNGJ1EtWUe2e2eBwqbqV43X6MWm7vRZaAfRIkjk+1O+jCxjajCUpdVks+Fnq11yPnNod9WJkoxpUoxee9Ju+XCyss/wCOryaDvyFc8w7X70dp16ntIV3SjayhC1vFtq9yC70Nrbih9JzStv7sd63LlnztcD1EmtRxd80eVqHeRtaC3Xi5yX7Si/w9W8b667d7T/8ANq6W+1+GnwA9ZDPJVbtxtOcd2WOrtN5rfavlbhw4G7gu8jatFWji5v79pN6a72uSsB6pA80/9Xdq7qj7SGSavu2lno79PwLfZ/fbjIO1WjTmvNNZZWz+YHoADjmz+/CDsquGle2bi1k88rN6aZ3/AC+37P8AeFs/GS3KdXdlqlNWurpa8816TA+sAAAAAAAAAAAAArRiAAGJDuByjvn7VOilhaU7SavLLRX1TvxV1plY4bObfrifed9eK39oNJ/ZpxyyyfFXSzX8X5fAoAuCQIAGh+vzElzY48gBLkO3rIOnQXn+YDuNPgOS08PWob3zQCJEWwSAakWmxNpyoVFUV+Ts7Oz1s+H5FSTiB657E7VWLwdKsnm455t2fK7z9/x1L05t3E4mpUwEt/SNTci9bpRi/he3kdJAAAAAAAAAAArBkRgA2RCpoB5V7fQ3doYqLlvf2svK+dvK9vIoSy7T1lPGYiS0darbwU2r/ArEBIcdUJIkgBPjoNef4kqcOvribUKKa3l0vn10v60A01xX4gtfP4lm8LBK1m2s2ldWyz1148EYJYPL6vBPLnbWwGn8B2av6+HMzqjfhpb8ROmuHu4gYQz4mSVOwrAQ3SVOCuruyHYjJAeju5OEKWFnRU4ye8pq2Taazvzadlflu9TpB5W7v+1VTBYinJPJOzTeTi7Xi+mXkeosBi4VqcK1N3jOKkvMDOAAAAAAAAAFUACYDRqbbrqnh6tR6Rpzlw4Rb45G0il7d4j2ezsXOydqFTVtK7i0tM9WB5TbvnzJCSHYBpDt0Cxlpw5AEIvQscPwS0WTvp4/I04r1yzNrDxfLUCwjG+ejcbO11nzTTSyMU6bV1bNrlfNO9r6rVsz049E7WytwevUc6XX8eGQFe6eava3uz5oxKja6LJwfrLoY3RXH38ANCUDBOBY1IdPVjBOOtwNGwmZ503fIwsDGsnc9A9x3aJ1aUsJOV3Fb8fC9mvk/eef2ffd0+P9ljqDT1moPqp/U/5AelwAAAAAAAAAqQAABHxXfPWcdlVkv050Yvw9rGX/AB+J9ofC99cL7Lm+Vai/9dvxA88MSRJoEBOMLm1Tp9DFSRu0oK3j6tb3AYo09bcjboUzGnmbdFp8NfXADPTjZevSZO3Th4a9eJKlTy5Lre65/IySh69/J+rAYZRu/K/Lw9dTHKnfPhbXjy4GZxWeb+duHnwJSh/PNgaFSnn/ADMM6ZYyj6t6sYK9HLl609cwK+cMzWrUrXNuTz9dDZ+jqSAoprgWXZqVWGKw8qd9516Sj1bqRVviRrUIx+0/4nS+5TB0cTiYucM8JCVSN1a8qkrQefJbz84gd5AQAMBDAAEAFSAhgB8r3p4R1dlYpJXcYRqf+upGb+EWfUkMXhoVqc6NRXhUjKElzjJOLXuYHkRgix2/sipgsRUwlX7VOVr/AK0dYTXSUbPzNBoDPQNyHr8vA0YS4G3TfriBn3E9fXrL3k/bqCzzMlONld534fLxNF4d1JqOl9W9EkruXgkBlXaBp23ciywmMVVfV935ekTnhcNQp507v9pZ35vh5GpPAU6v1qL3J7rlldKVrN2z4XAtaVJt3t/HW/rxMkqStlbPPp7jNsmU1BOpHPnrfqZ6zU88vh+IFaqV/n66kcRQdsuhYSStnfno8/f8zXrPNPjqteXH4gUNajZvI1KmJlomXOKhvL14alJXpgbWycc8PPflThUWf2ldq6tl+ZYdk+01bZmN+kQtJL+ynHRSpqy3ejW6rcrFZszDOdRK6Wa+14m72owfsqrlJWcm5O3XMD1BsHbVDHUY4jDz3oy15xlxjJcGixPKvY7tZidm1va0XeMrKdN33ZrquD5Pgekey3aOhtGiq9B9Jwf2oS5P8HxAuQAAAAACoQCTABokiCJIDlvfr2fU6NPaEI/XpNU6jXGlJ/Vb+7LL99nErnrnaGCp4ilOhVjvQqRlCS5pqz8zy12n2HVwGJqYSrrB/VlbKcH9ia8V7ndcAK+Mjboy9alejNRkBb058DPRhuycvuJ36zV/kjTwebRdvDK2d7NWfTRp+KaT8gK/aMnq+ZHZ7dOUsRW+rCMJRguLcssuejLHEbPlOEl+klfxazTXRnzv9pVu6u9ZKyybsllZJaAfU4bHOUYv9FxySzXQ24TT016lZ2dxlOpRsladGO7JcJx4SXJmw56WfPSzA22np52y+HPXp8DHOnLlrrfPzX5meirLO7d72X45+syKqWz55AaVTDWV7Z+dl7yqxGH1dl5H1DlGorb1nzza4XXwZpbRw1krfN/MD5VysbO08a6ypuTzjZPwI4qhuu/M1Gr3QG5RwKknJTz5WfQ6L3R7WqQxlLDtXdT2kG0tYKnOonL7soJX/bscx/rWrCn7OMUnn9ZatHee5fs3g6OH+nUqvt69ZWnUeXs9G6UY3e7mle+bstNAOkgAAAAAFMhiQANEkRGgJo4t/SBw9q+Eq/rUqsP8k4tf72dpRyn+kDRvQwlS2lWpG/3oJ2v+58AOJtGWmYmZIAWuz2t4+kTTifJ4WpZl9hK91qBv0Zq245bv6snw/Zl06m3hcLJJtqLbyySkmnlc0JSRrS3lnFvydvloBKhs9wq7tt1Sl4cyyhhPC3O2vr+JV4ODct+V2+Fy+pVL5AY1SVuvMxVaLWi5Zm9TS1yz4E6kU7AU7bT4/wAfX4E5y3o3XVZdHmzYrU+JpyVsk/Hx4+QFLjvx/j+XvKtuzLnHU73XrMqKsLAatR3OodxW2alDFfQkk4Yjeb5xlCnKSkullZr0+YwqJN5XO49xuwcNuS2gqyqV2vZunZL2Cbu083eUklnyy5gdaABAMBABToZBMkAxoiNMDIj4bvqw8Z7LnKWtOrRlHxc1Tf8ApnI+4TOad/GMccHQor+8r3fVQhJ/OUX5AcLZOBBkogbEGWODqsrIsz0ZgfR06qaMqaKzDVTfhmBt0o8TKq9vE199pevX8iuxle3EC/pY9evkZvpifHy6nxMsc1owe05cwPqZ4m5q1a2tvy8ChjtFviZ1i97iBuWTv66lbj8jahUK3F1cwNenC2bOo9xmAxP0x4mEZKh7KcJzaahN3+rFPSUlJXyvazva+fyfYbYMMdVnTnOzUbwjwnLOyl+yknpb4WfoXsXsaGBwlPDU9Iq7va7k85N2yu3nlzAvgEICQCAClRIiMCQIAAmj43vM7IV9qUKaw84KdKUpKM7pTUlZreV7PLl7j7FGXDAeTNt7GxOCqeyxVCdKXBSWUtLuMleM1nqmzRR7B2js2hiqbo4ilCpB6xmlJdHno+pyHtj3KtXrbLnfj7CpLPwp1H8p/wCYDkCZkpslj8DWw9R0cRSnTqLWM4uLte11fVZarJmOAFnhHmi4ovK/5FJgy3puyvp8fHO+QBicRbjoUuJrb2rM2NqFZOeYE5Mg0Q3yw2HsjEY2oqGFpOpNpuysko8XKTaUV4gaJlp1Gj7yl3PbWlqsPH71V3/0wZt0e5XaLX1q+Fi/vVZf/NAfBUsRkYavNnT6XcfirXeOop8lTqNX453XyIYvuQxCjljqbdnl7KUVfx3/AA4AfF9gscqeKUr7ucbS3mt135J/WTTatZv439M7DxcalJWd7JJu1r5LM4Xsnuux9JurUpwbjbdjvpJtPV5O6yT4c89DuWw8G6VKEXHdahGNloktMtL+AFmIBAMZEYFOAhXAmmO5FDuBkXI2acTDCk73T8ufnwNqHXICUTJEikSQFft/s/hcfSdDFUY1I8L/AGoP9aElnF9Ueee3nd9iNlT303Vw0pWhVtnFt5QqpfZlw3tJdHkemUY8XhqdWEqVWEZwmnGUZJOMovVNPVAeSMKrMsZyssvXkfW94Xd1LZzeJwylPC6tZuVC/CT1lT5S1XHm/i6ssgNDGS/kaLzNnEs1WwDdOx/0esDZYvEdaVJZLgpzln+9E4/E9D9y+zHQ2bGpJNOvUnWz/VyhB+DjBSX3gPvbjIhcCQMVwAdiSIjAkIQwALiACoEMiBOEs7GfcTzMdKlxZtRgAoXRnhPmQSJWAzJEkjBFtGaM7gTQxDAJxTTTSaas08009U0cK7z+714LexmDjfDZudNZvD31a50v9vhp3YUkmrNXTys+IHjeqzA0dQ72e776C3jcJH/tpP68F/cSbsrf4Tby/VeWjVuZ2A+l7uezf9Y42FGavSgvaVetOLX1f3pOMfByfA9MQiopRSSSSSSySSySS5HMu4jZPs8NWxclnWqbkX/h0rq65fXlNfuI6cA0MimMBjEK4ExkUxgSAQAAxABUI2aNDixYVas3YoCEYE1ElYYEbBYmICNiUOYmD09wE4TMiNdMyU+PrmBkuFwEBjxVCFSEqdSKlCcXGUZK8ZRas009U0ede0/d7VobShgMPd08Q96hJ57tPWopvj7NXb5rd4s9GSNSvSi5KbinKKai+KUrbyT67q9wGrsnZ1PC0aeGpK0KUFCPN24vq3dvqzaYAwC40yIwJ3EIaAaJIiNASASABoLCGB//2Q==";
 
+export const footballClub1 =
+  "https://th.bing.com/th/id/R.5423d61f913cded578ee6e0fbddaf541?rik=WLXT2ursqYj0xQ&pid=ImgRaw&r=0";
+
+export const footballClub2 =
+  "https://th.bing.com/th/id/R.647237e08be4a2fb599cba2ed4e3a00f?rik=a7pm9pmuxdfgjw&pid=ImgRaw&r=0";
+export const footballClub3 =
+  "https://th.bing.com/th/id/R.dc13a5b04ddb2aaf119fb2355d795bf9?rik=w7CUF%2bxtjxYvxg&riu=http%3a%2f%2fwww.sportsnews.com.au%2fwp-content%2fuploads%2f2014%2f10%2fMelbourne-City.png&ehk=HBGjba5pwa0gqTyAgfkXu2Juz6ysqIKWUwYoGyX9cVw%3d&risl=&pid=ImgRaw&r=0";
+export const footballClub4 =
+  "https://th.bing.com/th/id/R.17f5181e941fe510ec7bac53ab982ae8?rik=sPXwk3EpNbgC9g&pid=ImgRaw&r=0";
+export const fighter1 =
+  "https://th.bing.com/th/id/R.923334e2b5f828e0bd03e4527845f137?rik=EYP%2bqy2nYeyKZg&pid=ImgRaw&r=0";
+export const fighter2 =
+  "https://th.bing.com/th/id/R.a446d908d9290354688efc1d63d6887d?rik=tblhIYZkMhbkEQ&riu=http%3a%2f%2fpngimg.com%2fuploads%2fkhabib%2fkhabib_PNG3.png&ehk=nI4WZ8MyhAIPlTx%2fjBiGoK4uIUATnwd3VxlfN7kY4r4%3d&risl=&pid=ImgRaw&r=0";
+
 export const leftSideBarItems = [
   {
     title: "Home",
@@ -506,20 +520,32 @@ export const exploreTabs = ["Posts", "People", "Communities"];
 
 export const placeholderNewsNotification = [
   {
-    title: "Be civil and respectful",
-    desc: "Make sure you understand the full picture before responding to someone's post",
+    title: "JUST IN",
+    category: "FOOTBALL",
+    created_at: "1d ago",
+    body: "Paul Pogba: Juventus midfielder provisionally suspended for anti...anti-doping offence",
+    image: userPlaceholderImage,
+    type: "news",
   },
   {
-    title: "Stay on topic",
-    desc: "Share content that aligns with the community&apo;s theme.",
+    title: "TRENDING",
+    category: "BASKETBALL",
+    created_at: "1d ago",
+    body: "Q&A: Tom Thibodeau on Knicks' offseason and NBA's future talent",
+    image: userPlaceholderImage,
+    type: "news",
   },
   {
-    title: "Report issues",
-    desc: "Report any concerns to moderators or administrators promptly.",
+    title: "US OPEN",
+    category: "TENNIS",
+    created_at: "1d ago",
+    body: "US Open: Organisers of Grand Slam cancel wheelchair tennis for 2024 tournament due to Paralympics clash",
+    image: userPlaceholderImage,
+    type: "news",
   },
 ];
 
-export const communities_list = [
+export const allNotification = [
   {
     community_name: "Manchester FC",
     created_at: "1d ago",
@@ -713,6 +739,21 @@ export const favoriteSports = [
   { label: "Swimming", value: "Swimming" },
   { label: "Tennis", value: "Tennis" },
   { label: "Volleyball", value: "Volleyball" },
+];
+
+export const communityRules = [
+  {
+    title: "Be civil and respectful",
+    desc: "Make sure you understand the full picture before responding to someone's post",
+  },
+  {
+    title: "Stay on topic",
+    desc: "Share content that aligns with the community&apo;s theme.",
+  },
+  {
+    title: "Report issues",
+    desc: "Report any concerns to moderators or administrators promptly.",
+  },
 ];
 
 export const communities_list = [

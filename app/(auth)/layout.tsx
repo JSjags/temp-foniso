@@ -33,9 +33,9 @@ export default function RootLayout({
     //     type="image/<generated>"
     //     sizes="<generated>"
     //   />
-    <div className={cn(fontSans.variable)}>
-      <AppProvider>
-        <body className={global_font.className}>
+    <>
+      <div className={cn(fontSans.variable)}>
+        <AppProvider>
           <ThemeProvider
             attribute="class"
             defaultTheme="system"
@@ -45,8 +45,9 @@ export default function RootLayout({
             {children}
             <ToastContainer />
           </ThemeProvider>
-        </body>
-      </AppProvider>
-    </html>
+        </AppProvider>
+      </div>
+    </>
+    // </html>
   );
 }

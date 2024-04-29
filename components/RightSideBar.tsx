@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { ReactNode } from "react";
 import { Input } from "./ui/input";
 import { SearchIcon } from "lucide-react";
 import Trending from "./reusable/Trending";
@@ -9,7 +9,11 @@ import SidebarFooter from "./reusable/SidebarFooter";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 
-type Props = { className?: string };
+type Props = {
+  className?: string;
+  containerClassName?: string;
+  component?: ReactNode;
+};
 
 const RightSideBar = (props: Props) => {
   const pathname = usePathname();
