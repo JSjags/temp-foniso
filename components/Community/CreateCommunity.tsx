@@ -28,19 +28,16 @@ type Props = {
 };
 
 const CreateCommunity = (props: Props) => {
-  const {
-    register,
-    handleSubmit,
-    setValue,
-    getValues,
-    // formState: { errors },
-  } = useForm<CreateCommunityForm>({
-    defaultValues: {
-      community_name: "",
-      description: "",
-      community_type: "public",
-    },
-  });
+  const { register, handleSubmit, setValue, watch } =
+    useForm<CreateCommunityForm>({
+      defaultValues: {
+        community_name: "",
+        description: "",
+        community_type: "public",
+      },
+    });
+
+  const values = watch();
 
   const onSubmit: SubmitHandler<CreateCommunityForm> = (data) => {
     props.onSubmit(data);
@@ -70,7 +67,7 @@ const CreateCommunity = (props: Props) => {
           />
 
           <span className="absolute right-2">
-            {getValues("community_name").length}/21
+            {values.community_name.length}/21
           </span>
         </div>
       </div>
@@ -90,7 +87,7 @@ const CreateCommunity = (props: Props) => {
           />
 
           <span className="absolute right-2">
-            {getValues("description").length}/80
+            {values.description.length}/80
           </span>
         </div>
       </div>

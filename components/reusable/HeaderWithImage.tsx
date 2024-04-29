@@ -88,7 +88,7 @@ const HeaderWithImage = (props: Props) => {
           </div>
         </div>
 
-        <div className="absolute bottom-0 right-0">{props.sideBtn}</div>
+        <div className="absolute bottom-0 right-4">{props.sideBtn}</div>
       </div>
     </>
   );

@@ -4,7 +4,6 @@ import CommentCard from "@/components/reusable/CommentCard";
 import Post from "@/components/reusable/Post";
 import PostViewer from "@/components/reusable/PostViewer";
 import SportIcon from "@/components/reusable/SportIcon";
-import HomeSidebar from "@/components/right-sidebar/HomeSidebar";
 import RightSideBar from "@/components/RightSideBar";
 import PageLoadingSpinner from "@/components/Spinner/PageLoadingSpinner";
 import { Button } from "@/components/ui/button";
@@ -310,10 +309,9 @@ export default function Page({ params }: { params: any }) {
           </div>
         </div>
         <RightSideBar
-          containerClassName={
+          className={
             "min-w-[200px] w-[40%] max-w-[480px] gap-0 min-[480px]:gap-2"
           }
-          component={<HomeSidebar />}
         />
       </div>
     </div>

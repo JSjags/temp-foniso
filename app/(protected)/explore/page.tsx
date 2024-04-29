@@ -6,7 +6,6 @@ import Highlights from "@/components/reusable/Highlights";
 import Post from "@/components/reusable/Post";
 import SubTabs from "@/components/reusable/SubTabs";
 import Trending from "@/components/reusable/Trending";
-import HomeSidebar from "@/components/right-sidebar/HomeSidebar";
 import RightSideBar from "@/components/RightSideBar";
 import PageLoadingSpinner from "@/components/Spinner/PageLoadingSpinner";
 import {
@@ -64,10 +63,9 @@ const Explore = (props: Props) => {
             {handleCurrentView()}
           </div>
           <RightSideBar
-            containerClassName={
+            className={
               "min-w-[200px] w-[40%] max-w-[480px] gap-0 min-[480px]:gap-2"
             }
-            component={<HomeSidebar />}
           />
         </div>
         {/* Favorite posts */}

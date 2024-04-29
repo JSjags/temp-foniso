@@ -17,6 +17,32 @@ import {
   DropdownMenuItem,
 } from "../ui/dropdown-menu";
 
+const AddMedia = () => {
+  return (
+    <button
+      type="button"
+      className="flex items-center gap-[14px] text-[#0B953B]"
+    >
+      <CiSquarePlus className="text-3xl md:text-2xl" />
+      <span className="text-lg">Add media</span>
+    </button>
+  );
+};
+
+const Title = () => {
+  return (
+    <div className="flex">
+      <p className="flex-1">New post</p>
+      <Button
+        type="submit"
+        className="md:hidden h-[36px] rounded-full px-5 bg-[#F2FFF769]"
+      >
+        Post
+      </Button>
+    </div>
+  );
+};
+
 const CreatePost = () => {
   const searchParams = useSearchParams();
   const { back } = useRouter();
@@ -30,20 +56,6 @@ const CreatePost = () => {
 
   const handleCloseModal = () => {
     back();
-  };
-
-  const Title = () => {
-    return (
-      <div className="flex">
-        <p className="flex-1">New post</p>
-        <Button
-          type="submit"
-          className="md:hidden h-[36px] rounded-full px-5 bg-[#F2FFF769]"
-        >
-          Post
-        </Button>
-      </div>
-    );
   };
 
   return (
@@ -100,10 +112,7 @@ const CreatePost = () => {
           </MobileDrawer>
 
           <div className="py-6 px-4 mt-28 border-t border-[#222623] items-center">
-            <button type="button" className="flex gap-[14px] text-[#0B953B]">
-              <CiSquarePlus className="text-3xl " />
-              <span className="text-lg">Add images</span>
-            </button>
+            <AddMedia />
           </div>
         </div>
 
@@ -127,19 +136,32 @@ const CreatePost = () => {
             </DropdownMenuContent>
           </DropdownMenu>
 
-          <div className="mt-12 flex items-center gap-10">
+          <div className="mt-12">
             <Input
               name="post content"
               className="!border-none px-0 !rounded-none !outline-none !ring-0 !placeholder-[#616161] flex-1"
               placeholder="What’s on your mind?"
             />
 
-            <Button
-              type="submit"
-              className="h-[36px] rounded-full px-5 bg-[#F2FFF769]"
-            >
-              Post
-            </Button>
+            <div className=" flex items-center mt-5 justify-between gap-10">
+              <div className="flex items-center gap-6">
+                <AddMedia />
+
+                <button
+                  type="button"
+                  className="flex items-center gap-[14px] text-[#0B953B]"
+                >
+                  <CiGlobe className="text-2xl " />
+                  <span className="text-lg">Everyone can reply</span>
+                </button>
+              </div>
+              <Button
+                type="submit"
+                className="h-[36px] rounded-full px-5 bg-[#F2FFF769]"
+              >
+                Post
+              </Button>
+            </div>
           </div>
         </div>
       </>

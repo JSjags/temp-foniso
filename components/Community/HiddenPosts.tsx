@@ -34,6 +34,7 @@ const HiddenPosts = () => {
                   src="https://source.unsplash.com/random/720x1020/?player"
                   alt="post"
                   fill
+                  className="object-cover"
                 />
               </div>
             </div>

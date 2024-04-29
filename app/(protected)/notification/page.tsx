@@ -4,7 +4,6 @@ import AllNotificationCard from "@/components/reusable/AllNotificationCard";
 import NotificationCard from "@/components/reusable/NotificationCard";
 import NotificationEmptyState from "@/components/reusable/NotificationEmptyState";
 import SubTabs from "@/components/reusable/SubTabs";
-import HomeSidebar from "@/components/right-sidebar/HomeSidebar";
 import RightSideBar from "@/components/RightSideBar";
 import { Button } from "@/components/ui/button";
 import {
@@ -194,10 +193,9 @@ const Page = (props: Props) => {
         </div>
       </div>
       <RightSideBar
-        containerClassName={
+        className={
           "min-w-[200px] w-[40%] max-w-[480px] gap-0 min-[480px]:gap-2"
         }
-        component={<HomeSidebar />}
       />
     </div>
   );

@@ -218,3 +218,7 @@ export type ReplyMeta = {
   likes: { id: number; userId: number }[];
   likesCount: number;
 };
+
+export type WrapperProps = HTMLProps<HTMLDivElement> & {
+  children?: ReactNode;
+};
