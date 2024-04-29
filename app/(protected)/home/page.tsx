@@ -1,5 +1,5 @@
 import CreatePost from "@/components/Home/CreatePost";
-import Post from "@/components/reusable/Post";
+import DummyPost from "@/components/reusable/DummyPost";
 import { placeholderPosts } from "@/constants";
 import React from "react";
 
@@ -13,7 +13,7 @@ const Home = (props: Props) => {
       </div>
       <div className=" flex flex-col gap-y-2 bg-background sm:bg-inherit">
         {placeholderPosts.map((post, i) => (
-          <Post key={i} post={post} />
+          <DummyPost key={i} post={post} />
         ))}
       </div>
     </div>

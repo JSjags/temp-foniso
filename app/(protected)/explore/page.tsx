@@ -1,5 +1,5 @@
 import Highlights from "@/components/reusable/Highlights";
-import Post from "@/components/reusable/Post";
+import DummyPost from "@/components/reusable/DummyPost";
 import Trending from "@/components/reusable/Trending";
 import { Input } from "@/components/ui/input";
 import { placeholderPosts } from "@/constants";
@@ -39,7 +39,7 @@ const Explore = (props: Props) => {
       </p>
       <div className="flex flex-col gap-y-2 ">
         {placeholderPosts.map((post, i) => (
-          <Post key={i} post={post} />
+          <DummyPost key={i} post={post} />
         ))}
       </div>
     </div>

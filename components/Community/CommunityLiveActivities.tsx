@@ -5,7 +5,7 @@ import Link from "next/link";
 import { RxCaretRight } from "react-icons/rx";
 import PendingRequests from "./PendingRequests";
 import { BsSoundwave } from "react-icons/bs";
-import Post from "@/components/reusable/Post";
+import DummyPost from "@/components/reusable/DummyPost";
 import { placeholderPosts } from "@/constants";
 import UsersAvatar from "../reusable/UsersAvatar";
 
@@ -93,7 +93,7 @@ const CommunityLiveActivities = () => {
 
           <div className=" flex flex-col gap-y-2 bg-background sm:bg-inherit mt-[46px]">
             {placeholderPosts.map((post, i) => (
-              <Post key={i} post={post} />
+              <DummyPost key={i} post={post} />
             ))}
           </div>
         </div>
