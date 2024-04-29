@@ -43,6 +43,18 @@ const nextConfig = {
         hostname: "url%20path",
         port: "",
       },
+      {
+        protocol: "https",
+        hostname: "cdn2.f-cdn.com",
+        port: "",
+        pathname: "/files/**",
+      },
+      {
+        protocol: "https",
+        hostname: "source.unsplash.com",
+        port: "",
+        pathname: "/random/**",
+      }, //
     ],
   },
   //   output: "export",

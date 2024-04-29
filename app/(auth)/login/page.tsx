@@ -2,7 +2,10 @@
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { cn } from "@/lib/utils";
+import { AdvancedImage } from "@cloudinary/react";
+import { Cloudinary } from "@cloudinary/url-gen";
 import Image from "next/image";
 import Link from "next/link";
 import React, { FormEvent, useEffect, useState } from "react";
@@ -102,7 +105,7 @@ const Page = () => {
 
   return (
     <div className="bg-bgEffect min-h-screen p-2">
-      <div className="max-w-[1812px] flex flex-col min-h-screen mx-auto">
+      <div className="max-w-[1812px] flex flex-col min-h-screen">
         <div className="mt-20">
           <div className="max-w-[188px] flex justify-center items-center sm:px-10">
             <Image
@@ -114,12 +117,12 @@ const Page = () => {
             />
           </div>
           <div className="w-full flex flex-col items-center mt-10">
-            <h1 className="text-[1.5rem] md:text-[2.5rem] md:leading-[3rem] font-bold text-foreground text-center">
+            <h1 className="text-[1.5rem] md:text-[2.5rem] md:leading-[3rem] font-bold text-foreground">
               Your All-in-One Sports Platform
             </h1>
 
             {/* <div class */}
-            <div className="w-full sm:w-1/2 flex flex-col justify-center items-center mt-10">
+            <div className="w-1/2 flex flex-col justify-center items-center mt-10">
               <div className="w-full max-w-[571px] p-6 border border-border bg-background rounded-xl">
                 <h1 className="text-[1.5rem] md:text-[2rem] md:leading-[3rem] font-bold text-foreground text-center">
                   Welcome to Foniso
@@ -201,7 +204,7 @@ const Page = () => {
                 </Button>
                 <div className="pt-2 flex items-center justify-center gap-1">
                   <p className="text-foreground text-sm w-fit">
-                    Don't have an account?
+                    Don&apos;t have an account?
                   </p>
                   <Link href={"/register"}>
                     {" "}
@@ -264,21 +267,78 @@ const Page = () => {
         </div>
         <div className="max-w-[805px] mt-8 flex flex-col gap-y-2 items-center mx-auto p-2">
           <div className="flex gap-x-7 gap-y-2 flex-wrap">
-            {footerLinks.slice(0, 6).map((link, i) => (
-              <Link
-                href={link.href}
-                key={link.label + i}
-                target="_blank"
-                rel="noreferrer"
-                type="button"
-                className={cn(
-                  "bg-transparent text-textNav",
-                  "flex justify-center py-1 gap-2 items-center"
-                )}
-              >
-                <span className="whitespace-nowrap">{link.label}</span>
-              </Link>
-            ))}
+            <Link
+              href="/terms-of-use"
+              target="_blank"
+              rel="noreferrer"
+              type="button"
+              className={cn(
+                "bg-transparent text-textNav",
+                "flex justify-center py-1 gap-2 items-center"
+              )}
+            >
+              <span className="whitespace-nowrap">Terms of service</span>
+            </Link>
+            <Link
+              href="/about-us"
+              target="_blank"
+              rel="noreferrer"
+              type="button"
+              className={cn(
+                "bg-transparent text-textNav",
+                "flex justify-center py-1 gap-2 items-center"
+              )}
+            >
+              <span className="whitespace-nowrap">About</span>
+            </Link>
+            <Link
+              href="/faqs"
+              target="_blank"
+              rel="noreferrer"
+              type="button"
+              className={cn(
+                "bg-transparent text-textNav",
+                "flex justify-center py-1 gap-2 items-center"
+              )}
+            >
+              <span className="whitespace-nowrap">Help</span>
+            </Link>
+            <Link
+              href="/contact-us"
+              target="_blank"
+              rel="noreferrer"
+              type="button"
+              className={cn(
+                "bg-transparent text-textNav",
+                "flex justify-center py-1 gap-2 items-center"
+              )}
+            >
+              <span className="whitespace-nowrap">Contact us</span>
+            </Link>
+            <Link
+              href="/advertising"
+              target="_blank"
+              rel="noreferrer"
+              type="button"
+              className={cn(
+                "bg-transparent text-textNav",
+                "flex justify-center py-1 gap-2 items-center"
+              )}
+            >
+              <span className="whitespace-nowrap">Advertising</span>
+            </Link>
+            <Link
+              href="/privacy-policy"
+              target="_blank"
+              rel="noreferrer"
+              type="button"
+              className={cn(
+                "bg-transparent text-textNav",
+                "flex justify-center py-1 gap-2 items-center"
+              )}
+            >
+              <span className="whitespace-nowrap">Privacy policy</span>
+            </Link>
             <p
               className={cn(
                 "bg-transparent text-textNav",
@@ -291,21 +351,42 @@ const Page = () => {
             </p>
           </div>
           <div className="flex gap-x-7 gap-y-2 flex-wrap">
-            {footerLinks.slice(6).map((link, i) => (
-              <Link
-                href={link.href}
-                target="_blank"
-                rel="noreferrer"
-                key={link.label + i}
-                type="button"
-                className={cn(
-                  "bg-transparent text-textNav",
-                  "flex justify-center py-1 gap-2 items-center"
-                )}
-              >
-                <span className="whitespace-nowrap">{link.label}</span>
-              </Link>
-            ))}
+            <Link
+              href="/support"
+              target="_blank"
+              rel="noreferrer"
+              type="button"
+              className={cn(
+                "bg-transparent text-textNav",
+                "flex justify-center py-1 gap-2 items-center"
+              )}
+            >
+              <span className="whitespace-nowrap">Support</span>
+            </Link>
+            <Link
+              href="/faqs"
+              target="_blank"
+              rel="noreferrer"
+              type="button"
+              className={cn(
+                "bg-transparent text-textNav",
+                "flex justify-center py-1 gap-2 items-center"
+              )}
+            >
+              <span className="whitespace-nowrap">FAQs</span>
+            </Link>
+            <Link
+              href="/ticketing"
+              target="_blank"
+              rel="noreferrer"
+              type="button"
+              className={cn(
+                "bg-transparent text-textNav",
+                "flex justify-center py-1 gap-2 items-center"
+              )}
+            >
+              <span className="whitespace-nowrap">Ticketing</span>
+            </Link>
             <p
               className={cn(
                 "bg-transparent text-textNav",

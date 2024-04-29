@@ -7,29 +7,20 @@ import {
 } from "@/constants";
 import { useUserContext } from "@/context/UserContext";
 import { cn } from "@/lib/utils";
+import { AdvancedImage } from "@cloudinary/react";
 import { Cloudinary } from "@cloudinary/url-gen/index";
 import { useTheme } from "next-themes";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useState } from "react";
 
 type Props = {};
 
 const Titlebar = (props: Props) => {
   const { userData } = useUserContext();
   const { theme } = useTheme();
+  const cld = new Cloudinary({ cloud: { cloudName: "delflsgq4" } });
   const pathname = usePathname();
-
-  const [logoPath, setLogoPath] = useState("/assets/logo-dark.svg");
-
-  useEffect(() => {
-    setLogoPath(
-      theme === "light" || theme === "undefined"
-        ? "/assets/logo-dark.svg"
-        : "/assets/logo.svg"
-    );
-  }, [theme]);
 
   return (
     <div className="flex items-center justify-between px-2 h-12 sticky top-0 z-50 bg-background border-b border-border min-[480px]:hidden">
@@ -62,12 +53,9 @@ const Titlebar = (props: Props) => {
             className="flex flex-col gap-y-2 items-center h-fit max-h-10 justify-between"
           >
             <div className=" rounded-full">
-              <Image
-                alt="logo"
-                src={logoPath}
+              <AdvancedImage
                 className="w-full max-w-[111.65px]"
-                width={165.65}
-                height={11}
+                cldImg={cld.image("foniso/logo")}
               />
             </div>
           </Link>

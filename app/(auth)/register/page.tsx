@@ -11,7 +11,6 @@ import ErrorToast from "@/components/reusable/toasts/ErrorToast";
 import SuccessToast from "@/components/reusable/toasts/SuccessToast";
 import {
   CreateAccount,
-  PersonalDetails,
   SetPassword,
   SetUsername,
   VerifyOTP,
@@ -20,6 +19,15 @@ import MainFooter from "@/components/MainFooter";
 
 const Page = () => {
   const { theme } = useTheme();
+  const [logoPath, setLogoPath] = useState("/assets/logo-dark.svg");
+
+  useEffect(() => {
+    setLogoPath(
+      theme === "light" || theme === "undefined"
+        ? "/assets/logo-dark.svg"
+        : "/assets/logo.svg"
+    );
+  }, [theme]);
 
   const searchParams = useSearchParams();
   const router = useRouter();
@@ -54,7 +62,7 @@ const Page = () => {
         />
       ));
     },
-    onSuccess: (data) => {
+    onSuccess: (data: any) => {
       console.log(data);
       if (data.data.data.verified === false) return verifyEmail();
       if (data.data.data.username === null) return createUsername();
@@ -78,7 +86,7 @@ const Page = () => {
         />
       ));
     },
-    onSuccess: (data) => {
+    onSuccess: (data: any) => {
       console.log(data);
       toast.custom((t) => (
         <SuccessToast t={t} message={"OTP verified successfully."} />
@@ -102,7 +110,7 @@ const Page = () => {
         />
       ));
     },
-    onSuccess: (data) => {
+    onSuccess: (data: any) => {
       console.log(data);
       toast.custom((t) => (
         <SuccessToast t={t} message={"Username created successfully."} />
@@ -129,7 +137,7 @@ const Page = () => {
         />
       ));
     },
-    onSuccess: (data) => {
+    onSuccess: (data: any) => {
       console.log(data);
       toast.custom((t) => (
         <SuccessToast
@@ -170,18 +178,8 @@ const Page = () => {
     }
   };
 
-  const [logoPath, setLogoPath] = useState("/assets/logo-dark.svg");
-
-  useEffect(() => {
-    setLogoPath(
-      theme === "light" || theme === "undefined"
-        ? "/assets/logo-dark.svg"
-        : "/assets/logo.svg"
-    );
-  }, [theme]);
-
   return (
-    <div className="bg-bgEffect min-h-screen p-2">
+    <div className="bg-background bg-bgEffect min-h-screen p-2">
       <div className="max-w-[1812px] flex flex-col min-h-screen">
         <div className="mt-20">
           <div className="max-w-[188px] flex justify-center items-center sm:px-10">

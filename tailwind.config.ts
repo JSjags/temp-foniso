@@ -1,5 +1,6 @@
 import type { Config } from "tailwindcss";
 const { fontFamily } = require("tailwindcss/defaultTheme");
+const defaultTheme = require("tailwindcss/defaultTheme");
 
 const config = {
   darkMode: ["class"],
@@ -91,32 +92,19 @@ const config = {
           from: { height: "var(--radix-accordion-content-height)" },
           to: { height: "0" },
         },
-        fadeIn: {
-          "0%": {
-            opacity: "0",
-            transform: "scale(.9)",
-          },
-          "100%": {
-            opacity: "1",
-            transform: "scale(1)",
-          },
-        },
-        fadeOut: {
-          "0%": {
-            opacity: "1",
-            transform: "scale(1)",
-          },
-          "100%": {
-            opacity: "0",
-            transform: "scale(.9)",
-          },
-        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
-        enter: "fadeIn 300ms ease-out",
-        leave: "fadeOut 300ms ease-in forwards",
+      },
+      screens: {
+        duo: "480px",
+      },
+      fontSize: {
+        "30": "1.875rem",
+      },
+      space: {
+        "30px": "1.875rem",
       },
     },
   },

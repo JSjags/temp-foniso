@@ -119,7 +119,8 @@ export default function EmbeddedPost({
     following.isError,
     following.isSuccess,
     following.data?.data.data,
-    (post.data?.data.data as PostMeta)?.user.id,
+    post.data?.data.data,
+    // post.data?.data.data?.user.id,
   ]);
 
   useEffect(() => {

@@ -93,9 +93,9 @@ const CreatePost = (props: Props) => {
         <AlertDialogContent className="min-w-[240px] w-[95%] bg-background border-border rounded-3xl p-0">
           <AlertDialogCancel
             onClick={() => setShowCreatePost(false)}
-            className="absolute top-2 sm:top-4 left-4 w-fit h-fit bg-transparent border-none bg-[#7C7C7C] rounded-full p-1 hover:bg-colorPrimary"
+            className="absolute top-2 sm:top-4 left-4 w-fit h-fit bg-transparent border-none bg-[#7C7C7C] rounded-full p-1 hover:text-darkGrey"
           >
-            <X size={16} className="text-white hover:text-white" />
+            <X size={16} className="text-white hover:text-darkGrey" />
           </AlertDialogCancel>
           <div className="w-full mx-auto">
             <AlertDialogHeader>
@@ -300,7 +300,7 @@ const CreatePost = (props: Props) => {
       <div className="fixed bottom-20 right-4">
         <Button
           onClick={() => setShowCreatePost(true)}
-          className="rounded-full size-[50px] transition-all bg-colorPrimary hover:scale-105 hover:bg-colorPrimary flex justify-center sm:hidden"
+          className="rounded-full size-[60px] bg-colorPrimary flex justify-center sm:hidden"
         >
           <EditIcon color="white" size={25} className="size-[25px]" />
         </Button>

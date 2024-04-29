@@ -13,7 +13,7 @@ const ProtectedRoute = (props: Props) => {
   const { userData } = useUserContext();
 
   if (!userData) {
-    router.replace("/login");
+    router.replace("/signup");
   }
 
   return <div>{props.children}</div>;

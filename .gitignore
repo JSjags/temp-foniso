@@ -37,3 +37,4 @@ next-env.d.ts
 
 # placeholder video
 public/assets/placeholder-video.mp4
+node_modules

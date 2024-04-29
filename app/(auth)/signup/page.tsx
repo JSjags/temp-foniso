@@ -23,8 +23,8 @@ const Page = () => {
   }, [theme]);
 
   return (
-    <div className="bg-bgEffect min-h-screen">
-      <div className="max-w-[1812px] flex flex-col ju min-h-screen mx-auto">
+    <div className="bg-background bg-bgEffect min-h-screen">
+      <div className="max-w-[1812px] flex flex-col ju min-h-screen">
         <div className="flex mt-[15vh] px-2">
           <div className="hidden w-1/2 md:flex justify-center items-center px-10">
             <Image
@@ -37,10 +37,6 @@ const Page = () => {
           </div>
           <div className=" w-full md:w-1/2 flex flex-col justify-center items-center">
             <div className="w-full flex justify-center">
-              {/* <AdvancedImage
-                className="w-1/2 md:hidden -translate-y-[100%] max-w-[231px]"
-                cldImg={cld.image("foniso/logo")}
-              /> */}
               <Image
                 alt="logo"
                 src={logoPath}
