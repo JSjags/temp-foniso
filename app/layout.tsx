@@ -12,6 +12,8 @@ import { UserProvider } from "@/context/UserContext";
 const fontSans = FontSans({
   subsets: ["latin"],
   variable: "--font-sans",
+  display: "swap",
+  adjustFontFallback: false,
 });
 
 export const metadata: Metadata = {
