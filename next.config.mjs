@@ -12,8 +12,49 @@ const nextConfig = {
         protocol: "https",
         hostname: "source.unsplash.com",
         port: "",
+      },
+      {
+        protocol: "https",
+        hostname: "foniso-assets.nyc3.cdn.digitaloceanspaces.com",
+        port: "",
+      },
+      {
+        protocol: "https",
+        hostname: "foniso-assets.nyc3.digitaloceanspaces.com",
+        port: "",
+      },
+      {
+        protocol: "https",
+        hostname: "img.youtube.com",
+        port: "",
+      },
+      {
+        protocol: "https",
+        hostname: "lh3.googleusercontent.com",
+        port: "",
+      },
+      {
+        protocol: "https",
+        hostname: "i.ytimg.com",
+        port: "",
+      },
+      {
+        protocol: "https",
+        hostname: "url%20path",
+        port: "",
+      },
+      {
+        protocol: "https",
+        hostname: "cdn2.f-cdn.com",
+        port: "",
+        pathname: "/files/**",
+      },
+      {
+        protocol: "https",
+        hostname: "source.unsplash.com",
+        port: "",
         pathname: "/random/**",
-      }, // TODO: remove this later. Only used for UI dev
+      }, //
     ],
   },
   //   output: "export",
