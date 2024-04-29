@@ -9,12 +9,9 @@ import { Toaster } from "react-hot-toast";
 import NextAuthProvider from "@/providers/NextAuthProvider";
 import { UserProvider } from "@/context/UserContext";
 
-// const fontSans = FontSans({
-//   subsets: ["latin"],
-//   variable: "--font-sans",
-//   display: "swap",
-//   adjustFontFallback: false,
-// });
+const fontSans = FontSans({
+  subsets: ["latin"],
+});
 
 export const metadata: Metadata = {
   title: "Foniso",
@@ -34,26 +31,23 @@ export default function RootLayout({
         type="image/<generated>"
         sizes="<generated>"
       />
-      <body
-        className={cn(
-          "min-h-screen bg-background font-sans antialiased"
-          // fontSans.variable
-        )}
-      >
-        <UserProvider>
-          <NextAuthProvider>
-            <TanstackProvider>
-              <ThemeProvider
-                attribute="class"
-                defaultTheme="system"
-                enableSystem
-                disableTransitionOnChange
-              >
-                {children}
-              </ThemeProvider>
-            </TanstackProvider>
-          </NextAuthProvider>
-        </UserProvider>
+      <body className={fontSans.className}>
+        <div className="min-h-screen bg-background antialiased">
+          <UserProvider>
+            <NextAuthProvider>
+              <TanstackProvider>
+                <ThemeProvider
+                  attribute="class"
+                  defaultTheme="system"
+                  enableSystem
+                  disableTransitionOnChange
+                >
+                  {children}
+                </ThemeProvider>
+              </TanstackProvider>
+            </NextAuthProvider>
+          </UserProvider>
+        </div>
 
         <Toaster />
       </body>
