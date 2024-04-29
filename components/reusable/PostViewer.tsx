@@ -4,21 +4,24 @@ import React, { useState } from "react";
 import { IoArrowBackCircle, IoArrowForwardCircle } from "react-icons/io5";
 import { Carousel } from "react-responsive-carousel";
 import VideoPlayer from "./VideoPlayer";
+import Image from "next/image";
 
 type PostViewerProps = PostProps & {
   setShowFullScreenPost: (state: boolean) => void;
   showFullScreenPost: boolean;
+  autoPlay?: false;
 };
 
 const PostViewer = ({
   post,
   setShowFullScreenPost,
   showFullScreenPost,
+  autoPlay,
 }: PostViewerProps) => {
   return (
     <div
-      className="w-full aspect-video bg-background rounded overflow-hidden cursor-pointer"
       onClick={() => setShowFullScreenPost(true)}
+      className="w-full aspect-video bg-background rounded overflow-[visible_!important] cursor-pointer"
     >
       <Carousel
         dynamicHeight={true}
@@ -92,14 +95,28 @@ const PostViewer = ({
             </div>
           </div>
         )}
-        className="rounded h-fit"
+        className="rounded min-h-fit max-h-[80vh]"
       >
         {post.media.map((media, i) => (
-          <div key={i}>
-            {media.type === "video" ? (
-              <VideoPlayer src={media.url} />
+          <div key={i} className={cn(media.mediatype === "video" ? "" : "")}>
+            {media.mediaType === "video" ? (
+              <VideoPlayer
+                src={media.media}
+                poster={media.posterImage}
+                autoPlay={true}
+                stopOuterPlay={true}
+              />
             ) : (
-              <img src={media.url} />
+              // <p>Video</p>
+              <Image
+                width={1240}
+                height={1080}
+                layout="responsive"
+                src={media.media}
+                className="rounded-md"
+                onClick={() => setShowFullScreenPost(true)}
+                alt=""
+              />
             )}
           </div>
         ))}

@@ -1,6 +1,11 @@
 "use client";
 
-import { titleBarItems, userPlaceholderImage } from "@/constants";
+import {
+  profileImageplaceholder,
+  titleBarItems,
+  userPlaceholderImage,
+} from "@/constants";
+import { useUserContext } from "@/context/UserContext";
 import { cn } from "@/lib/utils";
 import { AdvancedImage } from "@cloudinary/react";
 import { Cloudinary } from "@cloudinary/url-gen/index";
@@ -12,6 +17,7 @@ import { usePathname } from "next/navigation";
 type Props = {};
 
 const Titlebar = (props: Props) => {
+  const { userData } = useUserContext();
   const { theme } = useTheme();
   const cld = new Cloudinary({ cloud: { cloudName: "delflsgq4" } });
   const pathname = usePathname();
@@ -31,7 +37,9 @@ const Titlebar = (props: Props) => {
                 height={36}
                 className="size-[36px] rounded-full object-cover"
                 alt="icon"
-                src={userPlaceholderImage}
+                src={
+                  userData?.user?.usermeta?.avatar ?? profileImageplaceholder
+                }
               />
             </div>
           </Link>
