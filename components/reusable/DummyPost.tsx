@@ -50,7 +50,7 @@ import PostViewer from "./PostViewer";
 import VideoPlayer from "./VideoPlayer";
 import { image } from "@cloudinary/url-gen/qualifiers/source";
 
-const DummyPost = ({ post }: PostProps) => {
+const DummyPost = ({ post }: { post: any }) => {
   const [showViewModal, setShowViewModal] = useState(false);
   const [showReportModal, setShowReportModal] = useState(false);
   const [showReportSuccessModal, setShowReportSuccessModal] = useState(false);
@@ -76,7 +76,7 @@ const DummyPost = ({ post }: PostProps) => {
   const toggleIsShowingMore = () => setIsShowingMore((prev) => !prev);
 
   return (
-    <div className="py-4 px-2 sm:px-5 relative z-10 overflow-x-hidden border-none bg-background sm:bg-inherit border-border">
+    <div className="py-4 relative z-10 overflow-x-hidden border-none bg-background sm:bg-inherit border-border">
       {/* Views modal */}
       <AlertDialog open={showViewModal}>
         <AlertDialogContent className="w-[95%] bg-background border-border rounded-3xl">

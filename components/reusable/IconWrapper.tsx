@@ -1,9 +1,6 @@
 import { HTMLProps, ReactNode } from "react";
 import { cn } from "@/lib/utils";
-
-type WrapperProps = HTMLProps<HTMLDivElement> & {
-  children: ReactNode;
-};
+import { WrapperProps } from "@/types";
 
 const IconWrapper = ({ children, className, ...rest }: WrapperProps) => {
   return (

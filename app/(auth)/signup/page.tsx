@@ -4,28 +4,45 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { AdvancedImage } from "@cloudinary/react";
 import { Cloudinary } from "@cloudinary/url-gen";
+import { useTheme } from "next-themes";
 import Image from "next/image";
 import Link from "next/link";
-import React from "react";
+import React, { useEffect, useState } from "react";
 
-const page = () => {
-  const cld = new Cloudinary({ cloud: { cloudName: "delflsgq4" } });
+const Page = () => {
+  const { theme } = useTheme();
+
+  const [logoPath, setLogoPath] = useState("/assets/logo-dark.svg");
+
+  useEffect(() => {
+    setLogoPath(
+      theme === "light" || theme === "undefined"
+        ? "/assets/logo-dark.svg"
+        : "/assets/logo.svg"
+    );
+  }, [theme]);
 
   return (
-    <div className="bg-main min-h-screen">
+    <div className="bg-background bg-bgEffect min-h-screen">
       <div className="max-w-[1812px] flex flex-col ju min-h-screen">
         <div className="flex mt-[15vh] px-2">
           <div className="hidden w-1/2 md:flex justify-center items-center px-10">
-            <AdvancedImage
+            <Image
+              alt="logo"
+              src={logoPath}
               className="w-full max-w-[231px] -translate-y-[120%]"
-              cldImg={cld.image("foniso/logo")}
+              width={231}
+              height={46}
             />
           </div>
           <div className=" w-full md:w-1/2 flex flex-col justify-center items-center">
             <div className="w-full flex justify-center">
-              <AdvancedImage
+              <Image
+                alt="logo"
+                src={logoPath}
                 className="w-1/2 md:hidden -translate-y-[100%] max-w-[231px]"
-                cldImg={cld.image("foniso/logo")}
+                width={231}
+                height={46}
               />
             </div>
             <div className="w-full max-w-[571px] p-6 border border-border bg-background rounded-xl">
@@ -257,4 +274,4 @@ const page = () => {
   );
 };
 
-export default page;
+export default Page;

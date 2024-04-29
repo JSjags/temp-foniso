@@ -33,6 +33,8 @@
     --ring: 222.2 84% 4.9%;
 
     --radius: 0.5rem;
+
+    --bg-effect: url("/assets/bg-light.svg");
   }
 
   .dark {
@@ -63,6 +65,7 @@
     --border: 217.2 32.6% 17.5%;
     --input: 217.2 32.6% 17.5%;
     --ring: 212.7 26.8% 83.9%;
+    --bg-effect: url("/assets/bg-dark.svg");
   }
 }
 
@@ -100,4 +103,25 @@
 .hide-scrollbar {
   -ms-overflow-style: none; /* IE and Edge */
   scrollbar-width: none; /* Firefox */
+}
+
+.carousel .slider-wrapper {
+  height: 100% !important;
+  max-height: 80vh;
+}
+
+.rdp-vhidden {
+  @apply hidden;
+}
+
+.carousel .carousel-status {
+  @apply rounded-3xl bg-darkGrey top-1 right-1 text-[8px] px-2 py-1 !important;
+}
+
+.w-full__input:focus-visible {
+  outline: none;
+}
+
+.w-full__suggestions:focus-visible {
+  background-color: transparent;
 }
