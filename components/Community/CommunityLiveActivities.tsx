@@ -7,6 +7,7 @@ import PendingRequests from "./PendingRequests";
 import { BsSoundwave } from "react-icons/bs";
 import Post from "@/components/reusable/Post";
 import { placeholderPosts } from "@/constants";
+import UsersAvatar from "../reusable/UsersAvatar";
 
 const list = [
   "Cr7 Suii",
@@ -68,31 +69,11 @@ const CommunityLiveActivities = () => {
                         Who is the Goat? Come lets discuss
                       </p>
                     </div>
-                    <div className="flex items-center mt-[5px]">
-                      {[0, 1, 2].map((item) => (
-                        <div
-                          key={item}
-                          className="size-5 overflow-hidden relative rounded-full bg-white"
-                          style={{
-                            left: `-${item * 8}px`,
-                            border: item ? "1.2px solid #0C0F0E" : undefined,
-                          }}
-                        >
-                          <Image
-                            src="https://source.unsplash.com/random/350x230/?listener"
-                            alt="participant"
-                            fill
-                          />
-                        </div>
-                      ))}
-
-                      <span
-                        className="text-white text-xs relative font-medium leading-none ml-1"
-                        style={{ left: `-${2 * 8}px` }}
-                      >
-                        +350
-                      </span>
-                    </div>
+                    <UsersAvatar
+                      items={["0", "1", "2"]}
+                      wrapperClass="mt-[5px]"
+                      totalCount="+350"
+                    />
                   </div>
                   <BsSoundwave className="text-3xl text-white" />
                 </div>

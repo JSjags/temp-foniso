@@ -100,7 +100,7 @@ const config = {
       fontSize: {
         "30": "1.875rem",
       },
-      space: {
+      spacing: {
         "30px": "1.875rem",
       },
     },
