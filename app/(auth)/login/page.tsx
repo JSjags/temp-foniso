@@ -11,7 +11,6 @@ import Link from "next/link";
 import React, { FormEvent, useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useTheme } from "next-themes";
-import { footerLinks } from "@/constants";
 import { useMutation } from "@tanstack/react-query";
 import { LoginCredentials, LoginResponse, UserData } from "@/types";
 import { loginUser } from "@/services/api/userService";
