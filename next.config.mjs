@@ -62,6 +62,7 @@ const nextConfig = {
       }, //
     ],
   },
+  staticPageGenerationTimeout: 1000,
   //   output: "export",
   async headers() {
     return [
