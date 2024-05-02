@@ -11,7 +11,6 @@ import React, { useEffect, useState } from "react";
 
 const Page = () => {
   const { theme } = useTheme();
-
   const [logoPath, setLogoPath] = useState("/assets/logo-dark.svg");
 
   useEffect(() => {
