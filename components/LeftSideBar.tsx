@@ -16,6 +16,8 @@ import { ModeToggle } from "./ThemeToggle";
 import { useTheme } from "next-themes";
 import { useEffect, useState } from "react";
 import { useUserContext } from "@/context/UserContext";
+import { Button } from "./ui/button";
+import { EditIcon } from "lucide-react";
 
 type Props = {};
 
@@ -30,7 +32,7 @@ const LeftSideBar = (props: Props) => {
   return (
     <div className="h-full fixed z-50 left-0 min-[480px]:sticky bottom-0 sm:top-0 min-[480px]:border-r border-border bg-background">
       {/* Desktop sidebar */}
-      <div className="px-[38px] pt-[30px] hidden min-[1000px]:block min-w-[200px] h-full">
+      <div className="px-[38px] pt-[30px] hidden min-[1000px]:block min-w-[240px] lg:min-w-[271px] h-full">
         <Link href={"/home"}>
           <AdvancedImage
             className="w-full max-w-[115.65px]"
@@ -89,12 +91,17 @@ const LeftSideBar = (props: Props) => {
               </Link>
             ))}
         </div>
-        <div className="my-8 w-full h-[1px] bg-border" />
+        <Button className="h-12 mt-5 px-5 pl-5 bg-gradient-to-br  from-[] to-[] hover:bg-colorPrimary hover:brightness-90 rounded-full w-full flex gap-2 items-center justify-start -translate-x-5">
+          <EditIcon color="white" size={25} className="size-[25px]" />
+          <span className={cn("text-white text-lg font-semibold")}>
+            Create post
+          </span>
+        </Button>
+        <div className="my-8 mt-4 w-[110%] h-[1px] bg-border -translate-x-[8%]" />
         {leftSideBarItems.slice(-1).map((item, i) => (
-          <Link
+          <Button
             key={i}
-            href={item.path}
-            className="flex gap-x-4 py-[11] items-center"
+            className="flex gap-x-4 py-[11] items-center bg-transparent px-0"
           >
             <Image
               width={30}
@@ -120,7 +127,7 @@ const LeftSideBar = (props: Props) => {
             >
               {item.title}
             </span>
-          </Link>
+          </Button>
         ))}
         <div className="absolute bottom-4 left-0 px-[38px]">
           <ModeToggle />

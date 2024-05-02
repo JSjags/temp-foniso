@@ -169,6 +169,7 @@ const MessageBox = ({ value, handleChange }: Props) => {
     <MentionsInput
       style={defaultStyle}
       customSuggestionsContainer={customContainerRenderer}
+      maxLength={100}
       className="w-full text-foreground min-h-10 text-base border-none outline-none ring-0 focus:ring-0 focus:outline-none focus-visible:ring-0 focus-visible:outline-none focus-visible:outline-offset-0 focus-visible:outline-[transparent_!important]"
       value={value}
       onChange={(e, newValue, newPlainTextValue, mentions) => {
@@ -182,6 +183,7 @@ const MessageBox = ({ value, handleChange }: Props) => {
         appendSpaceOnAdd
         isLoading={isFetchingUsernameMention}
         renderSuggestion={renderUserSuggestion as any}
+        className="text-colorPrimary"
       />
       <Mention
         trigger="#"
