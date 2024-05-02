@@ -4,9 +4,9 @@ import CommunityCard from "@/components/Community/CommunityCard";
 import HeaderWithBackBtn from "@/components/reusable/HeaderWithBackBtn";
 import CancelRequestModal from "@/components/Modal/CancelRequestModal";
 import RightSideBar from "@/components/RightSideBar";
-import { Button } from "@/components/ui/button";
-import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { useState } from "react";
+import { pendingRequests } from "@/services/api/community";
+import { useQuery } from "@tanstack/react-query";
 
 type CommunityList = {
   name: string;
@@ -62,18 +62,23 @@ const Page = () => {
     setOpenModal(true);
   };
 
+  const { data } = useQuery({
+    queryKey: ["pending-requests"],
+    queryFn: () => pendingRequests(),
+    select: (data) => {
+      console.log(data, "pending requests");
+      return data;
+    },
+  });
+
   return (
     <div className="flex duo:gap-3">
       <div className="w-full">
         <HeaderWithBackBtn title="Pending requests" />
 
         <div className="mt-6 space-y-5">
-          {communities_list.map((item, index) => (
-            <CommunityCard
-              key={index}
-              {...item}
-              btnOnClick={() => handleOnClick(item)}
-            />
+          {data?.map((item, index) => (
+            <CommunityCard key={index} {...item} />
           ))}
         </div>
       </div>

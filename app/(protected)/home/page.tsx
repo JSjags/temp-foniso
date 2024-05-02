@@ -32,8 +32,10 @@ const Home = (props: Props) => {
   const fetchPosts = async () => {
     try {
       setIsLoading(true);
-      const res = await axiosInstance.get("/posts?page=1&limit=50&type=post");
-      setPosts(res.data.data.items);
+      const res = (await axiosInstance.get(
+        "/posts?page=1&limit=50&type=post"
+      )) as any;
+      setPosts(res.items);
     } catch (error) {
       console.log(error);
     } finally {

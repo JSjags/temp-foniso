@@ -1,3 +1,5 @@
+"use client";
+
 import CreateRule from "@/components/Community/CreateRule";
 import ReviewRules from "@/components/Community/ReviewRules";
 import HeaderWithBackBtn from "@/components/reusable/HeaderWithBackBtn";

@@ -8,7 +8,8 @@ const Page = () => {
         <CommunityIntro />
       </div>
 
-      <RightSideBar className="w-full min-w-[300px] lg:min-w-[380px]" />
+      <RightSideBar className="min-w-[200px] w-[40%] max-w-[480px] gap-0 min-[480px]:gap-2" />
+      {/* <RightSideBar className="w-full min-w-[300px] lg:min-w-[380px]" /> */}
     </div>
   );
 };

@@ -1,7 +1,9 @@
+import { User } from "@/types";
+
 export type CreateCommunityForm = {
-  community_name: string;
+  name: string;
   description: string;
-  community_type: string;
+  type: string;
 };
 
 export type MoreOptionsContext = {
@@ -22,4 +24,42 @@ export type ItemContext = {
   isLocked: boolean;
   hasJoined: boolean;
   hasRequested: boolean;
+};
+
+export type CommunityRule = {
+  id: number;
+  communityId: number;
+  title: string;
+  description: string;
+  priority: number;
+  created_at: string;
+};
+
+export type CommunityMember = {
+  id: number;
+  communityId: number;
+  userId: number;
+  status: "joined" | "requested";
+  created_at: string;
+  user: User;
+};
+export type CommunityModerator = Omit<CommunityMember, "status"> & {
+  level: string;
+};
+
+export type CommunityContext = {
+  id: number;
+  userId: number;
+  type: "public" | "private";
+  name: string;
+  description: string;
+  coverImage: string;
+  status: "active" | "closed";
+  created_at: string;
+  user: User;
+  rules: Array<CommunityRule>;
+  members: Array<CommunityMember>;
+  moderators: Array<CommunityModerator>;
+  isMember: Array<CommunityMember>;
+  memberCount: number;
 };

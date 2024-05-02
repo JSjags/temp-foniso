@@ -2,9 +2,11 @@ import { Input } from "../ui/input";
 import { Button } from "@/components/ui/button";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { AddRulesContext } from "@/types/community";
-import { useSearchParams } from "next/navigation";
+import { useParams, useSearchParams } from "next/navigation";
 import { communityRules } from "@/constants";
 import { useEffect } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { getOneCommunity } from "@/services/api/community";
 
 type Props = {
   onSubmit: (val: AddRulesContext) => void;
@@ -12,27 +14,38 @@ type Props = {
 
 const AddRule = (props: Props) => {
   const searchParams = useSearchParams();
+  const { community_id } = useParams();
 
-  const { register, handleSubmit, getValues, setValue } =
-    useForm<AddRulesContext>({
-      defaultValues: {
-        title: "",
-        description: "",
-      },
-    });
+  const { register, handleSubmit, watch, setValue } = useForm<AddRulesContext>({
+    defaultValues: {
+      title: "",
+      description: "",
+    },
+  });
+
+  const { data: community_info, isLoading } = useQuery({
+    queryKey: ["one-community", community_id],
+    queryFn: () => getOneCommunity(String(community_id)),
+  });
+
+  const values = watch();
 
   const onSubmit: SubmitHandler<AddRulesContext> = (data) => {
     props.onSubmit(data);
   };
 
   useEffect(() => {
-    if (searchParams.get("edit")) {
-      const rule = communityRules[Number(searchParams.get("edit"))];
+    if (community_info && searchParams.get("edit")) {
+      const rule = community_info?.rules.find(
+        (item) => item.id === Number(searchParams.get("edit"))
+      );
 
-      setValue("title", rule.title);
-      setValue("description", rule.desc);
+      if (rule) {
+        setValue("title", rule.title);
+        setValue("description", rule.description);
+      }
     }
-  }, [searchParams, setValue]);
+  }, [searchParams, setValue, community_info]);
 
   return (
     <form className="" onSubmit={handleSubmit(onSubmit)}>
@@ -50,9 +63,7 @@ const AddRule = (props: Props) => {
             {...register("title", { required: true, maxLength: 40 })}
           />
 
-          <span className="absolute right-2">
-            {getValues("title").length}/40
-          </span>
+          <span className="absolute right-2">{values["title"].length}/40</span>
         </div>
       </div>
 
@@ -71,7 +82,7 @@ const AddRule = (props: Props) => {
           />
 
           <span className="absolute right-2">
-            {getValues("description").length}/80
+            {values["description"].length}/80
           </span>
         </div>
       </div>

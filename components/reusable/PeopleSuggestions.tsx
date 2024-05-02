@@ -29,11 +29,8 @@ const PeopleSuggestions = (props: Props) => {
             <PageLoadingSpinner spinnerExtraClass="w-7 h-7" />
           </div>
         )}
-        {Boolean(
-          fetchSuggestions.data?.data.data &&
-            fetchSuggestions.data?.data.data.length
-        ) &&
-          fetchSuggestions.data.data.data
+        {Boolean(fetchSuggestions.data && fetchSuggestions.data.length) &&
+          fetchSuggestions.data
             .slice(0, 5)
             .map((user: User, i: number) => (
               <UserSuggestionCard user={user} key={i} />

@@ -1,11 +1,36 @@
+"use client";
+
 import Image from "next/image";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import { CiSearch } from "react-icons/ci";
 import { VscVerifiedFilled } from "react-icons/vsc";
 import { cn } from "@/lib/utils";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { getUsers } from "@/services/api/community";
+import useCustomMutation from "@/hooks/useCustomMutation";
+import { useParams } from "next/navigation";
+import { toast } from "react-toastify";
+import axiosInstance from "@/services/api/axiosInstance";
 
 const MembersList = () => {
+  const { community_id } = useParams();
+
+  const { data: community_members } = useQuery({
+    queryKey: ["community-members"],
+    queryFn: getUsers,
+  });
+
+  const { mutateAsync: inviteUser } = useCustomMutation(
+    "/community-member/invite",
+    "POST"
+  );
+
+  const onInvite = (userId: number) => {
+    inviteUser({ communityId: Number(community_id), userId }).then((data) => {
+      if (data) toast.success("Invite sent");
+    });
+  };
   return (
     <div className="mt-5 px-4">
       <div className="relative flex items-center">
@@ -14,14 +39,17 @@ const MembersList = () => {
       </div>
 
       <div className="mt-5">
-        {[0, 1, 2, 3].map((itm) => (
+        {community_members?.map(({ usermeta, username, id }) => (
           <div
             className="flex justify-between gap-6 py-4 border-b border-border"
-            key={itm}
+            key={id}
           >
             <div className="flex gap-3">
               <Image
-                src="https://source.unsplash.com/random/100x100/?man"
+                src={
+                  usermeta?.coverImage ??
+                  "https://source.unsplash.com/random/100x100/?man"
+                }
                 alt="User"
                 width={40}
                 height={40}
@@ -29,19 +57,20 @@ const MembersList = () => {
               />
               <div className="">
                 <p className="text-lg font-medium">
-                  $tone$ilver{" "}
+                  {usermeta?.firstname} {usermeta?.lastname}{" "}
                   <VscVerifiedFilled className="inline-block fill-[#22C55E]" />
                 </p>
-                <p className="text-sm text-[#7C7C7C]">@sportson3</p>
+                <p className="text-sm text-[#7C7C7C]">@{username}</p>
               </div>
             </div>
             <Button
               className={cn(
-                itm === 3
+                false
                   ? "bg-[#1a1a1a67] dark:bg-[#FAFAFA67] text-white dark:text-black"
                   : "bg-[#1A1A1A] dark:bg-white text-white dark:text-black",
                 "rounded-full font-bold w-[101px]"
               )}
+              onClick={() => onInvite(id)}
             >
               Invite
             </Button>

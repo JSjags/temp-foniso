@@ -23,7 +23,7 @@ export const loginUser = async ({
 };
 
 export const getFollowing = async (): Promise<any> => {
-  return axiosInstance.get<any>("/followers/following");
+  return await axiosInstance.get<any>("/followers/following");
 };
 
 export const submitUserProfile = async (data: any): Promise<any> => {

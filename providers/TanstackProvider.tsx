@@ -9,7 +9,18 @@ export const TanstackProvider = ({
 }: {
   children: React.ReactNode;
 }) => {
-  const queryClient = new QueryClient();
+  const queryClient = new QueryClient({
+    defaultOptions: {
+      queries: {
+        staleTime: 1000 * 60,
+        gcTime: 0,
+        refetchOnWindowFocus: false,
+        refetchOnMount: false,
+        refetchOnReconnect: false,
+        retry: 2,
+      },
+    },
+  });
   const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => {
