@@ -222,3 +222,14 @@ export type ReplyMeta = {
 export type WrapperProps = HTMLProps<HTMLDivElement> & {
   children?: ReactNode;
 };
+
+export type ApiResponse<T> = {
+  items: T;
+  meta: {
+    totalItems: number;
+    itemCount: number;
+    itemsPerPage: number;
+    totalPages: number;
+    currentPage: number;
+  };
+};

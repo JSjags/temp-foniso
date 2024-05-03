@@ -9,7 +9,7 @@ export const getFavoriteSports = async (): Promise<any> => {
 };
 
 export const peopleSuggestions = async (): Promise<any> => {
-  return axiosInstance.get<any>("/explore/people");
+  return await axiosInstance.get<any>("/explore/people");
 };
 
 export const followUserQuery = async (data: {

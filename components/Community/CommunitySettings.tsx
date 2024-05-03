@@ -125,9 +125,9 @@ const CommunitySettings = () => {
         <CreateCommunity
           onSubmit={onSubmit}
           defaultValues={{
-            community_name: "Manchester United",
+            name: "Manchester United",
             description: "The red devils",
-            community_type: "public",
+            type: "public",
           }}
           btnText="Save changes"
         />

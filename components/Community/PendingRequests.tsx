@@ -1,11 +1,20 @@
+"use client";
+
+import { pendingRequests } from "@/services/api/community";
+import { useQuery } from "@tanstack/react-query";
 import Image from "next/image";
 import Link from "next/link";
 
-const PendingRequests = ({ count }: { count: number }) => {
+const PendingRequests = () => {
+  const { data } = useQuery({
+    queryKey: ["pending-requests"],
+    queryFn: () => pendingRequests(),
+  });
+
   return (
     <div className="mt-5 flex items-center justify-between gap-[9px] border rounded-xl border-border p-[10px]">
       <Link
-        href="/community/7637238-3824832-87428/pending-requests"
+        href="/community/pending-requests"
         className="flex items-center gap-[10px]"
       >
         <div className="size-10 center-item bg-[#1D3928] rounded-[9.6px]">
@@ -21,7 +30,7 @@ const PendingRequests = ({ count }: { count: number }) => {
         </span>
       </Link>
 
-      <span className=" font-bold"> {count} </span>
+      <span className="font-bold"> {(data && data?.length) ?? 0} </span>
     </div>
   );
 };

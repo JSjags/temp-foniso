@@ -2,24 +2,16 @@
 
 import Link from "next/link";
 import CommunityCard from "./CommunityCard";
-import { toast } from "react-toastify";
-import { useRouter } from "next/navigation";
-import { communities_list } from "@/constants";
-import { ItemContext } from "@/types/community";
+import { useQuery } from "@tanstack/react-query";
+import { allCommunities } from "@/services/api/community";
+import PageLoadingSpinner from "../Spinner/PageLoadingSpinner";
 
 const CommunitiesList = () => {
-  const router = useRouter();
+  const { data: communities, isFetching } = useQuery({
+    queryKey: ["all-communities"],
+    queryFn: () => allCommunities(),
+  });
 
-  const btnOnClick = (arg: ItemContext) => {
-    if (arg.hasJoined || arg.hasRequested) return;
-    if (arg.isLocked) {
-      toast.warning(
-        "Your request to join this community has been sent to the community owner"
-      );
-    } else {
-      router.push("/community/6787-56777-65676");
-    }
-  };
   return (
     <div className="mt-5">
       <div className="flex justify-between items-center">
@@ -32,15 +24,17 @@ const CommunitiesList = () => {
         </Link>
       </div>
 
-      <div className="mt-6 space-y-5">
-        {communities_list.map((item, index) => (
-          <CommunityCard
-            key={index}
-            {...item}
-            btnOnClick={() => btnOnClick(item)}
-          />
-        ))}
-      </div>
+      {isFetching ? (
+        <div className="mt-10 flex justify-center">
+          <PageLoadingSpinner spinnerExtraClass="w-7 h-7" />
+        </div>
+      ) : (
+        <div className="mt-6 space-y-5">
+          {communities?.items?.map((item, index) => (
+            <CommunityCard key={index} {...item} />
+          ))}
+        </div>
+      )}
     </div>
   );
 };

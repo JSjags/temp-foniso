@@ -1,17 +1,41 @@
 "use client";
 
-import { useRouter, useSearchParams } from "next/navigation";
+import { useParams, useRouter, useSearchParams } from "next/navigation";
 import MobileDesktopOverlay from "../Modal/MobileDesktopOverlay";
 import { AddRulesContext } from "@/types/community";
 import AddRule from "./AddRule";
+import useCustomMutation from "@/hooks/useCustomMutation";
+import { useQueryClient } from "@tanstack/react-query";
+
+type BodyContext = AddRulesContext & { communityId: number };
 
 const CreateRule = () => {
   const searchParams = useSearchParams();
   const { back } = useRouter();
+  const { community_id } = useParams();
+  const client = useQueryClient();
+
+  const { mutateAsync: createRule } = useCustomMutation<BodyContext>(
+    "/community-rule",
+    "POST"
+  );
+  const { mutateAsync: editRule } = useCustomMutation<AddRulesContext>(
+    `/community-rule/${community_id}`,
+    "PATCH"
+  );
 
   const onSubmit = (arg: AddRulesContext) => {
-    console.log(arg, "from main component");
-    back();
+    if (searchParams.get("edit")) {
+      editRule(arg).then(() => {
+        client.invalidateQueries({ queryKey: ["one-community"] });
+        back();
+      });
+    } else {
+      createRule({ ...arg, communityId: Number(community_id) }).then(() => {
+        client.invalidateQueries({ queryKey: ["one-community"] });
+        back();
+      });
+    }
   };
 
   const handleCloseModal = () => {
