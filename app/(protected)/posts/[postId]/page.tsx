@@ -1,6 +1,8 @@
 "use client";
 
+import ReactionButton from "@/components/ReactionButton";
 import CommentCard from "@/components/reusable/CommentCard";
+import ContentText from "@/components/reusable/ContentText";
 import Post from "@/components/reusable/Post";
 import PostViewer from "@/components/reusable/PostViewer";
 import SportIcon from "@/components/reusable/SportIcon";
@@ -17,6 +19,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
 import { placeholderComments, profileImageplaceholder } from "@/constants";
+import { useUserContext } from "@/context/UserContext";
 import {
   cn,
   formatDateTime,
@@ -28,7 +31,7 @@ import {
   getSinglePostComments,
   likeOrUnlikePost,
 } from "@/services/api/post";
-import { CommentMeta } from "@/types";
+import { CommentMeta, LikeMeta, PostMeta } from "@/types";
 import { Arrow } from "@radix-ui/react-popover";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { Heart, MoreVertical } from "lucide-react";
@@ -39,68 +42,121 @@ import { useEffect, useRef, useState } from "react";
 import { IoArrowBack } from "react-icons/io5";
 
 export default function Page({ params }: { params: any }) {
+  const post = useQuery({
+    queryKey: ["single-post-data"],
+    queryFn: () => getSinglePost(params.postId),
+  });
+
   const router = useRouter();
   const [showFullScreenPost, setShowFullScreenPost] = useState(false);
   const [isTruncated, setIsTruncated] = useState(false);
   const [isShowingMore, setIsShowingMore] = useState(false);
+  const [postData, setPostData] = useState<PostMeta>(post.data?.data?.data);
+  const [postLikedByMe, setPostLikedByMe] = useState<{
+    status: boolean;
+    emojiId: number;
+  }>({
+    status: postData?.likedByMe.length > 0,
+    emojiId: postData?.likedByMe[0]?.emojiId ?? 0,
+  });
+  // const [postData, setPost] = useState<PostMeta>(postData);
 
   const ref = useRef(null);
 
   const toggleIsShowingMore = () => setIsShowingMore((prev) => !prev);
-
-  const post = useQuery({
-    queryKey: ["single-post"],
-    queryFn: () => getSinglePost(params.postId),
-  });
 
   const comments = useQuery({
     queryKey: ["single-post-comments"],
     queryFn: () => getSinglePostComments(params.postId),
   });
 
-  const [postLikedByMe, setPostLikedByMe] = useState<boolean>(
-    post.data?.data.data?.likedByMe.length > 0
-  );
-
   useEffect(() => {
     if (post.isSuccess) {
-      setPostLikedByMe(post.data?.data.data?.likedByMe.length > 0);
+      setPostLikedByMe({
+        status: post?.data.data.data.likedByMe.length > 0,
+        emojiId: post?.data.data.data.likedByMe[0]?.emojiId ?? 0,
+      });
     }
-  }, [post.isSuccess, post.data?.data.data?.likedByMe.length]);
+  }, [
+    post.isSuccess,
+    post.data?.data.data?.likedByMe.length,
+    post.data?.data.data?.likedByMe,
+    post.data?.data.data?.emojiId,
+  ]);
 
+  console.log(post.data?.data.data);
   console.log(post.data?.data.data?.likedByMe);
 
   const likeOrUnlikeMutation = useMutation({
-    mutationKey: ["like or unlike post", setPostLikedByMe],
-    mutationFn: (data: { postId: number; type: string }) =>
-      likeOrUnlikePost(data.postId, data.type),
-    onSuccess: (data) => console.log(data),
+    mutationKey: ["like or unlike post", postLikedByMe],
+    mutationFn: (data: { postId: number; type: string; emojiId: number }) =>
+      likeOrUnlikePost(data.postId, data.type, data.emojiId),
+    onSuccess: (data) => {
+      console.log(data);
+      let copiedPostLikes: LikeMeta[] = JSON.parse(
+        JSON.stringify(postData.likes)
+      );
+
+      console.log(copiedPostLikes);
+      console.log(userData?.user.id);
+      console.log({ ...data.data.data, user: userData?.user });
+
+      if (
+        Boolean(
+          copiedPostLikes.filter((like) => like.user.id === userData?.user.id)
+            .length
+        )
+      ) {
+        console.log(copiedPostLikes);
+        copiedPostLikes.splice(
+          copiedPostLikes.findIndex((obj) => obj.id === userData?.user.id),
+          1
+        );
+      } else {
+        copiedPostLikes = [
+          ...copiedPostLikes,
+          { ...data.data.data, user: userData?.user },
+        ];
+      }
+
+      setPostData((prev) => ({
+        ...prev,
+        likedByMe: [data.data.data],
+        likes: copiedPostLikes,
+        likesCount:
+          data.data.data.emojiId !== null
+            ? prev.likesCount + 1
+            : prev.likesCount - 1,
+      }));
+    },
     onError: (error) => console.log(error),
   });
-
-  const handlePostLikeRequest = () => {
+  const handlePostLikeRequest = (index: number) => {
     likeOrUnlikeMutation.mutate({
       postId: post.data?.data.data.id,
       type: "post",
+      emojiId: index,
     });
   };
+
+  const { userData } = useUserContext();
 
   console.log(comments.data?.data.data);
 
   return (
-    <div>
+    <div className="">
       <div className="flex gap-0 min-[480px]:gap-2">
-        <div className="relative mt-2 min-[480px]:mt-0 flex-1 bg-background">
-          <div className="p-4 flex gap-x-2 items-center bg-background/50 backdrop-blur-lg sticky top-0 z-[100]">
+        <div className="relative mt-0 min-[480px]:mt-0 flex-1 bg-background">
+          <div className="p-2 sm:p-4 flex gap-x-2 items-center bg-background/50 backdrop-blur-lg sticky top-12 min-[480px]:top-0 z-[100]">
             <Button
               className="p-0 w-6 h-6 bg-transparent rounded-full text-foreground hover:bg-foreground/20"
               onClick={() => router.back()}
             >
               <IoArrowBack size={20} />
             </Button>
-            <p className="font-bold text-2xl">Post</p>
+            <p className="font-bold text-xl sm:text-2xl">Post</p>
           </div>
-          <div className=" flex flex-col gap-y-2 bg-background sm:bg-inherit">
+          <div className="flex flex-col gap-y-2 sm:bg-inherit">
             {post.isLoading && (
               <div className="mt-10">
                 <PageLoadingSpinner />
@@ -146,42 +202,21 @@ export default function Page({ params }: { params: any }) {
                     </div>
                   </div>
                   <div className="mt-4">
-                    <p
-                      ref={ref}
-                      dangerouslySetInnerHTML={{
-                        __html: post.data?.data.data?.content,
-                      }}
-                      className={cn(
-                        "text-foreground text-ellipsis",
-                        !isShowingMore && "line-clamp-2"
-                      )}
+                    <ContentText
+                      text={post.data?.data.data?.content}
+                      // textRef={ref}
+                      contentId={post.data?.data.data?.id}
+                      // isShowingMore={isShowingMore}
                     />
-                    <div
-                      className={cn(
-                        "flex justify-end",
-                        !isShowingMore ? "-translate-y-6" : "mb-2"
-                      )}
-                    >
-                      {isTruncated && (
-                        <button
-                          onClick={toggleIsShowingMore}
-                          className={cn(
-                            "block bg-background text-foreground/50 text-start",
-                            !isShowingMore ? "w-1/2" : ""
-                          )}
-                        >
-                          {isShowingMore ? "Show less" : "...Show more"}
-                        </button>
-                      )}
-                    </div>
+
                     {/* media box */}
-                    <div className="mt-3 relative">
+                    <div className="mt-3 overflow-hidden">
                       {Boolean(
                         post.data?.data.data?.media &&
                           post.data?.data.data?.media.length
                       ) && (
                         <PostViewer
-                          post={post.data?.data.data}
+                          postData={post.data?.data.data}
                           setShowFullScreenPost={(value: boolean) =>
                             setShowFullScreenPost(value)
                           }
@@ -197,19 +232,13 @@ export default function Page({ params }: { params: any }) {
                       <div className="flex gap-x-4 mt-4 items-center">
                         <div className="flex items-center text-inactive">
                           <p className="text-foreground pr-1 font-bold">
-                            {formatNumberCount(
-                              handlePostLikeIncrement(
-                                post.data?.data.data.likesCount,
-                                post.data?.data.data.likedByMe,
-                                postLikedByMe
-                              )
-                            )}
+                            {formatNumberCount(postData?.likesCount ?? "0")}
                           </p>{" "}
-                          Likes
+                          Reactions
                         </div>
                         <div className="flex items-center text-inactive">
                           <p className="text-foreground pr-1 font-bold ">
-                            {post.data?.data.data?.commentsCount}
+                            {formatNumberCount(postData?.commentsCount ?? "0")}
                           </p>{" "}
                           Comments
                         </div>
@@ -222,29 +251,21 @@ export default function Page({ params }: { params: any }) {
                             src={"/assets/post-icons/views.svg"}
                           /> */}
                           <p className="pr-1 font-bold text-foreground">
-                            {post.data?.data.data?.viewsCount}
+                            {formatNumberCount(postData?.viewsCount ?? "0")}
                           </p>{" "}
                           Views
                         </div>
                       </div>
                       <div className="flex gap-x-4 mt-3">
-                        <div
-                          className="flex items-center cursor-pointer"
-                          role="button"
-                          onClick={() => {
-                            handlePostLikeRequest();
-                            setPostLikedByMe((prev) => !prev);
-                          }}
-                        >
-                          <Heart
-                            className={cn(
-                              "size-[20px]",
-                              postLikedByMe
-                                ? "text-red-600 fill-red-600"
-                                : "text-foreground/70"
-                            )}
-                          />
-                        </div>
+                        <ReactionButton
+                          handlePostLikeIncrement={handlePostLikeIncrement}
+                          handlePostLikeRequest={handlePostLikeRequest}
+                          post={postData}
+                          setPost={setPostData}
+                          likeData={postData?.likedByMe}
+                          postLikedByMe={postLikedByMe}
+                          setPostLikedByMe={setPostLikedByMe}
+                        />
                         <Image
                           width={20}
                           height={20}
@@ -276,7 +297,7 @@ export default function Page({ params }: { params: any }) {
                   )}
                 {comments.isSuccess &&
                   Boolean(!comments.data?.data.data.items.length) && (
-                    <div className="my-10 px-6 ">
+                    <div className="my-10 px-6 min-h-[60vh]">
                       <p className="font-bold text-foreground text-center">
                         No comments
                       </p>
@@ -291,7 +312,9 @@ export default function Page({ params }: { params: any }) {
                     height={25}
                     className="size-[25px] rounded-full object-cover absolute top-6 left-6"
                     alt="icon"
-                    src={profileImageplaceholder}
+                    src={
+                      userData?.user.usermeta.avatar ?? profileImageplaceholder
+                    }
                   />
                   <Input
                     placeholder={`Reply to @${post.data?.data.data?.user?.username}`}
@@ -299,7 +322,7 @@ export default function Page({ params }: { params: any }) {
                   />
                   <Button
                     variant={"ghost"}
-                    className="text-colorPrimary absolute right-4 top-4"
+                    className="text-colorPrimary absolute right-4 top-4 hover:bg-colorPrimary rounded-full"
                   >
                     Send
                   </Button>

@@ -1,5 +1,8 @@
+export type AnyObject = { [key: string]: any };
+
 export type PostProps = {
-  post: PostMeta;
+  postData: PostMeta;
+  optionsType?: "user";
 };
 
 export interface LoginCredentials {
@@ -8,9 +11,14 @@ export interface LoginCredentials {
 }
 
 export interface LoginResponse {
-  token: string;
+  access_token: string;
   // You can add other properties returned by your API if needed
 }
+
+export type OptionProp = {
+  label: string;
+  value: string;
+};
 
 export interface ApiErrorResponse {
   message: string;
@@ -75,6 +83,9 @@ export interface UserData {
   show_prediction: boolean;
   access_token: string;
 }
+export interface UpdateUserData {
+  user: User;
+}
 
 export interface PostMeta {
   id: number;
@@ -83,7 +94,7 @@ export interface PostMeta {
   slug: any; // Type not defined
   type: string;
   content: string;
-  isPublished: string; // Should be boolean
+  isPublished: boolean; // Should be boolean
   canReply: string; // Enum: "Everyone", "Followers", "Nobody"
   title: string | null;
   sport_type: string | null;
@@ -91,17 +102,38 @@ export interface PostMeta {
   tags: string[];
   medias: any; // Type not defined
   tagedUsers: (string | null)[];
+  poll_duration: number;
+  change_option: boolean;
+  goal: null;
+  call_to_action: null;
+  external_link: null;
+  duration: null;
   viewsCount: number;
   notification_pushed: boolean;
   created_at: string; // Date string
   updated_at: string; // Date string
   user: User;
   media: any[]; // Type not defined
-  likedByMe: any[]; // Type not defined
+  likedByMe: LikeMeta[]; // Type not defined
   savedPost: any[]; // Type not defined
-  likes: any[]; // Type not defined
+  likes: LikeMeta[]; // Type not defined
+  pollOption: PollMeta[];
   commentsCount: number;
   likesCount: number;
+}
+
+export interface LikeMeta {
+  id: number;
+  userId: number;
+  postId: number;
+  commentId: null;
+  replyId: null;
+  emojiId: number;
+  type: string;
+  status: boolean;
+  created_at: string;
+  updated_at: string;
+  user: User;
 }
 
 interface Media {
@@ -114,32 +146,48 @@ interface Media {
   duration: number;
 }
 
+export interface PollMeta {
+  id: number;
+  userId: number;
+  postId: number;
+  option: string;
+  result: number;
+  totalResponse: number;
+  created_at: string;
+  updated_at: string;
+}
+
 export interface HighlightMeta {
   id: number;
   userId: number;
   communityId: number | null;
   slug: string | null;
-  type: string | null;
+  type: string;
   content: string;
-  isPublished: string | boolean;
-  canReply: boolean | null;
+  isPublished: boolean;
+  canReply: string;
   title: string;
   sport_type: string;
   editted: boolean;
-  tags: string[] | null;
+  tags: string[];
   medias: object[];
   tagedUsers: string[];
-  poll_duration: number | null;
+  poll_duration: number;
+  change_option: boolean;
+  goal: null;
+  call_to_action: null;
+  external_link: null;
+  duration: null;
   viewsCount: number;
   notification_pushed: boolean;
   created_at: string;
   updated_at: string;
   user: User;
   media: Media[];
-  likedByMe: object[];
+  likedByMe: LikeMeta[];
   savedPost: object[];
-  likes: { user: User }[];
-  pollOption: object[];
+  likes: LikeMeta[];
+  pollOption: PollMeta[];
   commentsCount: number;
   likesCount: number;
 }
@@ -221,6 +269,13 @@ export type ReplyMeta = {
 
 export type WrapperProps = HTMLProps<HTMLDivElement> & {
   children?: ReactNode;
+};
+
+export type TeamData = {
+  id: number;
+  name: string;
+  created_at: string;
+  updated_at: string;
 };
 
 export type ApiResponse<T> = {

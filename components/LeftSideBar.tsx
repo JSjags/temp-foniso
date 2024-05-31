@@ -16,11 +16,15 @@ import { ModeToggle } from "./ThemeToggle";
 import { useTheme } from "next-themes";
 import { useEffect, useState } from "react";
 import { useUserContext } from "@/context/UserContext";
+import { Button } from "./ui/button";
+import { EditIcon } from "lucide-react";
+import { MoreActions } from "./left-sidebar";
+import CreatePostModal from "./Modal/CreatePost";
 
 type Props = {};
 
 const LeftSideBar = (props: Props) => {
-  const { userData } = useUserContext();
+  const { userData, setShowCreatePost } = useUserContext();
 
   const { theme } = useTheme();
   const cld = new Cloudinary({ cloud: { cloudName: "delflsgq4" } });
@@ -28,9 +32,9 @@ const LeftSideBar = (props: Props) => {
   const pathname = usePathname();
 
   return (
-    <div className="h-full fixed z-50 left-0 min-[480px]:sticky bottom-0 sm:top-0 min-[480px]:border-r border-border bg-background">
+    <div className="h-full fixed z-50 left-0 min-[480px]:sticky bottom-0 min-[480px]:top-0 min-[480px]:border-r border-border bg-background">
       {/* Desktop sidebar */}
-      <div className="px-[38px] pt-[30px] hidden min-[1000px]:block min-w-[200px] h-full">
+      <div className="px-[38px] pt-[30px] overflow-y-scroll hidden min-[1000px]:block min-w-[240px] lg:min-w-[271px] h-full">
         <Link href={"/home"}>
           <AdvancedImage
             className="w-full max-w-[115.65px]"
@@ -54,7 +58,7 @@ const LeftSideBar = (props: Props) => {
                       className="size-[30px] rounded-full object-cover border border-border/50 bg-foreground/5"
                       alt="icon"
                       src={
-                        userData?.user.usermeta?.avatar ??
+                        userData?.user?.usermeta?.avatar ??
                         profileImageplaceholder
                       }
                     />
@@ -89,45 +93,22 @@ const LeftSideBar = (props: Props) => {
               </Link>
             ))}
         </div>
-        <div className="my-8 w-full h-[1px] bg-border" />
+        <Button
+          onClick={() => setShowCreatePost(true)}
+          className="h-12 mt-5 px-5 pl-5 bg-gradient-to-br from-[#0B953B] to-[#0F4E25] hover:bg-colorPrimary hover:brightness-90 rounded-full w-full flex gap-2 items-center justify-start -translate-x-5"
+        >
+          <EditIcon color="white" size={25} className="size-[25px]" />
+          <span className={cn("text-white text-lg font-semibold")}>
+            Create post
+          </span>
+        </Button>
+        <div className="my-4 w-[110%] h-[1px] bg-border -translate-x-[8%]" />
         {leftSideBarItems.slice(-1).map((item, i) => (
-          <Link
-            key={i}
-            href={item.path}
-            className="flex gap-x-4 py-[11] items-center"
-          >
-            <Image
-              width={30}
-              height={30}
-              className={cn(
-                "w-[30px]",
-                pathname === item.path ? "brightness-200" : ""
-              )}
-              alt="icon"
-              src={
-                item?.activeIcon === null || item?.inactiveIcon === null
-                  ? ""
-                  : pathname === item.path
-                  ? item?.activeIcon
-                  : item?.inactiveIcon
-              }
-            />
-            <span
-              className={cn(
-                "text-textNav text-lg font-semibold",
-                pathname === item.path ? "text-white" : "text-inactive"
-              )}
-            >
-              {item.title}
-            </span>
-          </Link>
+          <MoreActions item={item} key={i} />
         ))}
-        <div className="absolute bottom-4 left-0 px-[38px]">
-          <ModeToggle />
-        </div>
       </div>
       {/* Tablet sidebar */}
-      <div className="px-[18px] pt-[30px] hidden min-[480px]:block min-[1000px]:hidden relative h-full">
+      <div className="px-[18px] relative overflow-y-scroll pt-[30px] hidden min-[480px]:block min-[1000px]:hidden h-full">
         <Link href={"/home"}>
           <Image
             width={30}
@@ -138,6 +119,7 @@ const LeftSideBar = (props: Props) => {
           />
         </Link>
         <div className="text-white mt-10 flex flex-col gap-y-8">
+          <></>
           {leftSideBarItems
             .slice(0, leftSideBarItems.length - 1)
             .map((item, i) => (
@@ -154,7 +136,7 @@ const LeftSideBar = (props: Props) => {
                       className="size-[30px] rounded-full object-cover border border-border"
                       alt="icon"
                       src={
-                        userData?.user.usermeta?.avatar ??
+                        userData?.user?.usermeta?.avatar ??
                         profileImageplaceholder
                       }
                     />
@@ -178,35 +160,17 @@ const LeftSideBar = (props: Props) => {
                 )}
               </Link>
             ))}
-        </div>
-        <div className="my-8 w-full h-[1px] bg-contentBorder" />
-        {leftSideBarItems.slice(-1).map((item, i) => (
-          <Link
-            key={i}
-            href={item.path}
-            className="flex gap-x-4 py-[11] items-center"
+          <Button
+            onClick={() => setShowCreatePost(true)}
+            className="size-8 p-0 bg-gradient-to-br from-[#0B953B] to-[#0F4E25] hover:bg-colorPrimary hover:brightness-90 rounded-full flex gap-2 items-center justify-center"
           >
-            <Image
-              width={30}
-              height={30}
-              className={cn(
-                "w-[30px]",
-                pathname === item.path ? "brightness-200" : ""
-              )}
-              alt="icon"
-              src={
-                item?.activeIcon === null || item?.inactiveIcon === null
-                  ? ""
-                  : pathname === item.path
-                  ? item?.activeIcon
-                  : item?.inactiveIcon
-              }
-            />
-          </Link>
-        ))}
-        <div className="absolute bottom-4 left-1/2 -translate-x-1/2">
-          <ModeToggle />
+            <EditIcon color="white" size={20} className="size-[20px]" />
+          </Button>
         </div>
+        <div className="my-4 w-[110%] h-[1px] bg-border -translate-x-[8%]" />
+        {leftSideBarItems.slice(-1).map((item, i) => (
+          <MoreActions item={item} key={i} />
+        ))}
       </div>
       {/* Mobile bottom nav */}
       <div className="pt-[30px] flex fixed z-50 bottom-0 left-0 min-[480px]:hidden">

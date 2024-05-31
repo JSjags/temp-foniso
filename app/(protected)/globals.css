@@ -197,3 +197,10 @@
   -ms-overflow-style: none; /* IE and Edge */
   scrollbar-width: none; /* Firefox */
 }
+
+.convert-to-primary-color {
+}
+.convert-to-primary-color:hover {
+  filter: brightness(0) saturate(100%) invert(29%) sepia(64%) saturate(4683%)
+    hue-rotate(137deg) brightness(93%) contrast(81%);
+}

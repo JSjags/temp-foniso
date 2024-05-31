@@ -57,6 +57,7 @@ const SetPassword = ({ email, submitPassword }: Props) => {
           id="password"
           placeholder="Enter password"
           value={password}
+          type="password"
           onChange={(e) => setPassword(e.target.value)}
           className="bg-transparent mt-2 border-foreground/50 h-[54px] text-base text-semibold placeholder:text-foreground/50 font-semibold"
         />
@@ -64,6 +65,7 @@ const SetPassword = ({ email, submitPassword }: Props) => {
       <div className="mt-4">
         <Input
           id="confirmPassword"
+          type="password"
           placeholder="Confirm password"
           value={confirmPassword}
           onChange={(e) => setConfirmPassword(e.target.value)}

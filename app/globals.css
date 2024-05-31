@@ -125,3 +125,14 @@
 .w-full__suggestions:focus-visible {
   background-color: transparent;
 }
+
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.convert-to-primary-color {
+  filter: brightness(0) saturate(100%) invert(29%) sepia(64%) saturate(4683%)
+    hue-rotate(137deg) brightness(93%) contrast(81%);
+}

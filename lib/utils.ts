@@ -31,7 +31,7 @@ export const handlePostLikeIncrement = (
   initialLikedByMe: object[],
   likedByMe: boolean
 ) => {
-  if (initialLikedByMe.length) {
+  if (initialLikedByMe?.length) {
     if (likedByMe) {
       return likesCount;
     } else {

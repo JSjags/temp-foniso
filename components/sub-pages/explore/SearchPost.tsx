@@ -53,7 +53,7 @@ const SearchPost = (props: Props) => {
     return (
       <div className="mt-2">
         {searchPost.data?.data.data.items.map((post: PostMeta, i: number) => (
-          <Post key={i} post={post} />
+          <Post key={i} postData={post} />
         ))}
       </div>
     );

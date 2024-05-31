@@ -19,7 +19,9 @@ const UserSuggestionCard = ({ user }: { user: User }) => {
     mutationKey: ["follow-user"],
     mutationFn: () => followUserQuery({ followerId: user.id }),
     onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["user-following"] });
       queryClient.invalidateQueries({ queryKey: ["suggested-follows"] });
+      queryClient.invalidateQueries({ type: "all" });
     },
   });
 
@@ -29,7 +31,6 @@ const UserSuggestionCard = ({ user }: { user: User }) => {
     onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: ["suggested-follows"],
-        refetchType: "all",
       });
     },
   });
@@ -43,7 +44,7 @@ const UserSuggestionCard = ({ user }: { user: User }) => {
     if (following.isError || !following.isSuccess) {
       return false;
     }
-    const filteredArray = following.data?.filter((item: any) => {
+    const filteredArray = following.data.data.data?.filter((item: any) => {
       return item.followerId === user.id;
     });
 

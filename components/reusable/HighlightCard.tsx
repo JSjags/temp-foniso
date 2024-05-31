@@ -1,6 +1,6 @@
 "use client";
 
-import { HighlightMeta } from "@/types";
+import { HighlightMeta, LikeMeta, PostMeta } from "@/types";
 import { Heart, Play, X } from "lucide-react";
 import Image from "next/image";
 import React, { useRef, useState } from "react";
@@ -24,36 +24,84 @@ import { profileImageplaceholder } from "@/constants";
 import SportIcon from "./SportIcon";
 import moment from "moment";
 import { FaPlay } from "react-icons/fa6";
+import { useUserContext } from "@/context/UserContext";
+import ReactionButton from "../ReactionButton";
 
 type Props = {
   highlight: HighlightMeta;
+  postData: PostMeta;
 };
 
-const HighlightCard = ({ highlight }: Props) => {
+const HighlightCard = ({ highlight, postData }: Props) => {
   const router = useRouter();
   const [showVideo, setShowVideo] = useState(false);
   const [showViewModal, setShowViewModal] = useState(false);
   const [isTruncated, setIsTruncated] = useState(false);
   const [isShowingMore, setIsShowingMore] = useState(false);
+  const [post, setPost] = useState<PostMeta>(postData);
 
-  const [postLikedByMe, setPostLikedByMe] = useState<boolean>(
-    highlight.likedByMe.length > 0
-  );
+  const [postLikedByMe, setPostLikedByMe] = useState<{
+    status: boolean;
+    emojiId: number;
+  }>({
+    status: post?.likedByMe.length > 0,
+    emojiId: post?.likedByMe[0]?.emojiId ?? 0,
+  });
 
   const ref = useRef(null);
 
+  const { userData } = useUserContext();
+
   const likeOrUnlikeMutation = useMutation({
-    mutationKey: ["like or unlike post", setPostLikedByMe],
-    mutationFn: (data: { postId: number; type: string }) =>
-      likeOrUnlikePost(data.postId, data.type),
-    onSuccess: (data) => console.log(data),
+    mutationKey: ["like or unlike post", postLikedByMe],
+    mutationFn: (data: { postId: number; type: string; emojiId: number }) =>
+      likeOrUnlikePost(data.postId, data.type, data.emojiId),
+    onSuccess: (data) => {
+      console.log(data);
+      let copiedPostLikes: LikeMeta[] = JSON.parse(JSON.stringify(post.likes));
+
+      console.log(copiedPostLikes);
+      console.log(userData?.user.id);
+      console.log({ ...data.data.data, user: userData?.user });
+
+      if (
+        Boolean(
+          copiedPostLikes.filter((like) => like.user.id === userData?.user.id)
+            .length
+        )
+      ) {
+        console.log(copiedPostLikes);
+        copiedPostLikes.splice(
+          copiedPostLikes.findIndex((obj) => obj.id === userData?.user.id),
+          1
+        );
+      } else {
+        copiedPostLikes = [
+          ...copiedPostLikes,
+          { ...data.data.data, user: userData?.user },
+        ];
+      }
+
+      setPost((prev) => ({
+        ...prev,
+        likedByMe: [data.data.data],
+        likes: copiedPostLikes,
+        likesCount:
+          data.data.data.emojiId !== null
+            ? prev.likesCount + 1
+            : prev.likesCount - 1,
+      }));
+    },
     onError: (error) => console.log(error),
   });
 
-  const handlePostLikeRequest = () => {
-    likeOrUnlikeMutation.mutate({ postId: highlight.id, type: "post" });
+  const handlePostLikeRequest = (index: number) => {
+    likeOrUnlikeMutation.mutate({
+      postId: post.id,
+      type: "post",
+      emojiId: index,
+    });
   };
-
   const toggleIsShowingMore = () => setIsShowingMore((prev) => !prev);
 
   return (
@@ -202,39 +250,15 @@ const HighlightCard = ({ highlight }: Props) => {
                 </div>
               </div>
               <div className="flex mt-4 items-center">
-                <div
-                  className="flex items-center cursor-pointer"
-                  role="button"
-                  onClick={() => {
-                    handlePostLikeRequest();
-                    setPostLikedByMe((prev) => !prev);
-                  }}
-                >
-                  <Heart
-                    className={cn(
-                      "size-[20px]",
-                      postLikedByMe
-                        ? "text-red-600 fill-red-600"
-                        : "text-foreground/70"
-                    )}
-                  />
-                  <p
-                    className={cn(
-                      "text-red-600 px-2 font-medium",
-                      postLikedByMe
-                        ? "text-red-600 fill-red-600"
-                        : "text-foreground/70"
-                    )}
-                  >
-                    {formatNumberCount(
-                      handlePostLikeIncrement(
-                        highlight.likesCount,
-                        highlight.likedByMe,
-                        postLikedByMe
-                      )
-                    )}
-                  </p>
-                </div>
+                <ReactionButton
+                  handlePostLikeIncrement={handlePostLikeIncrement}
+                  handlePostLikeRequest={handlePostLikeRequest}
+                  post={post}
+                  setPost={setPost}
+                  likeData={post.likedByMe}
+                  postLikedByMe={postLikedByMe}
+                  setPostLikedByMe={setPostLikedByMe}
+                />
                 <div
                   className="flex items-center border-x border-border px-3 cursor-pointer"
                   onClick={() => router.push(`/posts/${highlight.id}`)}

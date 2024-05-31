@@ -1,3 +1,5 @@
+"use client";
+
 import { cn } from "@/lib/utils";
 import { PostProps } from "@/types";
 import React, { useState } from "react";
@@ -13,14 +15,17 @@ type PostViewerProps = PostProps & {
 };
 
 const PostViewer = ({
-  post,
+  postData: post,
   setShowFullScreenPost,
   showFullScreenPost,
   autoPlay,
 }: PostViewerProps) => {
   return (
     <div
-      onClick={() => setShowFullScreenPost(true)}
+      onClick={(e) => {
+        e.stopPropagation();
+        setShowFullScreenPost(true);
+      }}
       className="w-full aspect-video bg-background rounded overflow-[visible_!important] cursor-pointer"
     >
       <Carousel
@@ -63,6 +68,7 @@ const PostViewer = ({
         }}
         renderArrowPrev={(clickHandler, hasPrev) => (
           <div
+            onClick={(e) => e.stopPropagation()}
             className={cn(
               "pointer-events-none min-w-[50px] absolute z-10 left-0 top-0 h-full flex items-center px-2"
             )}
@@ -80,6 +86,7 @@ const PostViewer = ({
         )}
         renderArrowNext={(clickHandler, hasNext) => (
           <div
+            onClick={(e) => e.stopPropagation()}
             className={cn(
               "pointer-events-none min-w-[50px] absolute z-10 right-0 top-0 h-full flex items-center px-2"
             )}
@@ -97,7 +104,7 @@ const PostViewer = ({
         )}
         className="rounded min-h-fit max-h-[80vh]"
       >
-        {post.media.map((media, i) => (
+        {post?.media.map((media, i) => (
           <div key={i} className={cn(media.mediatype === "video" ? "" : "")}>
             {media.mediaType === "video" ? (
               <VideoPlayer

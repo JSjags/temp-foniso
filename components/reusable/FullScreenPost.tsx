@@ -24,7 +24,7 @@ const FullScreenPost = ({
         <div className="w-full mx-auto flex">
           <div className="w-full sm:w-3/5 h-full sm:h-[85dvh] sm:max-h-[85dvh] bg-background border-r border-border flex justify-center items-center">
             <PostViewer
-              post={post}
+              postData={post}
               setShowFullScreenPost={(value: boolean) =>
                 setShowFullScreenPost(value)
               }

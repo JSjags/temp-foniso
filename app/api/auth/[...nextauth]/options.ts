@@ -86,7 +86,9 @@ export const options: NextAuthOptions = {
       const { error } = user as (User | AdapterUser) & { error: string };
       // Defined by google provider profile callback
       if (!error)
-        return `/redirect?udat=${JSON.stringify((user as any)?.data!)}`; // User is good to go
+        return `/redirect?udat=${JSON.stringify((user as any)?.data!)}`;
+
+      console.log(error); // User is good to go
       switch (account?.provider) {
         case "google":
         default:

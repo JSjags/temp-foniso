@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { Check, ChevronsUpDown } from "lucide-react";
+import { Check, ChevronDown } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -36,6 +36,7 @@ interface ComboboxProps {
   onChange?: (event: string | string[]) => void; // Updated to handle multiple selections
   extraAction?: (value: string) => void; // For extra actions when handling change event
   onCreate?: (value: string) => void;
+  inputClassName?: string;
 }
 
 export function MyComboBox({
@@ -44,6 +45,7 @@ export function MyComboBox({
   className,
   placeholder,
   searchPlaceholder,
+  inputClassName,
   mode = "single",
   extraAction,
   onChange,
@@ -62,7 +64,7 @@ export function MyComboBox({
 
   return (
     <div className={cn("block", className)}>
-      <Popover open={open} onOpenChange={setOpen}>
+      <Popover modal open={open} onOpenChange={setOpen}>
         <PopoverTrigger asChild>
           <Button
             key={"combobox-trigger"}
@@ -70,7 +72,10 @@ export function MyComboBox({
             variant="outline"
             role="combobox"
             aria-expanded={open}
-            className="justify-between bg-transparent border-foreground/50 mt-2 w-full h-[54px] capitalize text-base text-semibold"
+            className={cn(
+              "justify-between bg-transparent border-foreground/50 mt-2 w-full h-[54px] capitalize text-base text-semibold",
+              inputClassName
+            )}
           >
             {selected && selected.length > 0 ? (
               <div className="relative mr-auto flex flex-grow flex-wrap items-center overflow-hidden">
@@ -90,7 +95,7 @@ export function MyComboBox({
             ) : (
               placeholder ?? "Select Item..."
             )}
-            <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+            <ChevronDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
           </Button>
         </PopoverTrigger>
         <PopoverContent className="w-[--radix-popover-trigger-width] max-h-[--radix-popover-content-available-height] p-0 bg-background">

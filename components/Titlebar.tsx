@@ -13,11 +13,11 @@ import { useTheme } from "next-themes";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { MobileSidebar } from "./MobileSidebar";
 
 type Props = {};
 
 const Titlebar = (props: Props) => {
-  const { userData } = useUserContext();
   const { theme } = useTheme();
   const cld = new Cloudinary({ cloud: { cloudName: "delflsgq4" } });
   const pathname = usePathname();
@@ -25,24 +25,8 @@ const Titlebar = (props: Props) => {
   return (
     <div className="flex items-center justify-between px-2 h-12 sticky top-0 z-50 bg-background border-b border-border min-[480px]:hidden">
       <div className="flex-[0.3] flex justify-start items-center">
-        {titleBarItems.slice(0, 1).map((item, i) => (
-          <Link
-            key={i}
-            href={item.path}
-            className="flex flex-col gap-y-2 items-center max-h-12 justify-between"
-          >
-            <div className="size-[36px] rounded-full">
-              <Image
-                width={36}
-                height={36}
-                className="size-[36px] rounded-full object-cover"
-                alt="icon"
-                src={
-                  userData?.user?.usermeta?.avatar ?? profileImageplaceholder
-                }
-              />
-            </div>
-          </Link>
+        {titleBarItems.slice(0, 1).map((_, i) => (
+          <MobileSidebar key={i} />
         ))}
       </div>
       <div className="flex-1">

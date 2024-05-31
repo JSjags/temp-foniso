@@ -25,7 +25,8 @@ axiosInstance.interceptors.request.use(
 
 axiosInstance.interceptors.response.use(
   function (response) {
-    return response.data.data;
+    // return response.data.data;
+    return response;
   },
   function (error) {
     toast.error(error?.response?.data?.message ?? "An error occurred");

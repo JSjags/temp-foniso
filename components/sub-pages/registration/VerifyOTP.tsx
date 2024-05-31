@@ -4,6 +4,7 @@ import PageLoadingSpinner from "@/components/Spinner/PageLoadingSpinner";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import axiosInstance from "@/services/api/axiosInstance";
+import { concealEmail } from "@/utils";
 import { useMutation, UseMutationResult } from "@tanstack/react-query";
 import { AxiosResponse } from "axios";
 import { useEffect, useRef, useState } from "react";
@@ -71,8 +72,8 @@ const VerifyOTP = ({ email, submitOTP }: Props) => {
       </h2>
       <p className="text-foreground/50 text-center mx-auto max-w-60">
         We have sent a 6-digit code to{" "}
-        <span className="text-foreground font-bold">{email}</span>. Enter the
-        code below
+        <span className="text-foreground font-bold">{concealEmail(email)}</span>
+        . Enter the code below
       </p>
       <div className="flex justify-center mt-10">
         <VerificationInput

@@ -15,20 +15,63 @@ import moment from "moment";
 import Link from "next/link";
 import { Dialog, DialogContent } from "../ui/dialog";
 import { DialogDescription } from "@radix-ui/react-dialog";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { postCommentQuery } from "@/services/api/post";
+import { ImSpinner2 } from "react-icons/im";
+import toast from "react-hot-toast";
+import SuccessToast from "./toasts/SuccessToast";
+import ErrorToast from "./toasts/ErrorToast";
 
 type Props = {
   post: PostMeta;
   isOpen: boolean;
   setShowReplyDialog: Dispatch<SetStateAction<boolean>>;
+  buttonText?: string;
 };
 
-const PostReplyDialog = ({ isOpen, setShowReplyDialog, post }: Props) => {
+const PostReplyDialog = ({
+  isOpen,
+  setShowReplyDialog,
+  post,
+  buttonText,
+}: Props) => {
+  const queryClient = useQueryClient();
   const ref = useRef(null);
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
 
   const [value, setValue] = useState("");
   const [isTruncated, setIsTruncated] = useState(false);
   const [isShowingMore, setIsShowingMore] = useState(false);
+
+  const comment = useMutation({
+    mutationKey: ["comment"],
+    mutationFn: (data: { postId: number; commentValue: string }) =>
+      postCommentQuery(data.postId, data.commentValue),
+    onSuccess: (data) => {
+      console.log(data);
+      setValue("");
+      toast.custom((t) => (
+        <SuccessToast t={t} message={"Comment made successfully."} />
+      ));
+      setShowReplyDialog(false);
+
+      queryClient.invalidateQueries({
+        type: "all",
+      });
+    },
+    onError: (error) => {
+      toast.custom((t) => (
+        <ErrorToast
+          t={t}
+          message={error?.message ?? "Couldn't make your comment."}
+        />
+      ));
+    },
+  });
+
+  const handleAction = (data: { postId: number; commentValue: string }) => {
+    comment.mutate(data);
+  };
 
   useAutosizeTextArea(textAreaRef.current, value);
 
@@ -146,12 +189,21 @@ const PostReplyDialog = ({ isOpen, setShowReplyDialog, post }: Props) => {
             </div>
             <div className="mt-10 flex justify-end items-center">
               <Button
-                disabled
-                className="flex-1 hover:bg-white hover:scale-[1.01] transition-all hover:shadow-xl bg-colorPrimary border border-colorPrimary text-white rounded-full flex justify-center items-center h-[36px] px-10 w-full max-w-[88px]"
+                disabled={value.trim().length <= 0 || comment.isPending}
+                onClick={() =>
+                  handleAction({ postId: post.id, commentValue: value })
+                }
+                className="flex-1 hover:scale-105 transition-all hover:shadow-xl hover:bg-colorPrimary bg-colorPrimary border border-colorPrimary text-white rounded-full flex justify-center items-center h-[36px] px-10 w-full max-w-[120px]"
               >
-                <span className="w-fit text-base font-bold block p-0 align-middle">
-                  Reply
-                </span>
+                {comment.isPending ? (
+                  <div className="flex justify-center">
+                    <ImSpinner2 className="size-6 animate-spin text-white" />
+                  </div>
+                ) : (
+                  <span className="w-fit text-base font-bold block p-0 align-middle">
+                    {buttonText ?? "Reply"}
+                  </span>
+                )}
               </Button>
             </div>
           </div>

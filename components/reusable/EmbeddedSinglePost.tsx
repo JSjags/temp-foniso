@@ -29,7 +29,7 @@ import {
   getSinglePostComments,
   likeOrUnlikePost,
 } from "@/services/api/post";
-import { CommentMeta, PostMeta, User } from "@/types";
+import { CommentMeta, LikeMeta, PostMeta, User } from "@/types";
 import { Arrow } from "@radix-ui/react-popover";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Heart, MoreVertical } from "lucide-react";
@@ -41,6 +41,8 @@ import { IoArrowBack } from "react-icons/io5";
 import ContentText from "./ContentText";
 import { followUserQuery, unfollowUserQuery } from "@/services/api/explore";
 import { getFollowing } from "@/services/api/userService";
+import ReactionButton from "../ReactionButton";
+import { useUserContext } from "@/context/UserContext";
 
 export default function EmbeddedPost({
   postId,
@@ -71,9 +73,9 @@ export default function EmbeddedPost({
     queryFn: () => getSinglePostComments(postId),
   });
 
-  const [postLikedByMe, setPostLikedByMe] = useState<boolean>(
-    post.data?.data.data?.likedByMe.length > 0
-  );
+  // const [postLikedByMe, setPostLikedByMe] = useState<boolean>(
+  //   post.data?.data.data?.likedByMe.length > 0
+  // );
 
   const followUser = useMutation({
     mutationKey: ["follow-user"],
@@ -125,24 +127,95 @@ export default function EmbeddedPost({
 
   useEffect(() => {
     if (post.isSuccess) {
-      setPostLikedByMe(post.data?.data.data?.likedByMe.length > 0);
+      setPostLikedByMe({
+        status: post.data?.data.data?.likedByMe.length > 0,
+        emojiId: post.data?.data.data?.likedByMe[0]?.emojiId ?? 0,
+      });
     }
-  }, [post.isSuccess, post.data?.data.data?.likedByMe.length]);
+  }, [
+    post.isSuccess,
+    post.data?.data.data?.likedByMe.length,
+    post.data?.data.data?.likedByMe,
+  ]);
 
   console.log(post.data?.data.data?.likedByMe);
 
+  const [postData, setPost] = useState<PostMeta>(post.data?.data.data);
+
+  const [postLikedByMe, setPostLikedByMe] = useState<{
+    status: boolean;
+    emojiId: number;
+  }>({
+    status: postData?.likedByMe.length > 0,
+    emojiId: postData?.likedByMe[0]?.emojiId ?? 0,
+  });
+
+  // const likeOrUnlikeMutation = useMutation({
+  //   mutationKey: ["like or unlike post", setPostLikedByMe],
+  //   mutationFn: (data: { postId: number; type: string }) =>
+  //     likeOrUnlikePost(data.postId, data.type),
+  //   onSuccess: (data) => console.log(data),
+  //   onError: (error) => console.log(error),
+  // });
+
+  // const handlePostLikeRequest = () => {
+  //   likeOrUnlikeMutation.mutate({
+  //     postId: post.data?.data.data.id,
+  //     type: "post",
+  //   });
+  // };
+  const { userData } = useUserContext();
+
   const likeOrUnlikeMutation = useMutation({
-    mutationKey: ["like or unlike post", setPostLikedByMe],
-    mutationFn: (data: { postId: number; type: string }) =>
-      likeOrUnlikePost(data.postId, data.type),
-    onSuccess: (data) => console.log(data),
+    mutationKey: ["like or unlike post", postLikedByMe],
+    mutationFn: (data: { postId: number; type: string; emojiId: number }) =>
+      likeOrUnlikePost(data.postId, data.type, data.emojiId),
+    onSuccess: (data) => {
+      console.log(data);
+      let copiedPostLikes: LikeMeta[] = JSON.parse(
+        JSON.stringify(postData.likes)
+      );
+
+      console.log(copiedPostLikes);
+      console.log(userData?.user.id);
+      console.log({ ...data.data.data, user: userData?.user });
+
+      if (
+        Boolean(
+          copiedPostLikes.filter((like) => like.user.id === userData?.user.id)
+            .length
+        )
+      ) {
+        console.log(copiedPostLikes);
+        copiedPostLikes.splice(
+          copiedPostLikes.findIndex((obj) => obj.id === userData?.user.id),
+          1
+        );
+      } else {
+        copiedPostLikes = [
+          ...copiedPostLikes,
+          { ...data.data.data, user: userData?.user },
+        ];
+      }
+
+      setPost((prev) => ({
+        ...prev,
+        likedByMe: [data.data.data],
+        likes: copiedPostLikes,
+        likesCount:
+          data.data.data.emojiId !== null
+            ? prev.likesCount + 1
+            : prev.likesCount - 1,
+      }));
+    },
     onError: (error) => console.log(error),
   });
 
-  const handlePostLikeRequest = () => {
+  const handlePostLikeRequest = (index: number) => {
     likeOrUnlikeMutation.mutate({
-      postId: post.data?.data.data.id,
+      postId: postData.id,
       type: "post",
+      emojiId: index,
     });
   };
 
@@ -210,55 +283,38 @@ export default function EmbeddedPost({
                       </div>
                     </div>
                     <div>
-                      <Button
-                        onClick={() => {
-                          if (checkIfUserIsFollowed) {
-                            unfollowUser.mutate();
-                          } else {
-                            followUser.mutate();
-                          }
-                        }}
-                        disabled={followUser.isPending}
-                        className={cn(
-                          "flex-1 hover:bg-colorPrimary hover:scale-[1.01] transition-all hover:shadow-xl bg-foreground border hover:border-colorPrimary hover:text-white border-border text-background rounded-full flex justify-center items-center h-9 px-10 w-[129px]",
-                          checkIfUserIsFollowed && "bg-colorPrimary text-white"
-                        )}
-                      >
-                        {followUser.isPending ? (
-                          <PageLoadingSpinner spinnerExtraClass="w-5 h-5" />
-                        ) : (
-                          <span className="w-fit text-base font-medium block p-0 align-middle">
-                            {checkIfUserIsFollowed ? "Following" : "Follow"}
-                          </span>
-                        )}
-                      </Button>
+                      {postData?.user.id !== userData?.user.id && (
+                        <Button
+                          onClick={() => {
+                            if (checkIfUserIsFollowed) {
+                              unfollowUser.mutate();
+                            } else {
+                              followUser.mutate();
+                            }
+                          }}
+                          disabled={followUser.isPending}
+                          className={cn(
+                            "flex-1 hover:bg-colorPrimary hover:scale-[1.01] transition-all hover:shadow-xl bg-foreground border hover:border-colorPrimary hover:text-white border-border text-background rounded-full flex justify-center items-center h-9 px-10 w-[129px]",
+                            checkIfUserIsFollowed &&
+                              "bg-colorPrimary text-white"
+                          )}
+                        >
+                          {followUser.isPending ? (
+                            <PageLoadingSpinner spinnerExtraClass="w-5 h-5" />
+                          ) : (
+                            <span className="w-fit text-base font-medium block p-0 align-middle">
+                              {checkIfUserIsFollowed ? "Following" : "Follow"}
+                            </span>
+                          )}
+                        </Button>
+                      )}
                     </div>
                   </div>
                   <div className="mt-4">
                     <ContentText
-                      isShowingMore={isShowingMore}
                       contentId={(post.data?.data.data as User)?.id}
                       text={post.data?.data.data?.content}
-                      textRef={ref}
                     />
-                    <div
-                      className={cn(
-                        "flex justify-end",
-                        !isShowingMore ? "-translate-y-6" : "mb-2"
-                      )}
-                    >
-                      {isTruncated && (
-                        <button
-                          onClick={toggleIsShowingMore}
-                          className={cn(
-                            "block bg-background text-foreground/50 text-start",
-                            !isShowingMore ? "w-1/2" : ""
-                          )}
-                        >
-                          {isShowingMore ? "Show less" : "...Show more"}
-                        </button>
-                      )}
-                    </div>
                     {/* media box */}
                     {!hideMedia && (
                       <div className="mt-3 relative">
@@ -267,7 +323,7 @@ export default function EmbeddedPost({
                             post.data?.data.data?.media.length
                         ) && (
                           <PostViewer
-                            post={post.data?.data.data}
+                            postData={post.data?.data.data}
                             setShowFullScreenPost={(value: boolean) =>
                               setShowFullScreenPost(value)
                             }
@@ -284,19 +340,13 @@ export default function EmbeddedPost({
                       <div className="flex gap-x-4 mt-4 items-center">
                         <div className="flex items-center text-inactive">
                           <p className="text-foreground pr-1 font-bold">
-                            {formatNumberCount(
-                              handlePostLikeIncrement(
-                                post.data?.data.data.likesCount,
-                                post.data?.data.data.likedByMe,
-                                postLikedByMe
-                              )
-                            )}
+                            {formatNumberCount(postData?.likesCount ?? "0")}
                           </p>{" "}
-                          Likes
+                          Reactions
                         </div>
                         <div className="flex items-center text-inactive">
                           <p className="text-foreground pr-1 font-bold ">
-                            {post.data?.data.data?.commentsCount}
+                            {postData?.commentsCount ?? "0"}
                           </p>{" "}
                           Comments
                         </div>
@@ -309,29 +359,21 @@ export default function EmbeddedPost({
                             src={"/assets/post-icons/views.svg"}
                           /> */}
                           <p className="pr-1 font-bold text-foreground">
-                            {post.data?.data.data?.viewsCount}
+                            {postData?.viewsCount ?? "0"}
                           </p>{" "}
                           Views
                         </div>
                       </div>
-                      <div className="flex gap-x-4 mt-3">
-                        <div
-                          className="flex items-center cursor-pointer"
-                          role="button"
-                          onClick={() => {
-                            handlePostLikeRequest();
-                            setPostLikedByMe((prev) => !prev);
-                          }}
-                        >
-                          <Heart
-                            className={cn(
-                              "size-[20px]",
-                              postLikedByMe
-                                ? "text-red-600 fill-red-600"
-                                : "text-foreground/70"
-                            )}
-                          />
-                        </div>
+                      <div className="flex gap-x-4 mt-3 items-center">
+                        <ReactionButton
+                          handlePostLikeIncrement={handlePostLikeIncrement}
+                          handlePostLikeRequest={handlePostLikeRequest}
+                          post={postData}
+                          setPost={setPost}
+                          likeData={postData?.likedByMe ?? []}
+                          postLikedByMe={postLikedByMe}
+                          setPostLikedByMe={setPostLikedByMe}
+                        />
                         <Image
                           width={20}
                           height={20}
@@ -353,7 +395,7 @@ export default function EmbeddedPost({
                 )}
                 {comments.isSuccess &&
                   Boolean(comments.data?.data.data.items.length) && (
-                    <div className="p-4 pb-6 relative flex flex-col gap-y-6">
+                    <div className="p-4 pb-6 relative flex flex-col gap-y-6 min-h-screen">
                       {comments.data?.data.data.items.map(
                         (comment: CommentMeta, i: number) => (
                           <CommentCard key={i} comment={comment} />
