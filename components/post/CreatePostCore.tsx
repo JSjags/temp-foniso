@@ -297,7 +297,7 @@ const CreatePostCore = ({
       />
       <div
         className={cn(
-          "text-inactive px-4 pt-3 min-h-dvh min-[480px]:min-h-fit min-[480px]:max-h-dvh flex flex-col pb-20",
+          "text-inactive px-4 pt-3 min-h-dvh min-[480px]:min-h-fit min-[480px]:max-h-dvh flex flex-col pb-20 min-[480px]:pb-0",
           wrapperClassName
         )}
       >

@@ -41,7 +41,7 @@ const CreatePostModal = (props: Props) => {
               >
                 <X size={16} className="text-foreground" />
               </AlertDialogCancel>
-              <div className="w-full overflow-scroll max-h-[90vh] mx-auto">
+              <div className="w-full overflow-scroll max-h-[90vh] mx-auto min-[480px]:rounded-xl">
                 <div>
                   <AlertDialogHeader>
                     <AlertDialogTitle className="text-lg sm:text-2xl font-bold text-foreground/90 py-3 text-center border-b border-border sticky top-0 bg-background z-[1000]">

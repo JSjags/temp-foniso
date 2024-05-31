@@ -106,6 +106,16 @@ const Page = () => {
     }
   }, [googleCallbackError]);
 
+  if (userData) {
+    // toast.custom(
+    //   (t) => (
+    //     <ErrorToast t={t} message={"Unauthorized, Please login to continue."} />
+    //   ),
+    //   { id: "Unauthorized" }
+    // );
+    router.replace("/home");
+  }
+
   return (
     <div className="bg-bgEffect min-h-screen p-2">
       <div className="max-w-[1812px] flex flex-col min-h-screen">

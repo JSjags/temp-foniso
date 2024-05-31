@@ -44,7 +44,7 @@ const UserSuggestionCard = ({ user }: { user: User }) => {
     if (following.isError || !following.isSuccess) {
       return false;
     }
-    const filteredArray = following.data.data.data?.filter((item: any) => {
+    const filteredArray = following.data?.data?.data?.filter((item: any) => {
       return item.followerId === user.id;
     });
 
