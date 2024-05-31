@@ -183,63 +183,7 @@ const CommentCard = ({ comment }: Props) => {
                     alt="icon"
                     src={"/assets/post-icons/save-post.svg"}
                   />
-                  <span>Save Post</span>
-                </DropdownMenuItem>
-                <DropdownMenuItem className="p-4 text-base text-foreground font-semibold data-[highlighted]:text-black">
-                  <Image
-                    width={24}
-                    height={24}
-                    className="size-[24px] mr-4 object-cover"
-                    alt="icon"
-                    src={"/assets/post-icons/not-interested.svg"}
-                  />
-                  <span>Not interested in this post</span>
-                </DropdownMenuItem>
-                <DropdownMenuItem className="p-4 text-base text-foreground font-semibold data-[highlighted]:text-black">
-                  <Image
-                    width={24}
-                    height={24}
-                    className="size-[24px] mr-4 object-cover"
-                    alt="icon"
-                    src={"/assets/post-icons/follow.svg"}
-                  />
                   <span>Follow @{comment.user.username}</span>
-                </DropdownMenuItem>
-              </DropdownMenuGroup>
-              <DropdownMenuSeparator className="mx-2 bg-contentBorder" />
-              <DropdownMenuGroup>
-                <DropdownMenuItem className="p-4 text-base text-foreground font-semibold data-[highlighted]:text-black">
-                  <Image
-                    width={24}
-                    height={24}
-                    className="size-[24px] mr-4 object-cover"
-                    alt="icon"
-                    src={"/assets/post-icons/mute.svg"}
-                  />
-                  <span>Mute @{comment.user.username}</span>
-                </DropdownMenuItem>
-                <DropdownMenuItem className="p-4 text-base text-foreground font-semibold data-[highlighted]:text-black">
-                  <Image
-                    width={24}
-                    height={24}
-                    className="size-[24px] mr-4 object-cover"
-                    alt="icon"
-                    src={"/assets/post-icons/block.svg"}
-                  />
-                  <span>Block @{comment.user.username}</span>
-                </DropdownMenuItem>
-                <DropdownMenuItem
-                  onClick={() => setShowReportModal(true)}
-                  className="p-4 text-base text-foreground font-semibold data-[highlighted]:text-black"
-                >
-                  <Image
-                    width={24}
-                    height={24}
-                    className="size-[24px] mr-4 object-cover"
-                    alt="icon"
-                    src={"/assets/post-icons/report.svg"}
-                  />
-                  <span>Report comment</span>
                 </DropdownMenuItem>
               </DropdownMenuGroup>
             </DropdownMenuContent>
@@ -247,11 +191,9 @@ const CommentCard = ({ comment }: Props) => {
           {/* </Button> */}
         </div>
         <ContentText
-          isShowingMore={isShowingMore}
           contentId={comment.id}
           type={"comment"}
           text={comment.comment}
-          textRef={ref}
         />
         <div
           className={cn(

@@ -295,7 +295,7 @@ const PersonalDetails = (props: Props) => {
                     }
                   }}
                   fromYear={1900}
-                  toYear={new Date().getFullYear()}
+                  toYear={new Date().getFullYear() - 13}
                 />
               </PopoverContent>
             </Popover>
@@ -342,6 +342,12 @@ const PersonalDetails = (props: Props) => {
                 value="female"
               >
                 Female
+              </SelectItem>
+              <SelectItem
+                className="py-2 text-base text-foreground font-semibold data-[highlighted]:text-foreground"
+                value="Prefer not to disclose"
+              >
+                Prefer not to disclose
               </SelectItem>
               {/* <SelectItem
                 className="py-2 text-base text-foreground font-semibold data-[highlighted]:text-foreground"

@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { AdvancedImage } from "@cloudinary/react";
 import { Cloudinary } from "@cloudinary/url-gen";
+import { signIn } from "next-auth/react";
 import { useTheme } from "next-themes";
 import Image from "next/image";
 import Link from "next/link";
@@ -51,7 +52,10 @@ const Page = () => {
               <p className="text-foreground/50 mt-2">
                 Your All-in-One Sports Platform
               </p>
-              <Button className="w-full hover:bg-colorGrey/10 bg-transparent border border-border text-foreground rounded-full flex justify-center gap-x-2 items-center mt-6 h-12">
+              <Button
+                onClick={() => signIn("google")}
+                className="w-full hover:bg-colorGrey/10 bg-transparent border border-border text-foreground rounded-full flex justify-center gap-x-2 items-center mt-6 h-12"
+              >
                 <Image
                   alt="google"
                   src={"/assets/google-icon.svg"}

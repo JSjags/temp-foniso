@@ -31,7 +31,7 @@ const FavoritePosts = (props: Props) => {
           </p>
           <div className="flex flex-col gap-y-2 ">
             {favoriteSport.posts.map((post: any, i: number) => (
-              <Post key={i} post={post} />
+              <Post key={i} postData={post} />
             ))}
           </div>
         </div>

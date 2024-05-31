@@ -12,6 +12,7 @@ import { IoIosCheckmarkCircle } from "react-icons/io";
 import {
   placeholderComments,
   profileImageplaceholder,
+  reactionsList,
   reportReasons,
   userPlaceholderImage,
 } from "@/constants";
@@ -46,7 +47,7 @@ import {
   DialogTitle,
 } from "../ui/dialog";
 import { Input } from "../ui/input";
-import { PostProps } from "@/types";
+import { LikeMeta, PostMeta, PostProps } from "@/types";
 import PostViewer from "./PostViewer";
 import VideoPlayer from "./VideoPlayer";
 import { image } from "@cloudinary/url-gen/qualifiers/source";
@@ -61,48 +62,84 @@ import ContentText from "./ContentText";
 import FullScreenPost from "./FullScreenPost";
 import ViewsModal from "./ViewsModal";
 import ReportUserDialog from "./ReportUserDialog";
+import DefaultPostOptions from "../post/DefaultPostOptions";
+import UserPostOptions from "../post/UserPostOptions";
+import ReportUserSuccessModal from "./ReportUserSuccessModal";
+import Poll from "./Poll";
+import { customRelativeTime } from "@/utils";
+import ReactionButton from "../ReactionButton";
+import { useUserContext } from "@/context/UserContext";
+import Link from "next/link";
 
-const Post = ({ post }: PostProps) => {
+const Post = ({ postData, optionsType }: PostProps) => {
   const router = useRouter();
+  const [post, setPost] = useState<PostMeta>(postData);
   const [showViewModal, setShowViewModal] = useState(false);
   const [showReportModal, setShowReportModal] = useState(false);
   const [showReplyDialog, setShowReplyDialog] = useState(false);
   const [showReportSuccessModal, setShowReportSuccessModal] = useState(false);
   const [showFullScreenPost, setShowFullScreenPost] = useState(false);
-  const [isTruncated, setIsTruncated] = useState(false);
-  const [isShowingMore, setIsShowingMore] = useState(false);
 
-  const [postLikedByMe, setPostLikedByMe] = useState<boolean>(
-    post?.likedByMe.length > 0
-  );
+  const [postLikedByMe, setPostLikedByMe] = useState<{
+    status: boolean;
+    emojiId: number;
+  }>({
+    status: post?.likedByMe.length > 0,
+    emojiId: post?.likedByMe[0]?.emojiId ?? 0,
+  });
 
-  const ref = useRef(null);
+  const { userData } = useUserContext();
 
   const likeOrUnlikeMutation = useMutation({
     mutationKey: ["like or unlike post", postLikedByMe],
-    mutationFn: (data: { postId: number; type: string }) =>
-      likeOrUnlikePost(data.postId, data.type),
-    onSuccess: (data) => console.log(data),
+    mutationFn: (data: { postId: number; type: string; emojiId: number }) =>
+      likeOrUnlikePost(data.postId, data.type, data.emojiId),
+    onSuccess: (data) => {
+      console.log(data);
+      let copiedPostLikes: LikeMeta[] = JSON.parse(JSON.stringify(post.likes));
+
+      console.log(copiedPostLikes);
+      console.log(userData?.user.id);
+      console.log({ ...data.data.data, user: userData?.user });
+
+      if (
+        Boolean(
+          copiedPostLikes.filter((like) => like.user.id === userData?.user.id)
+            .length
+        )
+      ) {
+        console.log(copiedPostLikes);
+        copiedPostLikes.splice(
+          copiedPostLikes.findIndex((obj) => obj.id === userData?.user.id),
+          1
+        );
+      } else {
+        copiedPostLikes = [
+          ...copiedPostLikes,
+          { ...data.data.data, user: userData?.user },
+        ];
+      }
+
+      setPost((prev) => ({
+        ...prev,
+        likedByMe: [data.data.data],
+        likes: copiedPostLikes,
+        likesCount:
+          data.data.data.emojiId !== null
+            ? prev.likesCount + 1
+            : prev.likesCount - 1,
+      }));
+    },
     onError: (error) => console.log(error),
   });
-  const handlePostLikeRequest = () => {
-    likeOrUnlikeMutation.mutate({ postId: post.id, type: "post" });
+
+  const handlePostLikeRequest = (index: number) => {
+    likeOrUnlikeMutation.mutate({
+      postId: post.id,
+      type: "post",
+      emojiId: index,
+    });
   };
-
-  useLayoutEffect(() => {
-    const { offsetHeight, scrollHeight } = ref.current || {
-      offsetHeight: null,
-      scrollHeight: null,
-    };
-
-    if (offsetHeight && scrollHeight && offsetHeight < scrollHeight) {
-      setIsTruncated(true);
-    } else {
-      setIsTruncated(false);
-    }
-  }, [ref]);
-
-  const toggleIsShowingMore = () => setIsShowingMore((prev) => !prev);
 
   return (
     <div className="py-4 pb-2 px-2 sm:px-5 relative z-10 overflow-x-hidden border-none bg-background sm:bg-inherit border-border">
@@ -116,9 +153,14 @@ const Post = ({ post }: PostProps) => {
         setShowReportModal={setShowReportModal}
         setShowReportSuccessModal={setShowReportSuccessModal}
         showReportModal={showReportModal}
+        post={post}
       />
       {/* Report success modal */}
-
+      <ReportUserSuccessModal
+        post={post}
+        showReportSuccessModal={showReportSuccessModal}
+        setShowReportSuccessModal={setShowReportSuccessModal}
+      />
       {/* Fullscreen post modal */}
       <FullScreenPost
         post={post}
@@ -130,14 +172,29 @@ const Post = ({ post }: PostProps) => {
         post={post}
         isOpen={showReplyDialog}
         setShowReplyDialog={setShowReplyDialog}
+        buttonText="Comment"
       />
-      <div>
+      <div
+        className=""
+        onClick={(e) => {
+          e.stopPropagation();
+          router.push(`/posts/${post.id}`);
+        }}
+      >
         <div className="flex items-start justify-between">
           <div className="flex gap-x-3">
             <Image
               width={45}
               height={45}
-              className="size-[36px] sm:size-[45px] rounded-full object-cover"
+              className="size-[36px] sm:size-[45px] rounded-full object-cover cursor-pointer"
+              onClick={(e) => {
+                e.stopPropagation();
+                if (post.user.id === userData?.user.id) {
+                  router.push(`/profile`);
+                } else {
+                  router.push(`/profile/${post.user.username}`);
+                }
+              }}
               alt="avatar"
               src={
                 post?.user?.usermeta?.avatar !== null
@@ -147,7 +204,17 @@ const Post = ({ post }: PostProps) => {
             />
             <div>
               <div className="flex gap-x-2 items-center">
-                <p className="text-foreground hover:underline cursor-pointer font-semibold text-base line-clamp-1 text-ellipsis">
+                <p
+                  onClick={(e) => {
+                    if (post.user.id === userData?.user.id) {
+                      router.push(`/profile`);
+                    } else {
+                      router.push(`/profile/${post.user.username}`);
+                    }
+                    e.stopPropagation();
+                  }}
+                  className="text-foreground hover:underline cursor-pointer font-semibold text-base line-clamp-1 text-ellipsis whitespace-nowrap text-wrap break-words"
+                >
                   {post?.user?.usermeta.firstname}{" "}
                   {post?.user?.usermeta.lastname}
                 </p>
@@ -165,131 +232,58 @@ const Post = ({ post }: PostProps) => {
                 </div>
                 <p className="text-sm text-inactive align-middle whitespace-nowrap">
                   {" "}
-                  • {moment(post?.created_at).fromNow()}
+                  • {customRelativeTime(post?.created_at)}
                 </p>
               </div>
-              <p className="text-inactive">@{post?.user?.username}</p>
+              <p
+                className="text-inactive text-sm min-[480px]:text-base hover:cursor-pointer"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  if (post.user.id === userData?.user.id) {
+                    router.push(`/profile`);
+                  } else {
+                    router.push(`/profile/${post.user.username}`);
+                  }
+                }}
+              >
+                @{post?.user?.username}
+              </p>
             </div>
           </div>
           {/* <Button variant={"ghost"} className=" bg-transparent px-0"> */}
 
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              {/* <Button
-                variant={"ghost"}
-                className="p-0 outline:none outline-none ring-0 hover:bg-transparent"
-              > */}
-              <MoreVertical
-                className="text-colorGrey translate-x-3 cursor-pointer"
-                role="button"
-              />
-              {/* </Button> */}
-            </DropdownMenuTrigger>
-            <DropdownMenuContent className="w-[clamp(240px,80%,424px)] md:w-[324px] lg:w-[420px] absolute -translate-x-[105%] top-0 bg-background border-border">
-              <DropdownMenuGroup className="">
-                <DropdownMenuItem className="p-4 text-base text-foreground font-semibold data-[highlighted]:text-black">
-                  <Image
-                    width={24}
-                    height={24}
-                    className="size-[24px] mr-4 object-cover"
-                    alt="icon"
-                    src={"/assets/post-icons/save-post.svg"}
-                  />
-                  <span>Save Post</span>
-                </DropdownMenuItem>
-                <DropdownMenuItem className="p-4 text-base text-foreground font-semibold data-[highlighted]:text-black">
-                  <Image
-                    width={24}
-                    height={24}
-                    className="size-[24px] mr-4 object-cover"
-                    alt="icon"
-                    src={"/assets/post-icons/not-interested.svg"}
-                  />
-                  <span>Not interested in this post</span>
-                </DropdownMenuItem>
-                <DropdownMenuItem className="p-4 text-base text-foreground font-semibold data-[highlighted]:text-black">
-                  <Image
-                    width={24}
-                    height={24}
-                    className="size-[24px] mr-4 object-cover"
-                    alt="icon"
-                    src={"/assets/post-icons/follow.svg"}
-                  />
-                  <span>Follow @Fightnight</span>
-                </DropdownMenuItem>
-              </DropdownMenuGroup>
-              <DropdownMenuSeparator className="mx-2 bg-border" />
-              <DropdownMenuGroup>
-                <DropdownMenuItem className="p-4 text-base text-foreground font-semibold data-[highlighted]:text-black">
-                  <Image
-                    width={24}
-                    height={24}
-                    className="size-[24px] mr-4 object-cover"
-                    alt="icon"
-                    src={"/assets/post-icons/mute.svg"}
-                  />
-                  <span>Mute @Fightnight</span>
-                </DropdownMenuItem>
-                <DropdownMenuItem className="p-4 text-base text-foreground font-semibold data-[highlighted]:text-black">
-                  <Image
-                    width={24}
-                    height={24}
-                    className="size-[24px] mr-4 object-cover"
-                    alt="icon"
-                    src={"/assets/post-icons/block.svg"}
-                  />
-                  <span>Block @Fightnight</span>
-                </DropdownMenuItem>
-                <DropdownMenuItem
-                  onClick={() => setShowReportModal(true)}
-                  className="p-4 text-base text-foreground font-semibold data-[highlighted]:text-black"
-                >
-                  <Image
-                    width={24}
-                    height={24}
-                    className="size-[24px] mr-4 object-cover"
-                    alt="icon"
-                    src={"/assets/post-icons/report.svg"}
-                  />
-                  <span>Report post</span>
-                </DropdownMenuItem>
-              </DropdownMenuGroup>
-            </DropdownMenuContent>
-          </DropdownMenu>
+          {/* Post action btn options */}
+          {!optionsType && post.user.id !== userData?.user.id && (
+            <DefaultPostOptions
+              post={post}
+              setShowReportModal={setShowReportModal}
+            />
+          )}
+          {(optionsType === "user" || post.user.id === userData?.user.id) && (
+            <UserPostOptions post={post} />
+          )}
           {/* </Button> */}
         </div>
 
         {/* content */}
         <div className="mt-4">
-          <ContentText
-            text={post.content}
-            textRef={ref}
-            contentId={post.id}
-            isShowingMore={isShowingMore}
-          />
           <div
-            className={cn(
-              "flex justify-end",
-              !isShowingMore ? "-translate-y-6" : "mb-2"
-            )}
+            // onClick={() => router.push(`/posts/${post.id}`)}
+            className="w-full"
           >
-            {isTruncated && (
-              <button
-                onClick={toggleIsShowingMore}
-                className={cn(
-                  "block bg-background text-foreground/60 text-start",
-                  !isShowingMore ? "w-fit" : ""
-                )}
-              >
-                {isShowingMore ? "Show less" : "...Show more"}
-              </button>
-            )}
+            <ContentText
+              text={post.content}
+              // textRef={ref}
+              contentId={post.id}
+              // isShowingMore={isShowingMore}
+            />
           </div>
+
           {/* media box */}
           <div className="mt-3">
             {Boolean(post.media && post.media.length) && (
               <PostViewer
-                post={post}
+                postData={post}
                 setShowFullScreenPost={(value: boolean) =>
                   setShowFullScreenPost(value)
                 }
@@ -297,70 +291,92 @@ const Post = ({ post }: PostProps) => {
               />
             )}
           </div>
+
+          {/* poll */}
+          <div className="my-4">
+            {post.type === "poll" && <Poll post={post} setPost={setPost} />}
+          </div>
+
           <div>
             {Boolean(post.likes && post.likes.length) && (
               <div className="text-colorWhite mt-2 text-base flex gap-x-2 item-center">
-                <Image
+                {/* <Image
                   width={25}
                   height={25}
-                  className="size-[25px] rounded-full object-cover"
+                  className="size-5 min-[480px]:size-[25px] rounded-full object-cover"
                   alt="icon"
-                  src={post.likes[0]?.user?.usermeta.avatar ?? ""}
-                />
-                <p className="text-foreground/70">
-                  Liked by{" "}
-                  <span className="font-bold hover:underline cursor-pointer text-foreground">
-                    {post.likes[0]?.user?.username}
-                  </span>{" "}
-                  {Boolean(post.likesCount - 1 >= 1) && (
-                    <span>
-                      and{" "}
-                      <span className="font-bold hover:underline cursor-pointer text-foreground">
-                        {post.likesCount - 1}
-                      </span>{" "}
-                      {post.likesCount - 1 > 1 ? "others" : "other"}
-                    </span>
+                  src={
+                    post.likes[0]?.user?.usermeta.avatar ??
+                    "/assets/placeholder-person.png"
+                  }
+                /> */}
+                {post.likes.length !== 1 &&
+                  post.likes[0].user.id !== userData?.user.id && (
+                    <div className="inline-flex items-center gap-x-[6px] text-foreground/70 text-sm min-[480px]:text-base">
+                      <div className="inline-flex w-fit px-1 h-[22px] justify-around items-center bg-foreground/10 rounded-full">
+                        {[
+                          ...new Map(
+                            post.likes.map((like) => [like.emojiId, like])
+                          ).values(),
+                        ]
+                          .slice(0, 2)
+                          .map((reaction, i) => (
+                            <Image
+                              key={i}
+                              width={16}
+                              height={16}
+                              alt="reaction"
+                              src={
+                                reactionsList[reaction.emojiId] ??
+                                reactionsList[1]
+                              }
+                              className="size-4"
+                            />
+                          ))}
+                      </div>{" "}
+                      <Link
+                        onClick={(e) => e.stopPropagation()}
+                        href={`/profile/${post.likes[0]?.user?.username}`}
+                      >
+                        <span className="font-bold hover:underline cursor-pointer text-foreground">
+                          {post.likes[0]?.user?.username}
+                        </span>
+                      </Link>{" "}
+                      {Boolean(post.likesCount - 1 >= 1) && (
+                        <span>
+                          and{" "}
+                          <Link
+                            onClick={(e) => e.stopPropagation()}
+                            href={`/posts/${post.id}/stat`}
+                          >
+                            <span className="font-bold hover:underline cursor-pointer text-foreground">
+                              {post.likesCount - 1}
+                            </span>{" "}
+                          </Link>
+                          {post.likesCount - 1 > 1 ? "others" : "other"}
+                        </span>
+                      )}{" "}
+                      reacted
+                    </div>
                   )}
-                </p>
               </div>
             )}
             <div className="flex mt-4 items-center">
-              <div
-                className="flex items-center cursor-pointer"
-                role="button"
-                onClick={() => {
-                  handlePostLikeRequest();
-                  setPostLikedByMe((prev) => !prev);
-                }}
-              >
-                <Heart
-                  className={cn(
-                    "size-[20px]",
-                    postLikedByMe
-                      ? "text-red-600 fill-red-600"
-                      : "text-foreground/70"
-                  )}
-                />
-                <p
-                  className={cn(
-                    "text-red-600 px-2 font-medium",
-                    postLikedByMe
-                      ? "text-red-600 fill-red-600"
-                      : "text-foreground/70"
-                  )}
-                >
-                  {formatNumberCount(
-                    handlePostLikeIncrement(
-                      post.likesCount,
-                      post.likedByMe,
-                      postLikedByMe
-                    )
-                  )}
-                </p>
-              </div>
+              {/* <ReactionButton
+                handlePostLikeIncrement={handlePostLikeIncrement}
+                handlePostLikeRequest={handlePostLikeRequest}
+                post={post}
+                setPost={setPost}
+                likeData={post.likedByMe}
+                postLikedByMe={postLikedByMe}
+                setPostLikedByMe={setPostLikedByMe}
+              /> */}
               <div
                 className="flex items-center border-x border-border px-3 cursor-pointer"
-                onClick={() => setShowReplyDialog(true)}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setShowReplyDialog(true);
+                }}
                 role="button"
               >
                 <Image
@@ -375,7 +391,10 @@ const Post = ({ post }: PostProps) => {
                 </p>
               </div>
               <div
-                onClick={() => setShowViewModal(true)}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setShowViewModal(true);
+                }}
                 className="flex items-center pl-3 cursor-pointer"
               >
                 <Image
@@ -394,7 +413,10 @@ const Post = ({ post }: PostProps) => {
               <Button
                 variant={"ghost"}
                 className="text-inactive p-0 hover:bg-transparent hover:text-foreground"
-                onClick={() => router.push(`/posts/${post.id}`)}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  router.push(`/posts/${post.id}`);
+                }}
               >
                 View all comments
               </Button>

@@ -9,16 +9,91 @@ import {
 } from "../ui/dialog";
 import { Button } from "../ui/button";
 import { X } from "lucide-react";
+import { PostMeta } from "@/types";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { blockUserQuery, unblockUserQuery } from "@/services/api/post";
+import { ImSpinner2 } from "react-icons/im";
+import toast from "react-hot-toast";
+import SuccessToast from "./toasts/SuccessToast";
+import ErrorToast from "./toasts/ErrorToast";
+import { getBlockedUsers } from "@/services/api/userService";
+import { useMemo } from "react";
 
 type Props = {
   showReportSuccessModal: boolean;
   setShowReportSuccessModal: (value: boolean) => void;
+  post: PostMeta;
 };
 
 const ReportUserSuccessModal = ({
   showReportSuccessModal,
   setShowReportSuccessModal,
+  post,
 }: Props) => {
+  const queryClient = useQueryClient();
+
+  const blockedUsers = useQuery({
+    queryKey: ["blocked-users"],
+    queryFn: getBlockedUsers,
+  });
+
+  const blockUser = useMutation({
+    mutationKey: ["block-user"],
+    mutationFn: () => blockUserQuery(post.user.id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: [""],
+      });
+      toast.custom((t) => (
+        <SuccessToast t={t} message="User blocked successfully" />
+      ));
+      setShowReportSuccessModal(false);
+    },
+    onError: () => {
+      toast.custom((t) => <ErrorToast t={t} message="Couldn't block user" />);
+    },
+  });
+
+  const unblockUser = useMutation({
+    mutationKey: ["unblock-user"],
+    mutationFn: () => {
+      const blockId = blockedUsers.data?.data.data.filter(
+        (data: any) => data.followerId === post.user.id
+      )[0].id;
+
+      return unblockUserQuery({
+        userId: blockId,
+      });
+    },
+    onSuccess: (data) => {
+      toast.custom(
+        (t) => <SuccessToast t={t} message="User unblocked successfully" />,
+        { id: "block/unblock user" }
+      );
+      queryClient.invalidateQueries({
+        queryKey: ["blocked-users"],
+      });
+      setShowReportSuccessModal(false);
+    },
+  });
+
+  const checkIfUserIsBlocked = useMemo(() => {
+    if (blockedUsers.isError || !blockedUsers.isSuccess) {
+      return false;
+    }
+    const filteredArray = blockedUsers.data?.data.data.filter((item: any) => {
+      return item.followerId === post.user.id;
+    });
+
+    if (filteredArray.length) return true;
+    return false;
+  }, [
+    blockedUsers.isError,
+    blockedUsers.isSuccess,
+    blockedUsers.data?.data.data,
+    post.user.id,
+  ]);
+
   return (
     <Dialog
       open={showReportSuccessModal}
@@ -44,28 +119,47 @@ const ReportUserSuccessModal = ({
               </div>
               <div className="flex flex-col items-center gap-y-4 my-6 mb-6 sm:mb-20">
                 <Button
+                  disabled={blockUser.isPending}
                   variant={"ghost"}
-                  className="hover:bg-white text-foreground/70 hover:text-foreground w-[200px] rounded-full"
+                  className="hover:bg-foreground hover:text-background text-foreground/70 w-[200px] rounded-full"
                 >
-                  Mute @Fightnight
+                  Mute @{post.user.username}
                 </Button>
                 <Button
+                  disabled={blockUser.isPending || unblockUser.isPending}
                   variant={"ghost"}
-                  className="hover:bg-white text-foreground/70 hover:text-foreground w-[200px] rounded-full"
+                  onClick={() => {
+                    if (checkIfUserIsBlocked) {
+                      unblockUser.mutate();
+                    } else {
+                      blockUser.mutate();
+                    }
+                  }}
+                  className="hover:bg-foreground hover:text-background text-foreground/70 w-[200px] rounded-full"
                 >
-                  Block @Fightnight
+                  {blockUser.isPending || unblockUser.isPending ? (
+                    <div className="flex justify-center">
+                      {/* <PageLoadingSpinner /> */}
+                      <ImSpinner2 className="size-6 animate-spin text-[#4ED17E]" />
+                    </div>
+                  ) : (
+                    <span>
+                      {checkIfUserIsBlocked ? "Unblock" : "Block"} @
+                      {post.user.username}
+                    </span>
+                  )}
                 </Button>
               </div>
             </DialogDescription>
           </DialogHeader>
         </div>
-        <DialogClose
+        {/* <DialogClose
           asChild={true}
           onClick={() => setShowReportSuccessModal(false)}
           className="group absolute right-4 top-4 z-50 cursor-pointer hover:bg-white bg-background rounded w-fit h-fit p-0 border-none hover:text-darkGrey"
         >
           <X className="text-foreground group-hover:text-darkGrey" />
-        </DialogClose>
+        </DialogClose> */}
       </DialogContent>
     </Dialog>
   );

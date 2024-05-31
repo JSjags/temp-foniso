@@ -116,12 +116,12 @@ const Page = () => {
             />
           </div>
           <div className="w-full flex flex-col items-center mt-10">
-            <h1 className="text-[1.5rem] md:text-[2.5rem] md:leading-[3rem] font-bold text-foreground">
+            <h1 className="text-[1.5rem] md:text-[2.5rem] md:leading-[3rem] font-bold text-foreground text-center">
               Your All-in-One Sports Platform
             </h1>
 
             {/* <div class */}
-            <div className="w-1/2 flex flex-col justify-center items-center mt-10">
+            <div className="w-full md:w-1/2 flex flex-col justify-center items-center mt-10">
               <div className="w-full max-w-[571px] p-6 border border-border bg-background rounded-xl">
                 <h1 className="text-[1.5rem] md:text-[2rem] md:leading-[3rem] font-bold text-foreground text-center">
                   Welcome to Foniso
@@ -146,7 +146,7 @@ const Page = () => {
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
                         type="password"
-                        placeholder="Enter  password"
+                        placeholder="Enter password"
                         className="bg-transparent mt-2 border-foreground/50 h-[54px] text-base text-semibold placeholder:text-foreground/50 font-semibold"
                       />
                     </div>
@@ -202,14 +202,14 @@ const Page = () => {
                   </span>
                 </Button>
                 <div className="pt-2 flex items-center justify-center gap-1">
-                  <p className="text-foreground text-sm w-fit">
+                  <p className="text-foreground/50 text-sm w-fit">
                     Don&apos;t have an account?
                   </p>
                   <Link href={"/register"}>
                     {" "}
                     <Button className="w-fit h-fit inline hover:scale-[1.01] hover:bg-transparent p-0 bg-transparent text-foreground/80 hover:text-foreground/100">
                       <span className="text-sm font-bold block p-0 align-middle -translate-y-[2px]">
-                        Log in
+                        Sign up
                       </span>
                     </Button>
                   </Link>

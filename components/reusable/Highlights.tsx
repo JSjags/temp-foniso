@@ -50,7 +50,11 @@ const Highlights = (props: Props) => {
           ) &&
             highlights.data?.data.data.items.map(
               (highlight: HighlightMeta, i: number) => (
-                <HighlightCard key={i} highlight={highlight} />
+                <HighlightCard
+                  key={i}
+                  highlight={highlight}
+                  postData={highlight}
+                />
               )
             )}
         </div>

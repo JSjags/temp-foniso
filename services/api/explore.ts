@@ -59,5 +59,11 @@ export const searchExplore = async (
 export const unfollowUserQuery = async (data: {
   followerId: number;
 }): Promise<any> => {
-  return axiosInstance.delete<any>(`followers/unfollow/${data.followerId}`);
+  return axiosInstance.delete<any>(`/followers/unfollow/${data.followerId}`);
+};
+
+export const unblockUserQuery = async (data: {
+  userId: number;
+}): Promise<any> => {
+  return axiosInstance.delete<any>(`blockuser/${data.userId}`);
 };

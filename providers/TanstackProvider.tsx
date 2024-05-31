@@ -9,7 +9,7 @@ export const TanstackProvider = ({
 }: {
   children: React.ReactNode;
 }) => {
-  const queryClient = new QueryClient();
+  const [queryClient] = useState(new QueryClient());
   const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => {

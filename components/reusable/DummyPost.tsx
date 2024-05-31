@@ -214,7 +214,7 @@ const DummyPost = ({ post }: { post: any }) => {
           <div className="w-full mx-auto flex">
             <div className="w-3/5 h-full sm:h-[85dvh] sm:max-h-[85dvh] bg-background border-r border-border flex justify-center items-center">
               <PostViewer
-                post={post}
+                postData={post}
                 setShowFullScreenPost={(value: boolean) =>
                   setShowFullScreenPost(value)
                 }
@@ -484,7 +484,7 @@ const DummyPost = ({ post }: { post: any }) => {
                     {comment.media && comment.media.length ? (
                       <div className="mt-2">
                         <PostViewer
-                          post={post}
+                          postData={post}
                           setShowFullScreenPost={setShowFullScreenPost}
                           showFullScreenPost={showFullScreenPost}
                         />
@@ -725,7 +725,7 @@ const DummyPost = ({ post }: { post: any }) => {
           {/* media box */}
           <div className="mt-3">
             <PostViewer
-              post={post}
+              postData={post}
               setShowFullScreenPost={(value: boolean) =>
                 setShowFullScreenPost(value)
               }

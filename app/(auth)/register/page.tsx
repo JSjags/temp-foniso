@@ -16,9 +16,11 @@ import {
   VerifyOTP,
 } from "@/components/sub-pages/registration";
 import MainFooter from "@/components/MainFooter";
+import { useUserContext } from "@/context/UserContext";
 
 const Page = () => {
   const { theme } = useTheme();
+  const { setUserData } = useUserContext();
   const [logoPath, setLogoPath] = useState("/assets/logo-dark.svg");
 
   useEffect(() => {
@@ -43,8 +45,11 @@ const Page = () => {
   const setPassword = () => {
     router.push("?tab=set-password");
   };
-  const goToLogin = () => {
-    router.replace("/login");
+  // const goToLogin = () => {
+  //   router.replace("/login");
+  // };
+  const goToAccountSetup = () => {
+    router.replace("/account-setup", { scroll: false });
   };
 
   const submitFormData = useMutation({
@@ -139,15 +144,24 @@ const Page = () => {
     },
     onSuccess: (data: any) => {
       console.log(data);
+      setUserData(data?.data.data);
+      localStorage.setItem("token", data?.data?.data?.access_token);
+      localStorage.setItem("userData", JSON.stringify(data?.data?.data));
+
       toast.custom((t) => (
         <SuccessToast
           t={t}
           message={
-            "Password created successfully. Please login to complete account setup."
+            "Password created successfully. Please complete your profile setup."
           }
         />
       ));
-      goToLogin();
+      if (
+        data?.data?.data?.user?.usermeta === null ||
+        data?.data?.data?.user?.usermeta === undefined
+      ) {
+        return goToAccountSetup();
+      }
     },
   });
 
@@ -192,7 +206,7 @@ const Page = () => {
             />
           </div>
           <div className="w-full flex flex-col items-center mt-10">
-            <h1 className="text-[1.5rem] md:text-[2.5rem] md:leading-[3rem] font-bold text-foreground">
+            <h1 className="text-[1.5rem] md:text-[2.5rem] md:leading-[3rem] font-bold text-foreground text-center">
               Your All-in-One Sports Platform
             </h1>
             {identifyPage(tab)}

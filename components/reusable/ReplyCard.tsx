@@ -249,11 +249,9 @@ const ReplyCard = ({ reply }: Props) => {
           {/* </Button> */}
         </div>
         <ContentText
-          isShowingMore={isShowingMore}
           contentId={reply.id}
           type={"comment"}
           text={reply.message}
-          textRef={ref}
         />
         <div
           className={cn(

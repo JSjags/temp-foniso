@@ -19,7 +19,9 @@ const UserSuggestionCard = ({ user }: { user: User }) => {
     mutationKey: ["follow-user"],
     mutationFn: () => followUserQuery({ followerId: user.id }),
     onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["user-following"] });
       queryClient.invalidateQueries({ queryKey: ["suggested-follows"] });
+      queryClient.invalidateQueries({ type: "all" });
     },
   });
 
@@ -29,7 +31,6 @@ const UserSuggestionCard = ({ user }: { user: User }) => {
     onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: ["suggested-follows"],
-        refetchType: "all",
       });
     },
   });

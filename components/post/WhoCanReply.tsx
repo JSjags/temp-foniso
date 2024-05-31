@@ -26,9 +26,11 @@ type Checked = DropdownMenuCheckboxItemProps["checked"];
 export function WhoCanReply({
   replyOption,
   setReplyOption,
+  showLabel,
 }: {
   replyOption?: string;
   setReplyOption?: Dispatch<SetStateAction<string>>;
+  showLabel?: boolean;
 }) {
   const [currentOption, setCurrentOption] = useState<string>(
     replyOption ?? "Everyone"
@@ -49,19 +51,20 @@ export function WhoCanReply({
       <DropdownMenuTrigger asChild>
         <Label
           role="button"
-          className="group p-0 flex gap-2 hover:bg-transparent py-0 items-center"
+          className="group p-0 flex gap-2 hover:bg-transparent py-0 items-center pl-0 min-[480px]:pl-2"
         >
           <CurrentIcon
             size={20}
             className="text-inactive group-hover:text-colorPrimary"
           />
-          <p className="font-normal  text-xs sm:text-base text-inactive whitespace-nowrap group-hover:text-colorPrimary">
+          <p className="block min-[480px]:hidden lg:block font-normal text-sm sm:text-base text-inactive whitespace-nowrap group-hover:text-colorPrimary">
             {currentOption} can reply
           </p>
         </Label>
+        {/* This label is the same as above but only shows for mobile devices */}
       </DropdownMenuTrigger>
       <DropdownMenuContent
-        className="w-56 sm:w-[320px] bg-background border-border pb-8 flex flex-col gap-y-6 px-3"
+        className="w-56 z-[1000] sm:w-[320px] bg-background border-border pb-8 flex flex-col gap-y-6 px-3"
         side="top"
       >
         <DropdownMenuLabel className="text-lg font-bold">

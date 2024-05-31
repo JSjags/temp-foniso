@@ -1,10 +1,8 @@
 import useDebounce from "@/hooks/useDebounce";
 import axiosInstance from "@/services/api/axiosInstance";
-import { getExploreSuggestions } from "@/services/api/explore";
 import { User } from "@/types";
-import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
-import { Children, ReactNode, useState } from "react";
+import { ReactNode, useState } from "react";
 import {
   MentionsInput,
   Mention,
@@ -14,12 +12,12 @@ import {
 import SportIcon from "./SportIcon";
 import Image from "next/image";
 import { profileImageplaceholder } from "@/constants";
-import { cn } from "@/lib/utils";
-import { relative } from "path";
 import { ScrollArea } from "../ui/scroll-area";
 
 type Props = {
   value: string;
+  placeholder: string;
+  readOnly?: boolean;
   handleChange: (
     e: { target: { value: string } },
     newValue: string,
@@ -56,9 +54,14 @@ const requestTag = () => {
   ];
 };
 
-const MessageBox = ({ value, handleChange }: Props) => {
+const MessageBox = ({
+  value,
+  handleChange,
+  placeholder,
+  readOnly = false,
+}: Props) => {
   const [query, setQuery] = useState("");
-  const [isFetchingUsernameMention, setisFetchingUsernameMention] =
+  const [isFetchingUsernameMention, setIsFetchingUsernameMention] =
     useState(false);
 
   const debouncedSearchQuery = useDebounce(query ?? "", 500);
@@ -85,7 +88,7 @@ const MessageBox = ({ value, handleChange }: Props) => {
     query: string,
     callback: (data: (SuggestionDataItem & ExtraData)[]) => void
   ) => {
-    setisFetchingUsernameMention(true);
+    setIsFetchingUsernameMention(true);
 
     try {
       const data = await axiosInstance.get<any>(`/users/search/${query}`, {
@@ -107,7 +110,7 @@ const MessageBox = ({ value, handleChange }: Props) => {
     } catch (error) {
       console.log(error);
     } finally {
-      setisFetchingUsernameMention(false);
+      setIsFetchingUsernameMention(false);
     }
   };
 
@@ -159,7 +162,7 @@ const MessageBox = ({ value, handleChange }: Props) => {
 
   const customContainerRenderer = (children: ReactNode) => {
     return (
-      <ScrollArea className="max-h-72 h-fit w-full rounded-md border border-border bg-transparent">
+      <ScrollArea className="h-72 w-full rounded-md border border-border bg-transparent">
         {children}
       </ScrollArea>
     );
@@ -168,8 +171,10 @@ const MessageBox = ({ value, handleChange }: Props) => {
   return (
     <MentionsInput
       style={defaultStyle}
+      readOnly={readOnly}
       customSuggestionsContainer={customContainerRenderer}
-      maxLength={100}
+      maxLength={280}
+      placeholder={placeholder}
       className="w-full text-foreground min-h-10 text-base border-none outline-none ring-0 focus:ring-0 focus:outline-none focus-visible:ring-0 focus-visible:outline-none focus-visible:outline-offset-0 focus-visible:outline-[transparent_!important]"
       value={value}
       onChange={(e, newValue, newPlainTextValue, mentions) => {
@@ -181,15 +186,19 @@ const MessageBox = ({ value, handleChange }: Props) => {
         trigger="@"
         data={getUsernames as any}
         appendSpaceOnAdd
+        markup="@[__display__](id:__id__)"
+        displayTransform={(id, display) => `${display}`}
+        style={{ color: "#188C43" }}
         isLoading={isFetchingUsernameMention}
         renderSuggestion={renderUserSuggestion as any}
-        className="text-colorPrimary"
+        className="text-[#188C43_!important] bg-red-500"
       />
-      <Mention
+      {/* hashtag feature to be implemented when clarified */}
+      {/* <Mention
         trigger="#"
         data={requestTag}
-        // renderSuggestion={this.renderTagSuggestion}
-      />
+        renderSuggestion={this.renderTagSuggestion}
+      /> */}
     </MentionsInput>
   );
 };
@@ -197,14 +206,14 @@ const MessageBox = ({ value, handleChange }: Props) => {
 const defaultStyle = {
   control: {
     backgroundColor: "transparent",
-    fontSize: 14,
+    fontSize: 16,
     fontWeight: "normal",
   },
 
   "&multiLine": {
     control: {
       fontFamily: "inherit",
-      minHeight: 40,
+      minHeight: 60,
     },
     highlighter: {
       padding: 9,
@@ -216,6 +225,7 @@ const defaultStyle = {
     },
     input: {
       padding: 9,
+      paddingTop: 0,
       border: "1px solid transparent",
     },
   },
@@ -236,6 +246,7 @@ const defaultStyle = {
   },
 
   suggestions: {
+    zIndex: 100,
     backgroundColor: "hsl(var(--background))",
     borderRadius: 8,
     list: {

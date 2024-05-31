@@ -71,7 +71,7 @@ export const leftSideBarItems = [
   },
   {
     title: "More",
-    path: "/home",
+    path: "",
     activeIcon: "/assets/app-icons/more-active.svg",
     inactiveIcon: "/assets/app-icons/more-inactive.svg",
   },
@@ -517,6 +517,16 @@ export const reportReasons = [
 
 export const notificationTabs = ["All", "News", "Livescore"];
 export const exploreTabs = ["Posts", "People", "Communities"];
+export const newsTabs = [
+  "All",
+  "Football",
+  "Tennis",
+  "Basketball",
+  "Golf",
+  "Rugby",
+  "Cricket",
+];
+export const profileStatsTab = ["Followers", "Following", "Verified followers"];
 
 export const placeholderNewsNotification = [
   {
@@ -714,17 +724,17 @@ export const postReplyOptions = [
 ];
 
 export const favoriteSports = [
+  { label: "Football", value: "Football" },
+  { label: "Basketball", value: "Basketball" },
   { label: "American Football", value: "American Football" },
   { label: "Athletics Medal", value: "Athletics Medal" },
   { label: "Badminton", value: "Badminton" },
   { label: "Baseball", value: "Baseball" },
-  { label: "Basketball", value: "Basketball" },
   { label: "Bowling", value: "Bowling" },
   { label: "Boxing", value: "Boxing" },
   { label: "Cricket", value: "Cricket" },
   { label: "Cycling", value: "Cycling" },
   { label: "Field Hockey", value: "Field Hockey" },
-  { label: "Football", value: "Football" },
   { label: "Golf", value: "Golf" },
   { label: "Handball", value: "Handball" },
   { label: "Ice Hockey", value: "Ice Hockey" },
@@ -739,6 +749,52 @@ export const favoriteSports = [
   { label: "Swimming", value: "Swimming" },
   { label: "Tennis", value: "Tennis" },
   { label: "Volleyball", value: "Volleyball" },
+];
+
+export const occupation = [
+  { label: "Personal Trainer", value: "Personal Trainer" },
+  { label: "Sports Coach", value: "Sports Coach" },
+  { label: "Sports Writer", value: "Sports Writer" },
+  { label: "Athletic Director", value: "Athletic Director" },
+  { label: "Physiotherapist", value: "Physiotherapist" },
+  { label: "Exercise physiology", value: "Exercise physiology" },
+  { label: "Sports Anchor", value: "Sports Anchor" },
+  { label: "Sports psychology", value: "Sports psychology" },
+  { label: "Event Manager", value: "Event Manager" },
+  { label: "Public relations Manager", value: "Public relations Manager" },
+  { label: "Referee", value: "Referee" },
+  { label: "Athletic scout", value: "Golf" },
+  { label: "Nutritionist", value: "Nutritionist" },
+  { label: "Sports Agent", value: "Sports Agent" },
+  { label: "Sports consultant", value: "Sports consultant" },
+  { label: "Sports photographer", value: "Sports photographer" },
+  { label: "Marketing Manager", value: "Marketing Manager" },
+  { label: "Fitness Manager", value: "Racing" },
+  { label: "Sports administrator", value: "Sports administrator" },
+  { label: "Sports Editor", value: "Sports Editor" },
+  { label: "Sports Statistician", value: "Sports Statistician" },
+  { label: "General Manager", value: "General Manager" },
+  { label: "Recreation Manager", value: "Recreation Manager" },
+  { label: "Facilities Manager", value: "Facilities Manager" },
+];
+
+export const experienceLevel = [
+  { label: "Rising star/beginner", value: "Rising star/beginner" },
+  { label: "Active Player", value: "Active Player" },
+  { label: "Legend", value: "Legend" },
+];
+
+export const idTypes = [
+  { label: "ID Card", value: "ID Card" },
+  { label: "Driver's License", value: "Driver's License" },
+  { label: "Passport", value: "Passport" },
+  { label: "Resident Permit", value: "Resident Permit" },
+];
+
+export const linkTypes = [
+  { label: "Social media", value: "Social media" },
+  { label: "Articles", value: "Articles" },
+  { label: "Business Website", value: "Business Website" },
 ];
 
 export const communityRules = [
@@ -789,4 +845,14 @@ export const communities_list = [
     hasJoined: false,
     hasRequested: true,
   },
+];
+
+export const reactionsList = [
+  "/assets/post-reactions/like.svg",
+  "/assets/post-reactions/liked.svg",
+  "/assets/post-reactions/funny.svg",
+  "/assets/post-reactions/celebrated.svg",
+  "/assets/post-reactions/shocked.svg",
+  "/assets/post-reactions/sad.svg",
+  "/assets/post-reactions/champion.svg",
 ];
