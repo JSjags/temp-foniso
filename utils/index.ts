@@ -19,7 +19,7 @@ export const formatNumber = (arg: number | string) => {
       return parse(1000, "K");
 
     default:
-      return `${num}k`;
+      return num;
   }
 };
 

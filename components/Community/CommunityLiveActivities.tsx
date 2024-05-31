@@ -1,3 +1,5 @@
+"use client";
+
 import Image from "next/image";
 import RightSideBar from "../RightSideBar";
 import Titlebar from "@/components/Community/Titlebar";
@@ -5,44 +7,38 @@ import Link from "next/link";
 import { RxCaretRight } from "react-icons/rx";
 import PendingRequests from "./PendingRequests";
 import { BsSoundwave } from "react-icons/bs";
-import DummyPost from "@/components/reusable/DummyPost";
-import { placeholderPosts } from "@/constants";
 import UsersAvatar from "../reusable/UsersAvatar";
-
-const list = [
-  "Cr7 Suii",
-  "Manchester united",
-  "World of sports",
-  "Red devils",
-  "Pride of london",
-  "Enyimba international",
-  "Never walk alone",
-  "Arsenal",
-  "Newcastle",
-];
+import Feeds from "./Feeds";
+import { useQuery } from "@tanstack/react-query";
+import { allCommunities } from "@/services/api/community";
 
 const CommunityLiveActivities = () => {
+  const { data: communities } = useQuery({
+    queryKey: ["all-communities"],
+    queryFn: () => allCommunities(),
+  });
+
   return (
     <div className="flex duo:gap-3">
       <div className="w-full overflow-hidden">
         <Titlebar title="Community" />
         <div className="px-4">
           <div className="flex flex-nowrap overflow-x-auto gap-[10px] duo:gap-5 mt-[10px] snap-x snap-mandatory scroll-p-2 sm:scroll-p-6 hide-scrollbar">
-            {list.map((item, idx) => (
+            {communities?.items?.map(({ coverImage, name, id }) => (
               <div
-                key={item}
+                key={id}
                 className="min-w-[120px] snap-start  overflow-hidden flex flex-col duo:min-w-[150px] h-[100px] duo:h-[130px] rounded-lg border-[0.5px]"
               >
                 <div className="relative flex-1">
                   <Image
-                    src={`https://source.unsplash.com/random/350x230/?community+${idx}`}
-                    alt="community"
+                    src={coverImage}
+                    alt={name}
                     fill
                     className="object-cover"
                   />
                 </div>
                 <p className="flex items-center h-8 text-sm px-1 truncate bg-[#000000cd]">
-                  {item}
+                  {name}
                 </p>
               </div>
             ))}
@@ -89,13 +85,9 @@ const CommunityLiveActivities = () => {
             </Link>
           </div>
 
-          <PendingRequests count={12} />
+          <PendingRequests />
 
-          <div className=" flex flex-col gap-y-2 bg-background sm:bg-inherit mt-[46px]">
-            {placeholderPosts.map((post, i) => (
-              <DummyPost key={i} post={post} />
-            ))}
-          </div>
+          <Feeds />
         </div>
       </div>
 

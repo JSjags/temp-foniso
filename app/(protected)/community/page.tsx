@@ -10,7 +10,7 @@ const Community = () => {
       <div className="w-full">
         <Titlebar title="Community" />
         <div className="px-4">
-          <PendingRequests count={12} />
+          <PendingRequests />
           <CommunitiesList />
           <OngoingBuzz />
         </div>

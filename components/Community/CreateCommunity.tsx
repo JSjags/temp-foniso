@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { CreateCommunityForm } from "@/types/community";
 import { useEffect } from "react";
+import { ImSpinner2 } from "react-icons/im";
 
 const radio_options = [
   {
@@ -16,7 +17,7 @@ const radio_options = [
   },
   {
     icon: <VscLock className="size-5" strokeWidth={0.5} />,
-    value: "restricted",
+    value: "private",
     desc: "Anyone can view this community but only approved users can post",
   },
 ];
@@ -25,15 +26,16 @@ type Props = {
   onSubmit: (val: CreateCommunityForm) => void;
   defaultValues?: CreateCommunityForm;
   btnText?: string;
+  isLoading?: boolean;
 };
 
 const CreateCommunity = (props: Props) => {
   const { register, handleSubmit, setValue, watch } =
     useForm<CreateCommunityForm>({
       defaultValues: {
-        community_name: "",
+        name: "",
         description: "",
-        community_type: "public",
+        type: "public",
       },
     });
 
@@ -45,30 +47,28 @@ const CreateCommunity = (props: Props) => {
 
   useEffect(() => {
     if (props.defaultValues) {
-      setValue("community_name", props.defaultValues.community_name);
-      setValue("community_type", props.defaultValues.community_type);
+      setValue("name", props.defaultValues.name);
+      setValue("type", props.defaultValues.type);
       setValue("description", props.defaultValues.description);
     }
   }, [props.defaultValues, setValue]);
   return (
     <form className="" onSubmit={handleSubmit(onSubmit)}>
       <div>
-        <label htmlFor="community_name" className="text-[#888888]">
+        <label htmlFor="name" className="text-[#888888]">
           Community name
         </label>
         <div className="w-full h-fit relative center-item">
           <Input
-            id="community_name"
+            id="name"
             type="text"
             autoComplete="off"
             maxLength={21}
             className="!ring-0 !outline-none !border-0 !border-b !border-gray-400 !rounded-none"
-            {...register("community_name", { required: true, maxLength: 21 })}
+            {...register("name", { required: true, maxLength: 21 })}
           />
 
-          <span className="absolute right-2">
-            {values.community_name.length}/21
-          </span>
+          <span className="absolute right-2">{values.name.length}/21</span>
         </div>
       </div>
 
@@ -97,7 +97,7 @@ const CreateCommunity = (props: Props) => {
         defaultValue="public"
         className="space-y-30px"
         onValueChange={(val) => {
-          setValue("community_type", val);
+          setValue("type", val);
         }}
       >
         {radio_options.map(({ icon, value, desc }) => (
@@ -121,7 +121,11 @@ const CreateCommunity = (props: Props) => {
       </RadioGroup>
 
       <Button className="w-full rounded-full mt-14 bg-[#1A1A1A] dark:bg-white h-14 mb-6">
-        {props.btnText ?? "Create community"}
+        {props.isLoading ? (
+          <ImSpinner2 className="size-7 ml-3 animate-spin text-[#4ED17E]" />
+        ) : (
+          props.btnText ?? "Create community"
+        )}
       </Button>
     </form>
   );
