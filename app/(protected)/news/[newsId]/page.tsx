@@ -53,7 +53,7 @@ export default function Page({ params }: { params: any }) {
   return (
     <div>
       <div className="flex gap-0 min-[480px]:gap-2">
-        <div className="relative mt-2 min-[480px]:mt-0 flex-1 bg-background">
+        <div className="relative mt-0 min-[480px]:mt-0 flex-1 bg-background min-h-screen">
           <div className="p-4 flex gap-x-2 items-center bg-background/50 backdrop-blur-lg sticky top-0 z-[100]">
             <Button
               className="p-0 w-6 h-6 bg-transparent rounded-full text-foreground hover:bg-foreground/20"
@@ -61,7 +61,7 @@ export default function Page({ params }: { params: any }) {
             >
               <IoArrowBack size={20} />
             </Button>
-            <p className="font-bold text-2xl">Post</p>
+            <p className="font-bold text-lg sm:text-2xl">Post</p>
           </div>
           <div className=" flex flex-col gap-y-2 bg-background sm:bg-inherit pb-20">
             {article.isLoading && (
