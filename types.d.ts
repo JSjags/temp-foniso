@@ -11,7 +11,7 @@ export interface LoginCredentials {
 }
 
 export interface LoginResponse {
-  token: string;
+  access_token: string;
   // You can add other properties returned by your API if needed
 }
 
@@ -276,4 +276,15 @@ export type TeamData = {
   name: string;
   created_at: string;
   updated_at: string;
+};
+
+export type ApiResponse<T> = {
+  items: T;
+  meta: {
+    totalItems: number;
+    itemCount: number;
+    itemsPerPage: number;
+    totalPages: number;
+    currentPage: number;
+  };
 };

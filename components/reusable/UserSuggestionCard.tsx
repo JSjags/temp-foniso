@@ -44,18 +44,13 @@ const UserSuggestionCard = ({ user }: { user: User }) => {
     if (following.isError || !following.isSuccess) {
       return false;
     }
-    const filteredArray = following.data?.data.data.filter((item: any) => {
+    const filteredArray = following.data.data.data?.filter((item: any) => {
       return item.followerId === user.id;
     });
 
     if (filteredArray.length) return true;
     return false;
-  }, [
-    following.isError,
-    following.isSuccess,
-    following.data?.data.data,
-    user.id,
-  ]);
+  }, [following.isError, following.isSuccess, following.data, user.id]);
 
   return following.isLoading ? (
     <div className="flex-1 bg-transparent transition-all flex justify-center items-center h-9 px-10 w-[129px]">

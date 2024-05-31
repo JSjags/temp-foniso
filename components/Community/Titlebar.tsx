@@ -9,10 +9,11 @@ import { useSearchParams, useRouter, usePathname } from "next/navigation";
 import MobileDesktopOverlay from "../Modal/MobileDesktopOverlay";
 import { CreateCommunityForm } from "@/types/community";
 import CreateCommunity from "./CreateCommunity";
+import useCustomMutation from "@/hooks/useCustomMutation";
 
 const Titlebar = ({ title }: { title: string }) => {
   const { theme } = useTheme();
-  const { push, back } = useRouter();
+  const { push, back, replace } = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
 
@@ -20,9 +21,15 @@ const Titlebar = ({ title }: { title: string }) => {
     push(`${pathname}?create=new`);
   };
 
+  const { mutateAsync, isPending } = useCustomMutation<
+    CreateCommunityForm,
+    { id: number }
+  >("/community", "POST");
+
   const onSubmit = (arg: CreateCommunityForm) => {
-    console.log(arg, "from main component");
-    push("/community/57899-66878-76788/grow-community");
+    mutateAsync(arg).then(({ id }) => {
+      replace(`/community/${id}/grow-community`);
+    });
   };
 
   const icons = [
@@ -80,7 +87,7 @@ const Titlebar = ({ title }: { title: string }) => {
         open={searchParams.get("create") === "new"}
         handleClose={() => back()}
       >
-        <CreateCommunity onSubmit={onSubmit} />
+        <CreateCommunity onSubmit={onSubmit} isLoading={isPending} />
       </MobileDesktopOverlay>
     </div>
   );

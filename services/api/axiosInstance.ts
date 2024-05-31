@@ -1,6 +1,7 @@
 // axiosInstance.ts
 
 import axios, { AxiosInstance } from "axios";
+import { toast } from "react-toastify";
 
 const axiosInstance: AxiosInstance = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_BASE_URL,
@@ -19,6 +20,17 @@ axiosInstance.interceptors.request.use(
   },
   (error) => {
     return Promise.reject(error);
+  }
+);
+
+axiosInstance.interceptors.response.use(
+  function (response) {
+    // return response.data.data;
+    return response;
+  },
+  function (error) {
+    toast.error(error?.response?.data?.message ?? "An error occurred");
+    // return Promise.reject(error);
   }
 );
 

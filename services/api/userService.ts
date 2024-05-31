@@ -7,23 +7,26 @@ export const loginUser = async ({
   password,
 }: LoginCredentials): Promise<LoginResponse> => {
   try {
-    const response = await axiosInstance.post<LoginResponse>("/auth/login", {
+    const response = await axiosInstance.post<any>("/auth/login", {
       email,
       password,
     });
     // Assuming your API returns some kind of token upon successful login
+    console.log(response);
     const token = response.data.token;
     // Store token in local storage or state management library
     localStorage.setItem("token", token);
     return response.data;
   } catch (error) {
+    console.log(error);
     const axiosError = error as AxiosError<ApiErrorResponse>;
+
     throw new Error(axiosError?.response?.data?.message ?? "Login failed");
   }
 };
 
 export const getFollowing = async (): Promise<any> => {
-  return axiosInstance.get<any>("/followers/following");
+  return await axiosInstance.get<any>("/followers/following");
 };
 export const getBlockedUsers = async (): Promise<any> => {
   return axiosInstance.get<any>("/blockuser/blockedUser");

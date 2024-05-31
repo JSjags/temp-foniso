@@ -40,6 +40,8 @@ const Page = () => {
   const loginMutation = useMutation<LoginResponse, Error, LoginCredentials>({
     mutationFn: loginUser,
     onSuccess: (data: LoginResponse | any) => {
+      console.log(data);
+
       setUserData(data?.data);
       localStorage.setItem("token", data?.data?.access_token);
       localStorage.setItem("userData", JSON.stringify(data?.data));
@@ -51,6 +53,8 @@ const Page = () => {
       router.replace("/home", { scroll: false });
     },
     onError: (error) => {
+      console.log(error);
+
       toast.custom((t) => (
         <ErrorToast
           t={t}

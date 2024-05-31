@@ -3,6 +3,9 @@
 import { communityRules } from "@/constants";
 import { usePathname, useRouter } from "next/navigation";
 import { IoIosAddCircle } from "react-icons/io";
+import { getOneCommunity } from "@/services/api/community";
+import { useQuery } from "@tanstack/react-query";
+import { useParams } from "next/navigation";
 
 type Props = {
   editOnClick?: (arg?: number) => void;
@@ -12,12 +15,19 @@ type Props = {
 const ReviewRules = ({ editOnClick, addOnClick }: Props) => {
   const { push } = useRouter();
   const pathname = usePathname();
+  const { community_id } = useParams();
 
   const openModal = (arg?: number) => {
     push(
       `${pathname}?rule=new${typeof arg === "number" ? `&edit=${arg}` : ""}`
     );
   };
+
+  const { data: community_info, isLoading } = useQuery({
+    queryKey: ["one-community", community_id],
+    queryFn: () => getOneCommunity(String(community_id)),
+    gcTime: 60 * 6 * 24,
+  });
 
   return (
     <div className="mt-5 px-[15px] duo:px-5">
@@ -27,16 +37,17 @@ const ReviewRules = ({ editOnClick, addOnClick }: Props) => {
         and add more! Communities can have up to 10 rules.
       </p>
 
-      <ul className="mt-5 space-y-[18px]">
-        {communityRules.map(({ title, desc }, index) => (
-          <li key={title} className="flex">
+      <></>
+      <ul className="mt-8 space-y-[18px]">
+        {community_info?.rules?.map(({ title, description, id }, index) => (
+          <li key={id} className="flex">
             <p className="mr-3 text-center font-bold text-lg leading-none">
               {index + 1}
             </p>
             <div className="flex-1">
               <p className="!leading-none font-bold duo:text-lg">{title}</p>
               <p className="text-black dark:text-[#AFAFAF] text-sm duo:text-base mt-1">
-                {desc}
+                {description}
               </p>
             </div>
             <button
@@ -45,7 +56,7 @@ const ReviewRules = ({ editOnClick, addOnClick }: Props) => {
               onClick={() =>
                 typeof editOnClick === "function"
                   ? editOnClick(index)
-                  : openModal(index)
+                  : openModal(id)
               }
             >
               Edit

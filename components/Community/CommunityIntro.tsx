@@ -17,12 +17,19 @@ import { BsSoundwave } from "react-icons/bs";
 import UsersAvatar from "../reusable/UsersAvatar";
 import JoinBuzz, { Buzz } from "./JoinBuzz";
 import { RxCaretDown } from "react-icons/rx";
+import { useQuery } from "@tanstack/react-query";
+import { getOneCommunity } from "@/services/api/community";
+import PageLoadingSpinner from "../Spinner/PageLoadingSpinner";
+import useCustomMutation from "@/hooks/useCustomMutation";
+import { useEffect, useState } from "react";
 
 const CommunityIntro = () => {
   const { push, replace } = useRouter();
   const pathName = usePathname();
   const { community_id } = useParams();
   const { get } = useSearchParams();
+  const [isRequested, setIsRequested] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
 
   const moreOptions = [
     {
@@ -85,92 +92,150 @@ const CommunityIntro = () => {
     },
   ];
 
+  const { data: community_info, isFetching } = useQuery({
+    queryKey: ["one-community", community_id],
+    queryFn: () => getOneCommunity(String(community_id)),
+  });
+
+  const { mutateAsync: joinCommunity, isPending } = useCustomMutation<{
+    communityId: number;
+  }>("/community-member", "POST");
+
+  const handleJoin = () => {
+    joinCommunity({ communityId: Number(community_id) }).then(() => {
+      if (community_info?.type === "private") {
+        setIsRequested(true);
+      } else {
+        replace(`/community/${community_id}`);
+      }
+    });
+  };
+
+  useEffect(() => {
+    if (community_info?.id) {
+      const user = JSON.parse(localStorage.getItem("userData") ?? "");
+      const isAdmin = community_info.moderators.some(
+        (itm) => itm.id === user.id
+      );
+
+      setIsAdmin(isAdmin);
+    }
+  }, [community_info]);
+
   return (
-    <div>
-      <HeaderWithImage
-        imgSrc="https://source.unsplash.com/random/1220x520/?ocean"
-        dropDownOptions={moreOptionsAdmin}
-        name="Manchester United FC"
-        memberCount={5000}
-        sideBtn={
-          <Button className="border rounded-full flex justify-center items-center h-8 duo:h-[40px] px-3 w-max hover:bg-white hover:scale-[1.01] transition-all hover:shadow-xl bg-white border-border text-foreground dark:text-black">
-            Request to join
-          </Button>
-        }
-      />
+    <>
+      {isFetching ? (
+        <div className="mt-10 flex justify-center">
+          <PageLoadingSpinner spinnerExtraClass="w-7 h-7" />
+        </div>
+      ) : community_info ? (
+        <div>
+          <HeaderWithImage
+            imgSrc={community_info.coverImage}
+            dropDownOptions={isAdmin ? moreOptionsAdmin : moreOptions}
+            name={community_info?.name}
+            memberCount={community_info?.memberCount}
+            isPrivate={community_info?.type === "private"}
+            sideBtn={
+              <Button
+                className="border rounded-full flex justify-center md:min-w-[90px] items-center h-8 duo:h-[40px] px-3 w-max hover:bg-white hover:scale-[1.01] transition-all hover:shadow-xl bg-white border-border text-foreground dark:text-black"
+                disabled={
+                  isPending ||
+                  Boolean(community_info.isMember.length) ||
+                  isRequested
+                }
+                onClick={handleJoin}
+              >
+                {isPending
+                  ? "Hang on..."
+                  : community_info?.type === "private"
+                  ? "Request to join"
+                  : "Join"}
+              </Button>
+            }
+          />
 
-      <div className="px-4">
-        {!get("tab") && (
-          <>
-            <p className="text-sm text-black dark:text-[#AFAFAF] mt-[14px]">
-              Welcome to the Red Devils&apos; Haven! Join our passionate
-              community of Manchester United fans...
-            </p>
-            <Link
-              href={{ query: { tab: "about" } }}
-              className="text-[#4ED17E] text-sm font-semibold"
-            >
-              More about this community &gt;{" "}
-            </Link>
-          </>
-        )}
+          <div className="px-4">
+            {!get("tab") && (
+              <>
+                <p className="text-sm text-black dark:text-[#AFAFAF] mt-[14px]">
+                  {community_info.description}
+                </p>
+                <Link
+                  href={{ query: { tab: "about" } }}
+                  className="text-[#4ED17E] text-sm font-semibold"
+                >
+                  More about this community &gt;{" "}
+                </Link>
+              </>
+            )}
 
-        {/* Ongoing buzz */}
-        <div className="h-[110px] flex flex-col bg-[#C8C8C8] -translate-x-4 px-0 w-[calc(100%+2rem)] dark:bg-[#222623] mt-5 py-2 md:py-[0.875rem]">
-          <div className="flex items-center gap-1 w-[calc(100%-2rem)] mx-auto">
-            <BsSoundwave className="text-xl text-[#1A1A1A] dark:text-[#AFAFAF]" />
-            <span className="text-[#1A1A1A] dark:text-[#A0A0A0] text-sm font-medium">
-              Ongoing buzz
-            </span>
-          </div>
-
-          <div className="flex justify-between gap-8 my-[10px] w-[calc(100%-2rem)] mx-auto">
-            <div className="truncate">
-              <p className="flex items-center gap-1 text-[#22C55E]">
-                <RxLockClosed className="text-base stroke-[0.6px]" />
-                <span className="font-semibold text-sm">
-                  Who is the Goat. Cr7 or Messi?
+            {/* Ongoing buzz */}
+            <div className="h-[110px] flex flex-col bg-[#C8C8C8] -translate-x-4 px-0 w-[calc(100%+2rem)] dark:bg-[#222623] mt-5 py-2 md:py-[0.875rem]">
+              <div className="flex items-center gap-1 w-[calc(100%-2rem)] mx-auto">
+                <BsSoundwave className="text-xl text-[#1A1A1A] dark:text-[#AFAFAF]" />
+                <span className="text-[#1A1A1A] dark:text-[#A0A0A0] text-sm font-medium">
+                  Ongoing buzz
                 </span>
-              </p>
+              </div>
 
-              <UsersAvatar
-                items={["0", "1", "2"]}
-                wrapperClass="mt-2"
-                avatarClass="size-[1.375rem]"
-                totalCount="+350"
-              />
+              <div className="flex justify-between gap-8 my-[10px] w-[calc(100%-2rem)] mx-auto">
+                <div className="truncate">
+                  <p className="flex items-center gap-1 text-[#22C55E]">
+                    <RxLockClosed className="text-base stroke-[0.6px]" />
+                    <span className="font-semibold text-sm">
+                      Who is the Goat. Cr7 or Messi?
+                    </span>
+                  </p>
+
+                  <UsersAvatar
+                    items={["0", "1", "2"]}
+                    wrapperClass="mt-2"
+                    avatarClass="size-[1.375rem]"
+                    totalCount="+350"
+                  />
+                </div>
+
+                <Link
+                  href={{
+                    query: { tab: "buzz", buzz: "8687-8989-876876-7687" },
+                  }}
+                  className="w-max h-max"
+                >
+                  <Button className="w-[101px] h-[35px] md:h-11 rounded-full bg-[#1A1A1A] dark:bg-[#FAFAFA] text-white dark:text-[#090D09] font-semibold">
+                    Join buzz
+                  </Button>
+                </Link>
+              </div>
             </div>
 
-            <Link
-              href={{ query: { tab: "buzz", buzz: "8687-8989-876876-7687" } }}
-              className="w-max h-max"
-            >
-              <Button className="w-[101px] h-[35px] md:h-11 rounded-full bg-[#1A1A1A] dark:bg-[#FAFAFA] text-white dark:text-[#090D09] font-semibold">
-                Join buzz
-              </Button>
-            </Link>
+            {/* buzz sidebar */}
+            {get("live-buzz") && (
+              <div className="fixed top-12 right-6 px-5 pb-4 w-[429px] bg-[#111413] rounded-xl border border-border shadow-[0px_5px_10px_5px_rgba(235,232,232,0.06)] z-[400]">
+                <RxCaretDown
+                  className="block text-3xl cursor-pointer ml-auto translate-y-3"
+                  onClick={() => replace(pathName)}
+                />
+                <Buzz />
+              </div>
+            )}
+
+            <div className="mt-5">
+              {get("tab") === "about" ? (
+                <About info={community_info} />
+              ) : (
+                <Feeds />
+              )}
+            </div>
           </div>
+
+          <CreateBuzz />
+          <JoinBuzz />
         </div>
-
-        {/* buzz sidebar */}
-        {get("live-buzz") && (
-          <div className="fixed top-12 right-6 px-5 pb-4 w-[429px] bg-[#111413] rounded-xl border border-border shadow-[0px_5px_10px_5px_rgba(235,232,232,0.06)] z-[400]">
-            <RxCaretDown
-              className="block text-3xl cursor-pointer ml-auto translate-y-3"
-              onClick={() => replace(pathName)}
-            />
-            <Buzz />
-          </div>
-        )}
-
-        <div className="mt-5">
-          {get("tab") === "about" ? <About /> : <Feeds />}
-        </div>
-      </div>
-
-      <CreateBuzz />
-      <JoinBuzz />
-    </div>
+      ) : (
+        "" // NOTE: show an error screen here
+      )}
+    </>
   );
 };
 

@@ -4,11 +4,10 @@ import RightSideBar from "@/components/RightSideBar";
 import HeaderWithBackBtn from "@/components/reusable/HeaderWithBackBtn";
 import { Input } from "@/components/ui/input";
 import { CiSearch } from "react-icons/ci";
-import { communities_list } from "@/constants";
 import CommunityCard from "@/components/Community/CommunityCard";
-import { ItemContext } from "@/types/community";
-import { toast } from "react-toastify";
-import { useRouter } from "next/navigation";
+
+import { allCommunities } from "@/services/api/community";
+import { useQuery } from "@tanstack/react-query";
 
 const Search = () => {
   return (
@@ -23,30 +22,19 @@ const Search = () => {
 };
 
 const SearchCommunity = () => {
-  const router = useRouter();
+  const { data: communities, isFetching } = useQuery({
+    queryKey: ["all-communities"],
+    queryFn: () => allCommunities(),
+  });
 
-  const btnOnClick = (arg: ItemContext) => {
-    if (arg.hasJoined || arg.hasRequested) return;
-    if (arg.isLocked) {
-      toast.warning(
-        "Your request to join this community has been sent to the community owner"
-      );
-    } else {
-      router.push("/community/6787-56777-65676");
-    }
-  };
   return (
     <div className="flex duo:gap-3">
       <div className="w-full">
         <HeaderWithBackBtn title={<Search />} />
         <div className="px-4">
           <div className="mt-6 space-y-5">
-            {communities_list.map((item, index) => (
-              <CommunityCard
-                key={index}
-                {...item}
-                btnOnClick={() => btnOnClick(item)}
-              />
+            {communities?.items?.map((item, index) => (
+              <CommunityCard key={index} {...item} />
             ))}
           </div>
         </div>

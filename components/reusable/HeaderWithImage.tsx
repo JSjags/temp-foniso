@@ -11,8 +11,8 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { FaArrowLeftLong } from "react-icons/fa6";
 import { IoMdMore } from "react-icons/io";
-import { Lock } from "lucide-react";
-import { useTheme } from "next-themes";
+import { CiGlobe } from "react-icons/ci";
+import { RxLockClosed } from "react-icons/rx";
 import { formatNumber } from "@/utils";
 
 type Props = {
@@ -20,12 +20,12 @@ type Props = {
   imgSrc: string;
   name: string;
   memberCount: number;
+  isPrivate?: boolean;
   sideBtn?: ReactNode;
 };
 
 const HeaderWithImage = (props: Props) => {
   const { back } = useRouter();
-  const { resolvedTheme } = useTheme();
 
   return (
     <>
@@ -75,15 +75,15 @@ const HeaderWithImage = (props: Props) => {
         <div className="">
           <p className="text-2xl duo:text-[26px] font-bold">{props.name}</p>
           <div className="flex gap-1 items-end mt-4">
-            <Lock
-              color={resolvedTheme === "dark" ? "#ffffff" : "#000000"}
-              strokeWidth={1.5}
-              height={18}
-              width={18}
-            />
+            {props?.isPrivate ? (
+              <RxLockClosed className="text-base stroke-[0.6px]" />
+            ) : (
+              <CiGlobe className="text-base text-black dark:text-white" />
+            )}
 
             <p className="text-sm leading-none">
-              {formatNumber(props.memberCount)} members
+              {formatNumber(props.memberCount)}{" "}
+              {props.memberCount > 1 ? "members" : "member"}
             </p>
           </div>
         </div>
