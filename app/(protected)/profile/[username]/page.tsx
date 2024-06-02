@@ -1,4 +1,5 @@
 "use client";
+import Loading from "@/components/reusable/Loading";
 import Post from "@/components/reusable/Post";
 import SportIcon from "@/components/reusable/SportIcon";
 import ErrorToast from "@/components/reusable/toasts/ErrorToast";
@@ -29,15 +30,21 @@ import {
   getPublicUserProfile,
 } from "@/services/api/userService";
 import { PostMeta, User } from "@/types";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import {
+  useInfiniteQuery,
+  useMutation,
+  useQuery,
+  useQueryClient,
+} from "@tanstack/react-query";
 import { CalendarDays, MoreVertical } from "lucide-react";
 import { useTheme } from "next-themes";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import React, { useMemo } from "react";
+import React, { Fragment, useEffect, useMemo } from "react";
 import toast from "react-hot-toast";
 import { ImSpinner2 } from "react-icons/im";
 import { IoArrowBack } from "react-icons/io5";
+import { useInView } from "react-intersection-observer";
 
 const Page = ({ params }: { params: any }) => {
   const router = useRouter();
@@ -47,6 +54,8 @@ const Page = ({ params }: { params: any }) => {
     queryKey: ["public-profile-page"],
     queryFn: () => getPublicUserProfile(params.username),
   });
+
+  const { ref: userPostsRef, inView: usersPostsInView } = useInView();
 
   console.log(params.username);
 
@@ -224,19 +233,31 @@ const Page = ({ params }: { params: any }) => {
 
   console.log(profileData.data);
 
-  const usersPosts = useQuery({
+  const usersPosts = useInfiniteQuery({
     queryKey: [
       `fetch-public-users-posts-${profileData.data?.data.data?.user?.id}`,
     ],
-    queryFn: () => fetchUsersPosts(profileData.data?.data.data?.user?.id!),
-    select(data) {
-      return data.data.data.items;
+    queryFn: ({ pageParam }: { pageParam: number }) =>
+      fetchUsersPosts(profileData.data?.data.data?.user?.id!, pageParam),
+    initialPageParam: 0,
+    getNextPageParam: (lastPage, allPages, lastPageParam, allPageParams) => {
+      console.log(lastPage, allPages, lastPageParam, allPageParams);
+      if (lastPage.length === 0) {
+        return undefined;
+      }
+      return lastPageParam + 1;
     },
   });
 
   const baseUrl = window.location.protocol + "//" + window.location.host + "/";
 
   console.log(usersPosts);
+
+  useEffect(() => {
+    if (usersPostsInView) {
+      usersPosts.fetchNextPage();
+    }
+  }, [usersPosts.fetchNextPage, usersPostsInView]);
 
   return (
     <>
@@ -450,7 +471,11 @@ const Page = ({ params }: { params: any }) => {
               <div className="mt-2 min-[480px]:mt-4 flex gap-x-4">
                 <p className="font-bold text-sm min-[480px]:text-base">
                   <span
-                    onClick={() => router.push("/profile/stats?tab=following")}
+                    onClick={() =>
+                      router.push(
+                        `/profile/${profileData.data?.data.data?.user?.username}/stats?tab=following`
+                      )
+                    }
                     className="cursor-pointer"
                   >
                     {formatNumberCount(
@@ -463,7 +488,11 @@ const Page = ({ params }: { params: any }) => {
                 </p>
                 <p className="font-bold text-sm min-[480px]:text-base">
                   <span
-                    onClick={() => router.push("/profile/stats?tab=following")}
+                    onClick={() =>
+                      router.push(
+                        `/profile/${profileData.data?.data.data?.user?.username}/stats?tab=followers`
+                      )
+                    }
                     className="cursor-pointer"
                   >
                     {formatNumberCount(
@@ -504,10 +533,48 @@ const Page = ({ params }: { params: any }) => {
                   <ImSpinner2 className="size-10 animate-spin text-[#4ED17E]" />
                 </div>
               )}
-              {Boolean(usersPosts.data && usersPosts.data.length) &&
-                usersPosts.data.map((post: PostMeta, i: number) => (
-                  <Post key={i} postData={post} />
-                ))}
+              {Boolean(
+                usersPosts.isSuccess &&
+                  usersPosts.data?.pages[0].data.data.items.length
+              ) && (
+                <>
+                  {usersPosts.data?.pages.map((group, i) => (
+                    <Fragment key={i}>
+                      {group.data.data.items.map(
+                        (post: PostMeta, i: number) => (
+                          <Post
+                            key={post.updated_at}
+                            postData={post}
+                            optionsType="user"
+                          />
+                        )
+                      )}
+                    </Fragment>
+                  ))}
+                  <div ref={userPostsRef} className="bg-background h-fit">
+                    {usersPosts.isFetchingNextPage && (
+                      <Loading
+                        isLoading={usersPosts.isFetchingNextPage}
+                        className="w-full min-h-10 pb-5"
+                      />
+                    )}
+                  </div>
+                </>
+              )}
+              {Boolean(
+                usersPosts.isSuccess && usersPosts.data?.pages[0].length <= 0
+              ) && (
+                <div className="flex justify-center items-center">
+                  <div className="my-10 px-6">
+                    <p className="font-bold text-foreground text-center">
+                      No posts
+                    </p>
+                    <p className="text-foreground/50 mt-2 text-sm text-center">
+                      It&apos;s empty in here. There are no posts to see.
+                    </p>
+                  </div>
+                </div>
+              )}
             </div>
           </div>
           <RightSideBar

@@ -3,6 +3,7 @@ export type AnyObject = { [key: string]: any };
 export type PostProps = {
   postData: PostMeta;
   optionsType?: "user";
+  isFetching?: boolean;
 };
 
 export interface LoginCredentials {
@@ -287,4 +288,18 @@ export type ApiResponse<T> = {
     totalPages: number;
     currentPage: number;
   };
+};
+
+export type NotificationMeta = {
+  id: number;
+  userId: number;
+  senderId: number;
+  title: string;
+  content: string;
+  type: string;
+  action: null;
+  status: string;
+  created_at: string;
+  updated_at: string;
+  sender: User;
 };

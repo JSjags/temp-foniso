@@ -10,6 +10,7 @@ type Props = {
   tabClassName?: string;
   wrapperClassName?: string;
   tabsContainerClassName?: string;
+  showBorder?: boolean;
 };
 
 const SubTabs = ({
@@ -17,6 +18,7 @@ const SubTabs = ({
   tabClassName,
   wrapperClassName,
   tabsContainerClassName,
+  showBorder,
 }: Props) => {
   const searchParams = useSearchParams();
   const router = useRouter();
@@ -48,7 +50,8 @@ const SubTabs = ({
     <div
       className={cn(
         "w-full flex justify-between overflow-x-scroll hide-scrollbar",
-        wrapperClassName
+        wrapperClassName,
+        showBorder && "border-b border-border "
       )}
     >
       {tabs.map((tab, i) => (

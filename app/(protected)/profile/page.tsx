@@ -2,6 +2,7 @@
 
 import EditProfileDialog from "@/components/Modal/EditProfileDialog";
 import VerificationDialog from "@/components/Modal/VerificationDialog";
+import Loading from "@/components/reusable/Loading";
 import Post from "@/components/reusable/Post";
 import SportIcon from "@/components/reusable/SportIcon";
 import ErrorToast from "@/components/reusable/toasts/ErrorToast";
@@ -29,17 +30,23 @@ import {
   getPublicUserProfile,
 } from "@/services/api/userService";
 import { PostMeta } from "@/types";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import {
+  useInfiniteQuery,
+  useMutation,
+  useQuery,
+  useQueryClient,
+} from "@tanstack/react-query";
 import { format } from "date-fns";
 import { CalendarDays, EditIcon, MoreVertical } from "lucide-react";
 import { useTheme } from "next-themes";
 import Image from "next/image";
 import { useRouter, useParams, useSearchParams } from "next/navigation";
-import { useEffect, useMemo, useState } from "react";
+import { Fragment, useEffect, useMemo, useState } from "react";
 import toast from "react-hot-toast";
 import { ImSpinner2 } from "react-icons/im";
 import { IoArrowBack } from "react-icons/io5";
 import { TbEdit } from "react-icons/tb";
+import { useInView } from "react-intersection-observer";
 
 type Props = {};
 
@@ -48,6 +55,9 @@ const Profile = (props: Props) => {
   const { theme } = useTheme();
   const queryClient = useQueryClient();
   const { userData, setShowCreatePost } = useUserContext();
+
+  const { ref: userPostsRef, inView: usersPostsInView } = useInView();
+  // const { ref: savedPostsRef, savedPostsInView } = useInView();
 
   const baseUrl = window.location.protocol + "//" + window.location.host + "/";
 
@@ -160,11 +170,17 @@ const Profile = (props: Props) => {
     userData?.user.id,
   ]);
 
-  const usersPosts = useQuery({
+  const usersPosts = useInfiniteQuery({
     queryKey: ["fetch-users-posts"],
-    queryFn: () => fetchUsersPosts(userData?.user.id!),
-    select(data) {
-      return data.data.data.items;
+    queryFn: ({ pageParam }: { pageParam: number }) =>
+      fetchUsersPosts(userData?.user.id!, pageParam),
+    initialPageParam: 0,
+    getNextPageParam: (lastPage, allPages, lastPageParam, allPageParams) => {
+      console.log(lastPage, allPages, lastPageParam, allPageParams);
+      if (lastPage.length === 0) {
+        return undefined;
+      }
+      return lastPageParam + 1;
     },
   });
 
@@ -200,6 +216,18 @@ const Profile = (props: Props) => {
       setShowVerificationModal(true);
     }
   }, [selectType]);
+
+  useEffect(() => {
+    if (usersPostsInView) {
+      usersPosts.fetchNextPage();
+    }
+  }, [usersPosts.fetchNextPage, usersPostsInView]);
+
+  // useEffect(() => {
+  //   if (savedPostsInView) {
+  //     savedPosts.fetchNextPage();
+  //   }
+  // }, [savedPosts.fetchNextPage, savedPostsInView]);
 
   return (
     <>
@@ -392,9 +420,11 @@ const Profile = (props: Props) => {
             </div>
             <div className="mt-4 flex items-center gap-x-2">
               <CalendarDays className="text-foreground/70 size-[14px] min-[480px]:size-[18px]" />
-              <span className="text-foreground/70 text-xs min-[480px]:text-base">
-                Joined {format(userData?.user.created_at ?? "", "PPP")}
-              </span>
+              {userData?.user?.created_at && (
+                <span className="text-foreground/70 text-xs min-[480px]:text-base">
+                  Joined {format(userData?.user?.created_at ?? "", "PPP")}
+                </span>
+              )}
             </div>
           </div>
           {/* Posts and saved posts tab header */}
@@ -436,18 +466,36 @@ const Profile = (props: Props) => {
               )}
               {Boolean(
                 usersPosts.isSuccess &&
-                  usersPosts.data &&
-                  usersPosts.data.length
-              ) &&
-                usersPosts.data.map((post: PostMeta, i: number) => (
-                  <Post
-                    key={post.updated_at}
-                    postData={post}
-                    optionsType="user"
-                  />
-                ))}
+                  usersPosts.data?.pages[0].data.data.items.length
+              ) && (
+                <>
+                  {usersPosts.data?.pages.map((group, i) => (
+                    <Fragment key={i}>
+                      {group.data.data.items.map(
+                        (post: PostMeta, i: number) => (
+                          <Post
+                            key={post.updated_at}
+                            postData={post}
+                            optionsType="user"
+                          />
+                        )
+                      )}
+                    </Fragment>
+                  ))}
+                  <div ref={userPostsRef} className="bg-background h-fit">
+                    {usersPosts.isFetchingNextPage && (
+                      <Loading
+                        isLoading={usersPosts.isFetchingNextPage}
+                        className="w-full min-h-10 pb-5"
+                      />
+                    )}
+                  </div>
+                </>
+              )}
 
-              {Boolean(usersPosts.isSuccess && usersPosts.data.length <= 0) && (
+              {Boolean(
+                usersPosts.isSuccess && usersPosts.data?.pages[0].length <= 0
+              ) && (
                 <div className="flex justify-center items-center">
                   <div className="my-10 px-6">
                     <p className="font-bold text-foreground text-center">

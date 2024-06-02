@@ -1,3 +1,4 @@
+import FollowUnfollowTile from "@/components/reusable/FollowUnfollowTile";
 import SportIcon from "@/components/reusable/SportIcon";
 import PageLoadingSpinner from "@/components/Spinner/PageLoadingSpinner";
 import { profileImageplaceholder } from "@/constants";
@@ -5,12 +6,13 @@ import { searchExplore } from "@/services/api/explore";
 import { User } from "@/types";
 import { useQuery } from "@tanstack/react-query";
 import Image from "next/image";
-import { useParams, useSearchParams } from "next/navigation";
+import { useParams, useRouter, useSearchParams } from "next/navigation";
 import React from "react";
 
 type Props = {};
 
 const SearchPeople = (props: Props) => {
+  const router = useRouter();
   const searchParams = useSearchParams();
 
   const searchPeople = useQuery({
@@ -51,47 +53,50 @@ const SearchPeople = (props: Props) => {
       <div className="mt-2">
         {searchPeople.data?.data.data.items.map(
           (suggestion: User, i: number) => (
-            <div
-              key={i}
-              className="flex gap-x-3 rounded-md p-4 cursor-pointer"
-              role="button"
-              onClick={() => {}}
-            >
-              <Image
-                width={36}
-                height={36}
-                className="size-[36px] sm:size-[36px] rounded-full object-cover"
-                alt="avatar"
-                src={
-                  suggestion?.usermeta?.avatar !== null
-                    ? suggestion?.usermeta?.avatar
-                    : profileImageplaceholder
-                }
-              />
-              <div>
-                <div className="flex gap-x-2 items-center">
-                  <p className="text-foreground hover:underline font-semibold text-sm line-clamp-1 text-ellipsis">
-                    {suggestion?.usermeta.firstname}{" "}
-                    {suggestion?.usermeta.lastname}
-                  </p>
-                  <div className="flex gap-x-1 items-center">
-                    {suggestion?.verified && (
-                      <Image
-                        width={14}
-                        height={14}
-                        className="size-[16px] rounded-full object-cover"
-                        alt="avatar"
-                        src={"/assets/app-icons/verified-icon.svg"}
-                      />
-                    )}
-                    <SportIcon
-                      category={suggestion?.usermeta?.favorite_sport}
-                    />
-                  </div>
-                </div>
-                <p className="text-inactive text-xs">@{suggestion?.username}</p>
-              </div>
-            </div>
+            // <div
+            //   key={i}
+            //   className="flex gap-x-3 rounded-md p-4 cursor-pointer"
+            //   role="button"
+            //   onClick={() => {
+            //     router.push(`/profile/${suggestion.username}`);
+            //   }}
+            // >
+            //   <Image
+            //     width={36}
+            //     height={36}
+            //     className="size-[36px] sm:size-[36px] rounded-full object-cover"
+            //     alt="avatar"
+            //     src={
+            //       suggestion?.usermeta?.avatar !== null
+            //         ? suggestion?.usermeta?.avatar
+            //         : profileImageplaceholder
+            //     }
+            //   />
+            //   <div>
+            //     <div className="flex gap-x-2 items-center">
+            //       <p className="text-foreground hover:underline font-semibold text-sm line-clamp-1 text-ellipsis">
+            //         {suggestion?.usermeta.firstname}{" "}
+            //         {suggestion?.usermeta.lastname}
+            //       </p>
+            //       <div className="flex gap-x-1 items-center">
+            //         {suggestion?.verified && (
+            //           <Image
+            //             width={14}
+            //             height={14}
+            //             className="size-[16px] rounded-full object-cover"
+            //             alt="avatar"
+            //             src={"/assets/app-icons/verified-icon.svg"}
+            //           />
+            //         )}
+            //         <SportIcon
+            //           category={suggestion?.usermeta?.favorite_sport}
+            //         />
+            //       </div>
+            //     </div>
+            //     <p className="text-inactive text-xs">@{suggestion?.username}</p>
+            //   </div>
+            // </div>
+            <FollowUnfollowTile key={i} user={suggestion} />
           )
         )}
       </div>

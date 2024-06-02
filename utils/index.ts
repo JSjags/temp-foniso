@@ -1,4 +1,4 @@
-import { AnyObject, OptionProp, User } from "@/types";
+import { AnyObject, OptionProp, PostMeta, User } from "@/types";
 import moment from "moment";
 
 export const formatNumber = (arg: number | string) => {
@@ -216,4 +216,55 @@ export const customRelativeTime = (date: string) => {
     return `${duration.seconds()}s ago`;
   }
   return "just now";
+};
+
+export const canIReply = (
+  user: User,
+  post: PostMeta,
+  accountFollowing: { follower: User }[] | undefined
+): boolean => {
+  // Post creator can always reply to their post
+  if (post.user.id === user.id) {
+    return false;
+  }
+
+  console.log(post.canReply);
+
+  // Checks to see if current user can reply to post
+  if (post.canReply.toLowerCase().includes("everyone")) {
+    return false;
+  }
+
+  if (post.canReply.toLowerCase().includes("mention")) {
+    if (post.tagedUsers.includes(user.username)) {
+      return false;
+    } else return true;
+  }
+  if (post.canReply.toLowerCase().includes("verified")) {
+    if (user.verified) {
+      return false;
+    } else return true;
+  }
+  if (post.canReply.toLowerCase().includes("follow")) {
+    if (accountFollowing === undefined) {
+      return true;
+    } else if (accountFollowing.length <= 0) {
+      return true;
+    } else if (
+      accountFollowing.filter((f) => f.follower.id === user.id).length
+    ) {
+      return false;
+    } else {
+      return true;
+    }
+  }
+  return false;
+};
+
+export const formatReplyOption = (value: string) => {
+  if (value.toLowerCase().includes("everyone")) return "everyone";
+  if (value.toLowerCase().includes("mention")) return "mention";
+  if (value.toLowerCase().includes("follow")) return "follow";
+  if (value.toLowerCase().includes("verified")) return "verified";
+  return value;
 };

@@ -22,7 +22,7 @@ import toast from "react-hot-toast";
 import ErrorToast from "../reusable/toasts/ErrorToast";
 import SuccessToast from "../reusable/toasts/SuccessToast";
 import { ImSpinner2 } from "react-icons/im";
-import { imageUrlToFile } from "@/utils";
+import { formatReplyOption, imageUrlToFile } from "@/utils";
 import {
   Select,
   SelectContent,
@@ -154,7 +154,10 @@ const CreatePostCore = ({
       setValue("");
       setSelectedFiles([]);
       queryClient.invalidateQueries({
-        queryKey: ["get-posts", "fetch-users-posts"],
+        queryKey: ["get-posts"],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["fetch-users-posts"],
       });
       toast.custom((t) => (
         <SuccessToast t={t} message={"Post created successfully."} />
@@ -207,7 +210,7 @@ const CreatePostCore = ({
     if (postType === "post") {
       formData.append("type", postType);
       formData.append("content", value);
-      formData.append("canReply", replyOption);
+      formData.append("canReply", formatReplyOption(replyOption));
       if (communityId) {
         formData.append("communityId", communityId.toString());
       }
@@ -261,7 +264,7 @@ const CreatePostCore = ({
 
     formData.append("type", "post");
     formData.append("content", postContent ?? "");
-    formData.append("canReply", replyOption);
+    formData.append("canReply", formatReplyOption(replyOption));
 
     if (mentions && mentions.length > 0) {
       mentions.forEach((mention) => {
@@ -718,7 +721,7 @@ const CreatePostCore = ({
                   size={20}
                   className="text-inactive group-hover:text-colorPrimary"
                 />
-                <span className="hidden lg:block font-normal text-xs sm:text-base text-inactive whitespace-nowrap group-hover:text-colorPrimary">
+                <span className="hidden min-[1190px]:block font-normal text-xs sm:text-base text-inactive whitespace-nowrap group-hover:text-colorPrimary">
                   Add media
                 </span>
               </Label>
@@ -757,7 +760,7 @@ const CreatePostCore = ({
                 </div>
                 <span
                   className={cn(
-                    "hidden lg:block font-normal text-xs sm:text-base text-inactive whitespace-nowrap group-hover:text-colorPrimary",
+                    "hidden min-[1190px]:block font-normal text-xs sm:text-base text-inactive whitespace-nowrap group-hover:text-colorPrimary",
                     postType === "poll" &&
                       "text-colorPrimary convert-to-primary-color"
                   )}

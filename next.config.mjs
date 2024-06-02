@@ -20,6 +20,10 @@ const nextConfig = {
     remotePatterns: [
       {
         protocol: "https",
+        hostname: "**",
+      },
+      {
+        protocol: "https",
         hostname: "cdn2.f-cdn.com",
         port: "",
         pathname: "/files/**",

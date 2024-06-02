@@ -99,7 +99,7 @@ const UserPostOptions = ({ post }: Props) => {
           onClick={(e) => {
             e.stopPropagation();
           }}
-          className="w-[clamp(240px,80%,424px)] md:w-[324px] lg:w-[420px] absolute -translate-x-[105%] top-0 bg-background border-border"
+          className="w-[clamp(240px,80%,280px)] md:w-[280px] lg:w-[280px] absolute -translate-x-[105%] top-0 bg-background border-border"
         >
           <DropdownMenuGroup
             onClick={(e) => {
@@ -112,7 +112,7 @@ const UserPostOptions = ({ post }: Props) => {
                 e.stopPropagation();
                 setShowDeletePostModal(true);
               }}
-              className="p-2 sm:p-4 text-sm sm:text-base text-foreground font-semibold data-[highlighted]:text-foreground data-[highlighted]:bg-colorPrimary/30"
+              className="p-2 sm:p-4 text-sm sm:text-base text-foreground font-semibold data-[highlighted]:text-foreground"
             >
               <Image
                 width={30}
@@ -129,7 +129,7 @@ const UserPostOptions = ({ post }: Props) => {
                 setCurrentPost(post);
                 setShowCreatePost(true);
               }}
-              className="p-2 sm:p-4 text-sm sm:text-base text-foreground font-semibold data-[highlighted]:text-foreground data-[highlighted]:bg-colorPrimary/30"
+              className="p-2 sm:p-4 text-sm sm:text-base text-foreground font-semibold data-[highlighted]:text-foreground"
             >
               <Image
                 width={24}
