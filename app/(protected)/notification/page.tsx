@@ -19,7 +19,10 @@ import {
   notificationTabs,
   placeholderNewsNotification,
 } from "@/constants";
+import { getNotifications } from "@/services/api/notification";
+import { NotificationMeta } from "@/types";
 import { DialogContent, DialogTitle } from "@radix-ui/react-dialog";
+import { useQuery } from "@tanstack/react-query";
 import { Settings, X } from "lucide-react";
 import Image from "next/image";
 import { useSearchParams } from "next/navigation";
@@ -32,6 +35,13 @@ const Page = (props: Props) => {
     useState(false);
   const searchParams = useSearchParams();
 
+  const notifications = useQuery({
+    queryKey: ["get-notifications"],
+    queryFn: () => getNotifications(),
+  });
+
+  console.log(notifications.data?.data.data.items);
+
   const tab = searchParams.get("tab");
 
   const identifyTab = () => {
@@ -40,26 +50,34 @@ const Page = (props: Props) => {
         return (
           // <NotificationEmptyState message="You haven’t gotten any notification yet" />
           <div className="px-5">
-            {allNotification.map((notification, i) => (
-              <AllNotificationCard
-                key={i}
-                data={notification}
-                type={notification.type}
-              />
-            ))}
+            {notifications.isSuccess &&
+              Boolean(notifications.data?.data.data.items.length) &&
+              (notifications.data?.data.data.items as NotificationMeta[]).map(
+                (notification, i) => (
+                  <AllNotificationCard
+                    key={i}
+                    data={notification}
+                    type={notification.type}
+                  />
+                )
+              )}
           </div>
         );
       case "all":
         return (
           // <NotificationEmptyState message="You haven’t gotten any notification yet" />
           <div className="px-5">
-            {allNotification.map((notification, i) => (
-              <AllNotificationCard
-                key={i}
-                data={notification}
-                type={notification.type}
-              />
-            ))}
+            {notifications.isSuccess &&
+              Boolean(notifications.data?.data.data.items.length) &&
+              (notifications.data?.data.data.items as NotificationMeta[]).map(
+                (notification, i) => (
+                  <AllNotificationCard
+                    key={i}
+                    data={notification as NotificationMeta}
+                    type={notification.type}
+                  />
+                )
+              )}
           </div>
         );
       case "news":
@@ -88,13 +106,17 @@ const Page = (props: Props) => {
 
           // <NotificationEmptyState message="You haven’t gotten any notification yet" />
           <div className="px-5">
-            {allNotification.map((notification, i) => (
-              <AllNotificationCard
-                key={i}
-                data={notification}
-                type={notification.type}
-              />
-            ))}
+            {notifications.isSuccess &&
+              Boolean(notifications.data?.data.data.items.length) &&
+              (notifications.data?.data.data.items as NotificationMeta[]).map(
+                (notification, i) => (
+                  <AllNotificationCard
+                    key={i}
+                    data={notification}
+                    type={notification.type}
+                  />
+                )
+              )}
           </div>
         );
     }
@@ -184,7 +206,7 @@ const Page = (props: Props) => {
             />
           </div>
           <div className="border-b border-border mt-6 px-5">
-            <SubTabs tabs={notificationTabs} />
+            {/* <SubTabs tabs={notificationTabs} /> */}
           </div>
         </div>
         {/* Notifications section */}

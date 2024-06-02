@@ -84,7 +84,7 @@ const ReactionButton = ({
   return (
     <div
       ref={reactionsRef}
-      className="flex items-center cursor-pointer relative"
+      className="flex items-center cursor-pointer relative hover:bg-foreground/5 rounded-full mr-1 pl-1 h-7"
       role="button"
       onClick={(e) => {
         e.stopPropagation();
@@ -110,7 +110,7 @@ const ReactionButton = ({
                 whileHover={"hover"}
                 className={cn(
                   "rounded-full p-1 hover:bg-foreground/20 cursor-pointer",
-                  postLikedByMe.emojiId === index + 1 && "bg-colorPrimary"
+                  postLikedByMe.emojiId === index + 1 && "bg-foreground"
                 )}
                 role="button"
                 onClick={() => {

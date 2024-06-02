@@ -11,7 +11,11 @@ import { Button } from "../ui/button";
 import { X } from "lucide-react";
 import { PostMeta } from "@/types";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { blockUserQuery, unblockUserQuery } from "@/services/api/post";
+import {
+  blockUserQuery,
+  muteUserQuery,
+  unblockUserQuery,
+} from "@/services/api/post";
 import { ImSpinner2 } from "react-icons/im";
 import toast from "react-hot-toast";
 import SuccessToast from "./toasts/SuccessToast";
@@ -77,6 +81,31 @@ const ReportUserSuccessModal = ({
     },
   });
 
+  const muteUser = useMutation({
+    mutationKey: ["mute-user"],
+    mutationFn: (id: number) => muteUserQuery(post.user.id),
+    onSuccess: () => {
+      toast.custom(
+        (t) => <SuccessToast t={t} message="User muted successfully" />,
+        { id: "block/unblock user" }
+      );
+      setShowReportSuccessModal(false);
+      // queryClient.invalidateQueries({ queryKey: ["blocked-users"] });
+      // queryClient.invalidateQueries({ queryKey: ["user-following"] });
+      // queryClient.invalidateQueries({ queryKey: ["suggested-follows"] });
+      // queryClient.invalidateQueries({ type: "all" });
+    },
+    onError: () => {
+      toast.custom((t) => <ErrorToast t={t} message="Error muting user" />, {
+        id: "mute user",
+      });
+      // queryClient.invalidateQueries({ queryKey: ["blocked-users"] });
+      // queryClient.invalidateQueries({ queryKey: ["user-following"] });
+      // queryClient.invalidateQueries({ queryKey: ["suggested-follows"] });
+      // queryClient.invalidateQueries({ type: "all" });
+    },
+  });
+
   const checkIfUserIsBlocked = useMemo(() => {
     if (blockedUsers.isError || !blockedUsers.isSuccess) {
       return false;
@@ -119,11 +148,20 @@ const ReportUserSuccessModal = ({
               </div>
               <div className="flex flex-col items-center gap-y-4 my-6 mb-6 sm:mb-20">
                 <Button
-                  disabled={blockUser.isPending}
-                  variant={"ghost"}
-                  className="hover:bg-foreground hover:text-background text-foreground/70 w-[200px] rounded-full"
+                  disabled={muteUser.isPending}
+                  onClick={() => {
+                    muteUser.mutate(post.user.id);
+                  }}
+                  className="hover:bg-foreground/10 bg-background hover:text-foreground text-foreground/70 w-[200px] rounded-full"
                 >
-                  Mute @{post.user.username}
+                  {muteUser.isPending ? (
+                    <div className="flex justify-center">
+                      {/* <PageLoadingSpinner /> */}
+                      <ImSpinner2 className="size-6 animate-spin text-[#4ED17E]" />
+                    </div>
+                  ) : (
+                    <span>Mute @{post.user.username}</span>
+                  )}
                 </Button>
                 <Button
                   disabled={blockUser.isPending || unblockUser.isPending}
@@ -135,7 +173,7 @@ const ReportUserSuccessModal = ({
                       blockUser.mutate();
                     }
                   }}
-                  className="hover:bg-foreground hover:text-background text-foreground/70 w-[200px] rounded-full"
+                  className="hover:bg-foreground/10 hover:text-foreground text-foreground/70 w-[200px] rounded-full"
                 >
                   {blockUser.isPending || unblockUser.isPending ? (
                     <div className="flex justify-center">

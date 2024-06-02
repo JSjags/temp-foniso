@@ -3,6 +3,7 @@
 import ExploreSearch from "@/components/reusable/ExploreSearch";
 import FavoritePosts from "@/components/reusable/FavoritePosts";
 import Highlights from "@/components/reusable/Highlights";
+import PeopleSuggestions from "@/components/reusable/PeopleSuggestions";
 import Post from "@/components/reusable/Post";
 import SubTabs from "@/components/reusable/SubTabs";
 import Trending from "@/components/reusable/Trending";
@@ -39,10 +40,13 @@ const Explore = (props: Props) => {
         return <SearchCommunities />;
       default:
         return (
-          <>
+          <div className="min-h-screen">
+            <div className="min-[860px]:hidden">
+              <PeopleSuggestions />
+            </div>
             <Highlights />
             <FavoritePosts />
-          </>
+          </div>
         );
     }
   };

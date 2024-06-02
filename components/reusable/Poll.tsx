@@ -56,7 +56,22 @@ const Poll = ({ post, setPost }: Props) => {
   });
 
   const handleOptionSelection = (pollOptionId: number) => {
-    pollResponse.mutate(pollOptionId);
+    console.log(post.change_option);
+    if (post.change_option === true) {
+      pollResponse.mutate(pollOptionId);
+    } else {
+      toast.custom(
+        (t) => (
+          <NoticeToast
+            t={t}
+            title="Choice Locked"
+            id="choice-locked"
+            message="You cannot change your choice once it has been submitted."
+          />
+        ),
+        { id: "poll ended" }
+      );
+    }
   };
 
   const handlePollAction = (option: PollMeta) => {
@@ -70,7 +85,7 @@ const Poll = ({ post, setPost }: Props) => {
               t={t}
               title="Poll ended"
               id="poll ended"
-              message="Voting for this poll has closed"
+              message="You cannot change your choice as voting for this poll has closed."
             />
           ),
           { id: "poll ended" }

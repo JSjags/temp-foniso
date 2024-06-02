@@ -1,23 +1,40 @@
+"use client";
+
 import useDebounce from "@/hooks/useDebounce";
 import axiosInstance from "@/services/api/axiosInstance";
 import { User } from "@/types";
 import axios from "axios";
-import { ReactNode, useState } from "react";
+import {
+  MutableRefObject,
+  ReactNode,
+  RefObject,
+  useEffect,
+  useState,
+} from "react";
 import {
   MentionsInput,
   Mention,
   MentionItem,
   SuggestionDataItem,
+  MentionsInputComponent,
 } from "react-mentions";
 import SportIcon from "./SportIcon";
 import Image from "next/image";
 import { profileImageplaceholder } from "@/constants";
 import { ScrollArea } from "../ui/scroll-area";
+import { Container } from "../ui/container";
+import { DropdownMenu, DropdownMenuContent } from "../ui/dropdown-menu";
+import CustomRenderer from "./CustomRenderer";
 
 type Props = {
   value: string;
+  height?: number;
+  paddingTop?: number;
   placeholder: string;
+  commentType?: string;
   readOnly?: boolean;
+  fontSize?: number;
+  inputRef?: RefObject<HTMLInputElement>;
   handleChange: (
     e: { target: { value: string } },
     newValue: string,
@@ -58,13 +75,83 @@ const MessageBox = ({
   value,
   handleChange,
   placeholder,
+  height,
+  fontSize,
+  commentType,
+  paddingTop,
   readOnly = false,
+  inputRef,
 }: Props) => {
   const [query, setQuery] = useState("");
   const [isFetchingUsernameMention, setIsFetchingUsernameMention] =
     useState(false);
 
   const debouncedSearchQuery = useDebounce(query ?? "", 500);
+
+  const defaultStyle = {
+    control: {
+      backgroundColor: "transparent",
+      fontSize: fontSize ?? 16,
+      fontWeight: "normal",
+    },
+
+    "&multiLine": {
+      control: {
+        fontFamily: "inherit",
+        minHeight: height ?? 24,
+      },
+      highlighter: {
+        padding: 9,
+        border: "1px solid transparent",
+        color: "#188C43",
+        position: "relative",
+        zIndex: 10,
+        pointerEvents: "none",
+      },
+      input: {
+        padding: 9,
+        paddingTop: paddingTop ?? 0,
+        fontSize: fontSize ?? 16,
+        border: "1px solid transparent",
+        minHeight: height ?? 24,
+      },
+    },
+
+    "&singleLine": {
+      display: "inline-block",
+      width: 180,
+
+      highlighter: {
+        padding: 1,
+        border: "1px inset transparent",
+        color: "#188C43",
+      },
+      input: {
+        padding: 1,
+        border: "1px inset",
+      },
+    },
+
+    suggestions: {
+      zIndex: 100,
+      backgroundColor: "hsl(var(--background))",
+      borderRadius: 8,
+      list: {
+        backgroundColor: "hsl(var(--background))",
+        fontSize: 14,
+        borderRadius: 8,
+      },
+      item: {
+        padding: "5px 15px",
+        borderBottom: "1px solid hsl(var(--border))",
+        "&focused": {
+          backgroundColor: "#188C4330",
+        },
+      },
+    },
+  };
+
+  useEffect(() => {}, [commentType]);
 
   // const searchUsername = useQuery({
   //   queryKey: ["search-username", debouncedSearchQuery],
@@ -162,9 +249,15 @@ const MessageBox = ({
 
   const customContainerRenderer = (children: ReactNode) => {
     return (
-      <ScrollArea className="h-72 w-full rounded-md border border-border bg-transparent">
-        {children}
-      </ScrollArea>
+      // <DropdownMenu>
+      //   <DropdownMenuContent className="w-56 h-72">
+      <CustomRenderer>
+        <ScrollArea className="max-h-72 w-full rounded-md border border-border bg-transparent">
+          {children}
+        </ScrollArea>
+      </CustomRenderer>
+      //   </DropdownMenuContent>
+      // </DropdownMenu>
     );
   };
 
@@ -174,6 +267,7 @@ const MessageBox = ({
       readOnly={readOnly}
       customSuggestionsContainer={customContainerRenderer}
       maxLength={280}
+      inputRef={inputRef}
       placeholder={placeholder}
       className="w-full text-foreground min-h-10 text-base border-none outline-none ring-0 focus:ring-0 focus:outline-none focus-visible:ring-0 focus-visible:outline-none focus-visible:outline-offset-0 focus-visible:outline-[transparent_!important]"
       value={value}
@@ -201,67 +295,6 @@ const MessageBox = ({
       /> */}
     </MentionsInput>
   );
-};
-
-const defaultStyle = {
-  control: {
-    backgroundColor: "transparent",
-    fontSize: 16,
-    fontWeight: "normal",
-  },
-
-  "&multiLine": {
-    control: {
-      fontFamily: "inherit",
-      minHeight: 60,
-    },
-    highlighter: {
-      padding: 9,
-      border: "1px solid transparent",
-      color: "#188C43",
-      position: "relative",
-      zIndex: 10,
-      pointerEvents: "none",
-    },
-    input: {
-      padding: 9,
-      paddingTop: 0,
-      border: "1px solid transparent",
-    },
-  },
-
-  "&singleLine": {
-    display: "inline-block",
-    width: 180,
-
-    highlighter: {
-      padding: 1,
-      border: "1px inset transparent",
-      color: "#188C43",
-    },
-    input: {
-      padding: 1,
-      border: "1px inset",
-    },
-  },
-
-  suggestions: {
-    zIndex: 100,
-    backgroundColor: "hsl(var(--background))",
-    borderRadius: 8,
-    list: {
-      backgroundColor: "hsl(var(--background))",
-      fontSize: 14,
-      borderRadius: 8,
-    },
-    item: {
-      padding: "5px 15px",
-      borderBottom: "1px solid hsl(var(--border))",
-      "&focused": {
-        backgroundColor: "#188C4330",
-      },
-    },
-  },
 };
 
 export default MessageBox;

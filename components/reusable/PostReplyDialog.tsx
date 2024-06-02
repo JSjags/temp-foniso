@@ -21,6 +21,7 @@ import { ImSpinner2 } from "react-icons/im";
 import toast from "react-hot-toast";
 import SuccessToast from "./toasts/SuccessToast";
 import ErrorToast from "./toasts/ErrorToast";
+import MessageBox from "./MessageBox";
 
 type Props = {
   post: PostMeta;
@@ -180,11 +181,31 @@ const PostReplyDialog = ({
                   userData?.user?.usermeta?.avatar ?? profileImageplaceholder
                 }
               />
-              <Textarea
+              {/* <Textarea
                 ref={textAreaRef}
                 onChange={handleChange}
                 placeholder="Post your reply"
                 className="text-white focus:ring-transparent focus-visible:ring-transparent ring-transparent ring-offset-transparent focus-visible:ring-offset-transparent focus:ring-offset-transparent focus-visible:ring-contentBg ring-offset-0 placeholder:text-inactive border-none flex-1 text-base sm:text-xl font-normal bg-transparent py-4 pt-2 resize-none"
+              /> */}
+              <MessageBox
+                // readOnly={currentPost?.type == "poll"}
+                value={value}
+                placeholder={"Post your reply"}
+                handleChange={(e, newValue, newPlainTextValue, mentions) => {
+                  setValue(newPlainTextValue);
+                  // if (currentPost) {
+                  //   setPostContent(newPlainTextValue);
+                  // }
+                  // setMentions(mentions);
+                  // setTags
+
+                  return {
+                    e,
+                    newValue,
+                    newPlainTextValue,
+                    mentions,
+                  };
+                }}
               />
             </div>
             <div className="mt-10 flex justify-end items-center">
@@ -200,7 +221,7 @@ const PostReplyDialog = ({
                     <ImSpinner2 className="size-6 animate-spin text-white" />
                   </div>
                 ) : (
-                  <span className="w-fit text-base font-bold block p-0 align-middle">
+                  <span className="w-fit font-medium block p-0 align-middle">
                     {buttonText ?? "Reply"}
                   </span>
                 )}

@@ -57,7 +57,7 @@ export function WhoCanReply({
             size={20}
             className="text-inactive group-hover:text-colorPrimary"
           />
-          <p className="block min-[480px]:hidden lg:block font-normal text-sm sm:text-base text-inactive whitespace-nowrap group-hover:text-colorPrimary">
+          <p className="block min-[480px]:hidden min-[1190px]:block font-normal text-sm sm:text-base text-inactive whitespace-nowrap group-hover:text-colorPrimary">
             {currentOption} can reply
           </p>
         </Label>

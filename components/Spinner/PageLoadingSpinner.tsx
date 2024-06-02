@@ -1,6 +1,7 @@
 import { twMerge } from "tailwind-merge";
 import Spinner from ".";
 import { cn } from "@/lib/utils";
+import { ImSpinner2 } from "react-icons/im";
 
 type Props = {
   extraClass?: string;
@@ -8,13 +9,15 @@ type Props = {
 };
 function PageLoadingSpinner(props: Props) {
   return (
-    <div
-      className={twMerge(
-        `p-4 flex items-center justify-center`,
-        props.extraClass
-      )}
-    >
-      <Spinner extraClass={cn("h-10 w-10", props.spinnerExtraClass)} />
+    <div className="mt-0 flex justify-center">
+      {/* <PageLoadingSpinner /> */}
+      <ImSpinner2
+        className={cn(
+          "size-4 sm:size-8 animate-spin text-[#4ED17E]",
+          props.spinnerExtraClass,
+          props.extraClass
+        )}
+      />
     </div>
   );
 }
