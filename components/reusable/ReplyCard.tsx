@@ -8,7 +8,14 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "../ui/alert-dialog";
-import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import {
+  Dispatch,
+  SetStateAction,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState,
+} from "react";
 import { useUserContext } from "@/context/UserContext";
 import { ReplyMeta } from "@/types";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
@@ -18,7 +25,7 @@ import {
   likeOrUnlikeReply,
 } from "@/services/api/post";
 import Image from "next/image";
-import { userPlaceholderImage } from "@/constants";
+import { profileImageplaceholder, userPlaceholderImage } from "@/constants";
 import moment from "moment";
 import {
   DropdownMenu,
@@ -33,9 +40,19 @@ import { Button } from "../ui/button";
 import PageLoadingSpinner from "../Spinner/PageLoadingSpinner";
 import ContentText from "./ContentText";
 
-type Props = { reply: ReplyMeta };
+type Props = {
+  reply: ReplyMeta;
+  setCurrentReply: Dispatch<SetStateAction<ReplyMeta | null>>;
+  setCommentType: Dispatch<SetStateAction<"comment" | "reply" | "nestedReply">>;
+  updateCurrentComment: () => void;
+};
 
-const ReplyCard = ({ reply }: Props) => {
+const ReplyCard = ({
+  reply,
+  setCurrentReply,
+  setCommentType,
+  updateCurrentComment,
+}: Props) => {
   const queryClient = useQueryClient();
 
   const { userData } = useUserContext();
@@ -135,7 +152,7 @@ const ReplyCard = ({ reply }: Props) => {
               height={45}
               className="size-[36px] sm:size-[45px] rounded-full object-cover"
               alt="avatar"
-              src={reply.user.usermeta.avatar ?? userPlaceholderImage}
+              src={reply.user.usermeta.avatar ?? profileImageplaceholder}
             />
             <div>
               <div className="flex gap-x-2 items-center">
@@ -253,24 +270,6 @@ const ReplyCard = ({ reply }: Props) => {
           type={"comment"}
           text={reply.message}
         />
-        <div
-          className={cn(
-            "flex justify-end",
-            !isShowingMore ? "-translate-y-6" : "mb-2"
-          )}
-        >
-          {isTruncated && (
-            <button
-              onClick={toggleIsShowingMore}
-              className={cn(
-                "block bg-background text-inactive text-start",
-                !isShowingMore ? "w-fit" : ""
-              )}
-            >
-              {isShowingMore ? "Show less" : "...Show more"}
-            </button>
-          )}
-        </div>
         <div>
           <div className="flex mt-4 items-center">
             <div
@@ -309,8 +308,10 @@ const ReplyCard = ({ reply }: Props) => {
               </p>
             </div>
             <div
-              className="flex items-center border-x border-border px-3 cursor-pointer"
-              onClick={() => setShowReplyDialog(true)}
+              className="flex items-center ml-2 pl-1 cursor-pointer rounded-full hover:bg-foreground/5"
+              onClick={() => {
+                setShowViewModal(true);
+              }}
               role="button"
             >
               <Image
@@ -320,18 +321,23 @@ const ReplyCard = ({ reply }: Props) => {
                 alt="icon"
                 src={"/assets/post-icons/views.svg"}
               />
-              <p className="text-foreground/60 px-2 font">
+              <p className="text-foreground/60 px-2 pr-1 font">
                 {formatNumberCount(reply.viewsCount)}
               </p>
             </div>
-            <div
-              onClick={() => setShowViewModal(true)}
+            {/* Hide nested reply button for replying a reply  */}
+            {/* <div
+              onClick={() => {
+                setCurrentReply(reply);
+                updateCurrentComment();
+                setCommentType("nestedReply");
+              }}
               className="flex items-center pl-3 cursor-pointer"
             >
               <p className="text-foreground/60 px-2 pr-0 font text-colorPrimary">
                 Reply
               </p>
-            </div>
+            </div> */}
           </div>
           {/* container for replies */}
           <div className="pl-4">
@@ -339,7 +345,13 @@ const ReplyCard = ({ reply }: Props) => {
               Boolean(getReplies.data?.data.data.items.length) &&
               getReplies.data?.data.data.items.map(
                 (reply: ReplyMeta, i: number) => (
-                  <ReplyCard reply={reply} key={i} />
+                  <ReplyCard
+                    reply={reply}
+                    key={i}
+                    updateCurrentComment={updateCurrentComment}
+                    setCurrentReply={setCurrentReply}
+                    setCommentType={setCommentType}
+                  />
                 )
               )}
           </div>

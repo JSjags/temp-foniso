@@ -28,6 +28,10 @@ export const loginUser = async ({
 export const getFollowing = async (): Promise<any> => {
   return await axiosInstance.get<any>("/followers/following");
 };
+
+export const getUserFollowing = async (id: number): Promise<any> => {
+  return await axiosInstance.get<any>(`/followers/${id}/following`);
+};
 export const getBlockedUsers = async (): Promise<any> => {
   return axiosInstance.get<any>("/blockuser/blockedUser");
 };
@@ -38,6 +42,10 @@ export const getUserProfileData = async (): Promise<any> => {
 
 export const getFollowers = async (): Promise<any> => {
   return axiosInstance.get<any>("/followers");
+};
+
+export const getUserFollowers = async (id: number): Promise<any> => {
+  return axiosInstance.get<any>(`/followers/${id}/user`);
 };
 
 export const submitUserProfile = async (data: any): Promise<any> => {
@@ -72,6 +80,12 @@ export const getHighlights = async (): Promise<any> => {
   return axiosInstance.get<any>(`/posts?page=1&limit=5&type=highlight`);
 };
 
+export const getSportHighlights = async (): Promise<any> => {
+  return axiosInstance.get<any>(
+    `/explore/sport-highlights?startDate=2023-12-18`
+  );
+};
+
 export const getTeams = async (): Promise<any> => {
   return axiosInstance.get<any>(`/extra/teams`);
 };
@@ -84,8 +98,14 @@ export const getPublicUserProfile = async (username: string): Promise<any> => {
   return axiosInstance.get<any>(`/profile/${username}`);
 };
 
-export const fetchUsersPosts = async (id: number): Promise<any> => {
-  return axiosInstance.get<any>(`/posts/user/${id}?page=1&limit=200`);
+export const fetchUsersPosts = async (
+  id: number,
+  pageParam: number
+): Promise<any> => {
+  const limit = 10;
+  return axiosInstance.get<any>(
+    `/posts/user/${id}?page=${pageParam + 1}&limit=${limit}`
+  );
 };
 
 export const fetchSavedPosts = async (): Promise<any> => {

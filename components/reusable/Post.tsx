@@ -16,7 +16,7 @@ import {
   reportReasons,
   userPlaceholderImage,
 } from "@/constants";
-import { useLayoutEffect, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -52,7 +52,7 @@ import PostViewer from "./PostViewer";
 import VideoPlayer from "./VideoPlayer";
 import { image } from "@cloudinary/url-gen/qualifiers/source";
 import moment from "moment";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { likeOrUnlikePost } from "@/services/api/post";
 import SuccessToast from "./toasts/SuccessToast";
 import PostReplyDialog from "./PostReplyDialog";
@@ -66,13 +66,16 @@ import DefaultPostOptions from "../post/DefaultPostOptions";
 import UserPostOptions from "../post/UserPostOptions";
 import ReportUserSuccessModal from "./ReportUserSuccessModal";
 import Poll from "./Poll";
-import { customRelativeTime } from "@/utils";
+import { canIReply, customRelativeTime } from "@/utils";
 import ReactionButton from "../ReactionButton";
 import { useUserContext } from "@/context/UserContext";
 import Link from "next/link";
+import { getUserFollowing } from "@/services/api/userService";
 
-const Post = ({ postData, optionsType }: PostProps) => {
+const Post = ({ postData, optionsType, isFetching }: PostProps) => {
   const router = useRouter();
+  const queryClient = useQueryClient();
+
   const [post, setPost] = useState<PostMeta>(postData);
   const [showViewModal, setShowViewModal] = useState(false);
   const [showReportModal, setShowReportModal] = useState(false);
@@ -84,8 +87,8 @@ const Post = ({ postData, optionsType }: PostProps) => {
     status: boolean;
     emojiId: number;
   }>({
-    status: post?.likedByMe.length > 0,
-    emojiId: post?.likedByMe[0]?.emojiId ?? 0,
+    status: postData?.likedByMe.length > 0,
+    emojiId: postData?.likedByMe[0]?.emojiId ?? 0,
   });
 
   const { userData } = useUserContext();
@@ -95,6 +98,9 @@ const Post = ({ postData, optionsType }: PostProps) => {
     mutationFn: (data: { postId: number; type: string; emojiId: number }) =>
       likeOrUnlikePost(data.postId, data.type, data.emojiId),
     onSuccess: (data) => {
+      // queryClient.invalidateQueries({
+      //   queryKey: ["get-infinite-posts"],
+      // });
       console.log(data);
       let copiedPostLikes: LikeMeta[] = JSON.parse(JSON.stringify(post.likes));
 
@@ -133,6 +139,12 @@ const Post = ({ postData, optionsType }: PostProps) => {
     onError: (error) => console.log(error),
   });
 
+  const accountFollowing = useQuery({
+    queryKey: [`account-following-${post.user.username}`],
+    queryFn: () => getUserFollowing(post.user.id),
+    enabled: post.canReply.toLowerCase().includes("follow"),
+  });
+
   const handlePostLikeRequest = (index: number) => {
     likeOrUnlikeMutation.mutate({
       postId: post.id,
@@ -140,6 +152,21 @@ const Post = ({ postData, optionsType }: PostProps) => {
       emojiId: index,
     });
   };
+
+  useEffect(() => {
+    if (postData.likedByMe.length > 0) {
+      setPostLikedByMe({
+        status: true,
+        emojiId: postData?.likedByMe[0]?.emojiId,
+      });
+    } else {
+      setPostLikedByMe({
+        status: false,
+        emojiId: 0,
+      });
+    }
+    setPost(postData);
+  }, [postData.likedByMe]);
 
   return (
     <div className="py-4 pb-2 px-2 sm:px-5 relative z-10 overflow-x-hidden border-none bg-background sm:bg-inherit border-border">
@@ -362,7 +389,7 @@ const Post = ({ postData, optionsType }: PostProps) => {
               </div>
             )}
             <div className="flex mt-4 items-center">
-              {/* <ReactionButton
+              <ReactionButton
                 handlePostLikeIncrement={handlePostLikeIncrement}
                 handlePostLikeRequest={handlePostLikeRequest}
                 post={post}
@@ -370,14 +397,20 @@ const Post = ({ postData, optionsType }: PostProps) => {
                 likeData={post.likedByMe}
                 postLikedByMe={postLikedByMe}
                 setPostLikedByMe={setPostLikedByMe}
-              /> */}
-              <div
-                className="flex items-center border-x border-border px-3 cursor-pointer"
+              />
+              {/* <div className="h-fit border-x border-border"> */}
+              <Button
+                variant={"ghost"}
+                className="flex items-center mx-1 px-2 cursor-pointer py-0 h-7 hover:bg-foreground/5 rounded-full"
                 onClick={(e) => {
                   e.stopPropagation();
                   setShowReplyDialog(true);
                 }}
-                role="button"
+                disabled={canIReply(
+                  userData?.user!,
+                  post,
+                  accountFollowing.data?.data.data
+                )}
               >
                 <Image
                   width={20}
@@ -389,13 +422,15 @@ const Post = ({ postData, optionsType }: PostProps) => {
                 <p className="text-foreground/60 px-2 pr-0 font">
                   {formatNumberCount(post.commentsCount)}
                 </p>
-              </div>
-              <div
+              </Button>
+              {/* </div> */}
+              <Button
                 onClick={(e) => {
                   e.stopPropagation();
                   setShowViewModal(true);
                 }}
-                className="flex items-center pl-3 cursor-pointer"
+                variant={"ghost"}
+                className="flex items-center mx-1 px-2 cursor-pointer py-0 h-7 hover:bg-foreground/5 rounded-full"
               >
                 <Image
                   width={20}
@@ -404,10 +439,10 @@ const Post = ({ postData, optionsType }: PostProps) => {
                   alt="icon"
                   src={"/assets/post-icons/views.svg"}
                 />
-                <p className="text-foreground/60 px-2 font">
+                <p className="text-foreground/60 pl-2 font">
                   {formatNumberCount(post.viewsCount)}
                 </p>
-              </div>
+              </Button>
             </div>
             {Boolean(post.commentsCount > 0) && (
               <Button

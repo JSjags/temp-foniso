@@ -14,7 +14,13 @@ import { profileStatsTab } from "@/constants";
 import { useUserContext } from "@/context/UserContext";
 import { cn } from "@/lib/utils";
 import { followUserQuery } from "@/services/api/explore";
-import { getFollowers, getFollowing } from "@/services/api/userService";
+import {
+  getFollowers,
+  getFollowing,
+  getPublicUserProfile,
+  getUserFollowers,
+  getUserFollowing,
+} from "@/services/api/userService";
 import { User, UserData } from "@/types";
 import { useMutation, useQuery, UseQueryResult } from "@tanstack/react-query";
 import { SearchIcon } from "lucide-react";
@@ -35,7 +41,7 @@ type FollowingProps = {
 };
 type VerifiedProps = {
   isLoading: boolean;
-  list: User[];
+  list: { user: User }[];
 };
 
 const FollowersList = (props: FollowersProps) => {
@@ -131,16 +137,18 @@ const VerifiedList = (props: VerifiedProps) => {
       {Boolean(
         !props.isLoading &&
           props.list &&
-          Boolean(props.list.filter((user) => user.verified === true).length)
+          Boolean(
+            props.list.filter((user) => user.user.verified === true).length
+          )
       ) &&
         props.list
-          .filter((user) => user.verified === true)
-          .map((user: User, i: number) => (
-            <FollowUnfollowTile key={i} user={user} />
+          .filter((user) => user.user.verified === true)
+          .map((user: { user: User }, i: number) => (
+            <FollowUnfollowTile key={i} user={user.user} />
           ))}
       {Boolean(!props.isLoading) &&
         Boolean(
-          !props.list.filter((user) => user.verified === true).length
+          !props.list.filter((user) => user.user.verified === true).length
         ) && (
           <div className="flex justify-center items-center">
             <div className="my-10 px-6">
@@ -168,7 +176,12 @@ const VerifiedList = (props: VerifiedProps) => {
   );
 };
 
-const Page = (props: Props) => {
+const Page = ({ params }: { params: any }) => {
+  const profileData = useQuery({
+    queryKey: ["public-profile-page"],
+    queryFn: () => getPublicUserProfile(params.username),
+  });
+
   const router = useRouter();
   const { userData } = useUserContext();
   const searchParams = useSearchParams();
@@ -176,13 +189,13 @@ const Page = (props: Props) => {
   const tab = searchParams.get("tab");
 
   const followers = useQuery({
-    queryKey: ["followers"],
-    queryFn: getFollowers,
+    queryKey: [`user-followers-${params.username}`],
+    queryFn: () => getUserFollowers(profileData.data?.data.data?.user.id),
   });
 
   const following = useQuery({
-    queryKey: ["following"],
-    queryFn: getFollowing,
+    queryKey: [`user-following-${params.username}`],
+    queryFn: () => getUserFollowing(profileData.data?.data.data?.user.id),
   });
 
   const handleCurrentView = () => {
@@ -217,21 +230,22 @@ const Page = (props: Props) => {
         );
     }
   };
+
   return (
     <div className="flex gap-0 min-[480px]:gap-2">
       <div className="relative mt-2 min-[480px]:mt-0 flex-1 bg-background">
         <div className="flex gap-x-4 items-center p-4">
           <Button
             onClick={() => router.back()}
-            className="size-8 p-1 flex justify-center items-center bg-black/50 rounded-full"
+            className="size-8 p-1 flex justify-center items-center bg-black/50 hover:bg-foreground/10 rounded-full"
           >
             <IoArrowBack className="text-foreground size-6" />
           </Button>
           <div className="">
             <div className="flex gap-x-2 items-center">
               <p className="text-foreground hover:underline cursor-pointer font-bold line-clamp-1 text-ellipsis text-xl">
-                {userData?.user?.usermeta.firstname}{" "}
-                {userData?.user?.usermeta.lastname}
+                {profileData.data?.data.data?.user?.usermeta.firstname}{" "}
+                {profileData.data?.data.data?.user?.usermeta.lastname}
               </p>
               <div className="flex gap-x-1 items-center">
                 {/* {userData?.user.verified && (

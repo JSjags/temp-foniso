@@ -1,6 +1,7 @@
 "use client";
 
 import CreatePost from "@/components/Home/CreatePost";
+import Loading from "@/components/reusable/Loading";
 import Post from "@/components/reusable/Post";
 import RightSideBar from "@/components/RightSideBar";
 import PageLoadingSpinner from "@/components/Spinner/PageLoadingSpinner";
@@ -12,16 +13,24 @@ import axiosInstance from "@/services/api/axiosInstance";
 import { getPosts, getSavedPosts } from "@/services/api/post";
 import { getBlockedUsers, getFollowing } from "@/services/api/userService";
 import { PostMeta } from "@/types";
-import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
+import {
+  useInfiniteQuery,
+  useQuery,
+  useQueryClient,
+} from "@tanstack/react-query";
 import { RefreshCcw } from "lucide-react";
 import { useRouter } from "next/navigation";
-import React, { useEffect, useState } from "react";
+import React, { Fragment, useEffect, useState } from "react";
 import { ImSpinner2 } from "react-icons/im";
+import { useInView } from "react-intersection-observer";
+import { motion, AnimatePresence } from "framer-motion";
 
 type Props = {};
 
 const Home = (props: Props) => {
+  const queryClient = useQueryClient();
   const router = useRouter();
+  const { ref, inView } = useInView();
 
   const { userData } = useUserContext();
 
@@ -31,44 +40,25 @@ const Home = (props: Props) => {
 
   // https://stagingapi.foniso.team/api/v1/posts?page=1&limit=50&type=post
 
-  const posts = useQuery({
-    queryKey: ["get-posts"],
-    queryFn: () => getPosts(),
-    select(data) {
-      return data.data.data.items;
+  const posts = useInfiniteQuery({
+    queryKey: ["get-infinite-posts"],
+    gcTime: Infinity,
+    queryFn: getPosts,
+    initialPageParam: 0,
+    getNextPageParam: (lastPage, allPages, lastPageParam, allPageParams) => {
+      console.log(lastPage, allPages, lastPageParam, allPageParams);
+      if (lastPage.length === 0) {
+        return undefined;
+      }
+      return lastPageParam + 1;
     },
   });
 
-  const following = useQuery({
-    queryKey: ["following"],
-    queryFn: getFollowing,
-  });
-
-  const blockedUsers = useQuery({
-    queryKey: ["blocked-users"],
-    queryFn: getBlockedUsers,
-  });
-
-  const savedPosts = useQuery({
-    queryKey: ["get-saved-posts"],
-    queryFn: () => getSavedPosts(),
-    // select(data) {
-    //   return data.data.data.items;
-    // },
-  });
-
-  const [page, setPage] = useState(1); // Initial page number
-  // const { data, isLoading, isError, isFetching, hasNextPage, fetchNextPage } =
-  //   useInfiniteQuery({
-  //     queryKey: ["posts"],
-  //     queryFn: () => fetchPosts,
-  //     initialPageParam: 1,
-  //     getNextPageParam: (lastPage) => {
-  //       return lastPage;
-  //     }, // Determine next page// Query key
-  //   });
-
-  console.log(posts.data);
+  useEffect(() => {
+    if (inView) {
+      posts.fetchNextPage();
+    }
+  }, [posts.fetchNextPage, inView]);
 
   return (
     <div className="flex gap-0 min-[480px]:gap-2">
@@ -76,18 +66,52 @@ const Home = (props: Props) => {
         <div className="">
           <CreatePost />
         </div>
+        <div ref={ref} className="bg-background">
+          <AnimatePresence>
+            {posts.isRefetching && (
+              <motion.div
+                className="pt-2"
+                initial={{ opacity: 0, y: 50, height: 0 }}
+                animate={{ opacity: 1, y: 0, height: "auto" }}
+                exit={{ opacity: 0, y: 50, height: 0 }}
+                transition={{ duration: 0.5 }}
+              >
+                <Loading
+                  isLoading={posts.isFetchingNextPage}
+                  className="w-full min-h-10 pb-5"
+                  extraClass="size-4 sm:size-5"
+                />
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
         <div className=" flex flex-col gap-y-2 sm:bg-background min-h-screen">
-          {console.log(posts)}
           {posts.isLoading && (
             <div className="mt-10 flex justify-center">
               {/* <PageLoadingSpinner /> */}
               <ImSpinner2 className="size-10 animate-spin text-[#4ED17E]" />
             </div>
           )}
-          {Boolean(posts.isSuccess && posts && Boolean(posts.data.length)) &&
+          {Boolean(posts.isSuccess) &&
+            posts.data?.pages.map((group, i) => (
+              <Fragment key={i}>
+                {group.data.data.items.map((post: PostMeta, i: number) => (
+                  <Post key={i} postData={post} isFetching={posts.isFetching} />
+                  // <div
+                  //   onClick={() =>
+                  //     router.push(`/profile/${post.user.username}`)
+                  //   }
+                  //   className="h-40 bg-foreground/10"
+                  // >
+                  //   <p>{post.likesCount}</p>
+                  // </div>
+                ))}
+              </Fragment>
+            ))}
+          {/* {Boolean(posts.isSuccess && posts && Boolean(posts.data.length)) &&
             posts.data.map((post: PostMeta, i: number) => (
               <Post key={i} postData={post} />
-            ))}
+            ))} */}
 
           {/* Network error */}
           {Boolean(
@@ -125,6 +149,14 @@ const Home = (props: Props) => {
                 </div>
               </div>
             </div>
+          )}
+        </div>
+        <div ref={ref} className="bg-background h-10">
+          {posts.isFetchingNextPage && (
+            <Loading
+              isLoading={posts.isFetchingNextPage}
+              className="w-full min-h-10 pb-5"
+            />
           )}
         </div>
       </div>

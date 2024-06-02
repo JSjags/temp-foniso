@@ -94,8 +94,8 @@ const VerifyOTP = ({ email, submitOTP }: Props) => {
         />
       </div>
 
-      <div className="text-foreground/50 mt-4 text-base">
-        <span className="">Didn’t get code the code? </span>
+      <div className="text-foreground/50 mt-4 text-base text-center">
+        <span className="">Didn’t get the code? </span>
         {timer >= 1 ? (
           <span>
             <span className="">Resend new code in</span>

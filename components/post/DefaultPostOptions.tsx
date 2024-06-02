@@ -16,8 +16,10 @@ import {
   UseQueryResult,
 } from "@tanstack/react-query";
 import {
+  blacklistPostQuery,
   blockUserQuery,
   getSavedPosts,
+  muteUserQuery,
   saveOrUnsavePost,
   unblockUserQuery,
 } from "@/services/api/post";
@@ -119,6 +121,54 @@ const DefaultPostOptions = ({ post, setShowReportModal }: Props) => {
     },
   });
 
+  const blacklistPost = useMutation({
+    mutationKey: ["blacklist-post"],
+    mutationFn: (id: number) => blacklistPostQuery(post.id),
+    onSuccess: () => {
+      toast.custom(
+        (t) => <SuccessToast t={t} message="Post muted successfully" />,
+        { id: "mute post" }
+      );
+      // queryClient.invalidateQueries({ queryKey: ["blocked-users"] });
+      // queryClient.invalidateQueries({ queryKey: ["user-following"] });
+      // queryClient.invalidateQueries({ queryKey: ["suggested-follows"] });
+      // queryClient.invalidateQueries({ type: "all" });
+    },
+    onError: () => {
+      toast.custom((t) => <ErrorToast t={t} message="Error muting post" />, {
+        id: "mute post",
+      });
+      // queryClient.invalidateQueries({ queryKey: ["blocked-users"] });
+      // queryClient.invalidateQueries({ queryKey: ["user-following"] });
+      // queryClient.invalidateQueries({ queryKey: ["suggested-follows"] });
+      // queryClient.invalidateQueries({ type: "all" });
+    },
+  });
+
+  const muteUser = useMutation({
+    mutationKey: ["mute-user"],
+    mutationFn: (id: number) => muteUserQuery(post.user.id),
+    onSuccess: () => {
+      toast.custom(
+        (t) => <SuccessToast t={t} message="User muted successfully" />,
+        { id: "mute user" }
+      );
+      // queryClient.invalidateQueries({ queryKey: ["blocked-users"] });
+      // queryClient.invalidateQueries({ queryKey: ["user-following"] });
+      // queryClient.invalidateQueries({ queryKey: ["suggested-follows"] });
+      // queryClient.invalidateQueries({ type: "all" });
+    },
+    onError: () => {
+      toast.custom((t) => <ErrorToast t={t} message="Error muting user" />, {
+        id: "mute user",
+      });
+      // queryClient.invalidateQueries({ queryKey: ["blocked-users"] });
+      // queryClient.invalidateQueries({ queryKey: ["user-following"] });
+      // queryClient.invalidateQueries({ queryKey: ["suggested-follows"] });
+      // queryClient.invalidateQueries({ type: "all" });
+    },
+  });
+
   const blockUser = useMutation({
     mutationKey: ["block-user"],
     mutationFn: () => blockUserQuery(post.user.id),
@@ -215,7 +265,7 @@ const DefaultPostOptions = ({ post, setShowReportModal }: Props) => {
         />
         {/* </Button> */}
       </DropdownMenuTrigger>
-      <DropdownMenuContent className="w-[clamp(240px,80%,424px)] md:w-[324px] lg:w-[420px] absolute -translate-x-[105%] top-0 bg-background border-border">
+      <DropdownMenuContent className="w-[clamp(240px,80%,300px)] md:w-[300px] lg:w-[300px] absolute -translate-x-[105%] top-0 bg-background border-border">
         <DropdownMenuGroup className="">
           <DropdownMenuItem
             onClick={(e) => {
@@ -223,7 +273,7 @@ const DefaultPostOptions = ({ post, setShowReportModal }: Props) => {
               handlePostSave(post.id);
             }}
             // disabled={!savedPosts?.data.success}
-            className="cursor-pointer p-2 py-3 min-[480px]:p-4 text-base text-foreground font-semibold data-[highlighted]:text-foreground data-[highlighted]:bg-colorPrimary/30"
+            className="cursor-pointer p-2 py-3 min-[480px]:p-4 text-base text-foreground font-semibold data-[highlighted]:text-foreground"
           >
             <Image
               width={24}
@@ -243,8 +293,11 @@ const DefaultPostOptions = ({ post, setShowReportModal }: Props) => {
             </span>
           </DropdownMenuItem>
           <DropdownMenuItem
-            disabled
-            className="cursor-pointer p-2 py-3 min-[480px]:p-4 text-base text-foreground font-semibold data-[highlighted]:text-foreground data-[highlighted]:bg-colorPrimary/30"
+            onClick={(e) => {
+              e.stopPropagation();
+              blacklistPost.mutate(post.id);
+            }}
+            className="cursor-pointer p-2 py-3 min-[480px]:p-4 text-base text-foreground font-semibold data-[highlighted]:text-foreground"
           >
             <Image
               width={24}
@@ -266,7 +319,7 @@ const DefaultPostOptions = ({ post, setShowReportModal }: Props) => {
                 followUser.mutate();
               }
             }}
-            className="cursor-pointer p-2 py-3 min-[480px]:p-4 text-base text-foreground font-semibold data-[highlighted]:text-foreground data-[highlighted]:bg-colorPrimary/30"
+            className="cursor-pointer p-2 py-3 min-[480px]:p-4 text-base text-foreground font-semibold data-[highlighted]:text-foreground"
           >
             <Image
               width={24}
@@ -284,8 +337,11 @@ const DefaultPostOptions = ({ post, setShowReportModal }: Props) => {
         <DropdownMenuSeparator className="mx-2 bg-border" />
         <DropdownMenuGroup>
           <DropdownMenuItem
-            disabled
-            className="cursor-pointer p-2 py-3 min-[480px]:p-4 text-base text-foreground font-semibold data-[highlighted]:text-foreground data-[highlighted]:bg-colorPrimary/30"
+            onClick={(e) => {
+              e.stopPropagation();
+              muteUser.mutate(post.user.id);
+            }}
+            className="cursor-pointer p-2 py-3 min-[480px]:p-4 text-base text-foreground font-semibold data-[highlighted]:text-foreground"
           >
             <Image
               width={24}
@@ -307,7 +363,7 @@ const DefaultPostOptions = ({ post, setShowReportModal }: Props) => {
                 blockUser.mutate();
               }
             }}
-            className="cursor-pointer p-2 py-3 min-[480px]:p-4 text-base text-foreground font-semibold data-[highlighted]:text-foreground data-[highlighted]:bg-colorPrimary/30"
+            className="cursor-pointer p-2 py-3 min-[480px]:p-4 text-base text-foreground font-semibold data-[highlighted]:text-foreground"
           >
             <Image
               width={24}
@@ -325,7 +381,7 @@ const DefaultPostOptions = ({ post, setShowReportModal }: Props) => {
               e.stopPropagation();
               setShowReportModal(true);
             }}
-            className="cursor-pointer p-2 py-3 min-[480px]: text-base text-foreground font-semibold data-[highlighted]:text-foreground data-[highlighted]:bg-colorPrimary/30"
+            className="cursor-pointer p-2 py-3 min-[480px]:p-4 text-base text-foreground font-semibold data-[highlighted]:text-foreground"
           >
             <Image
               width={24}

@@ -20,16 +20,24 @@ import { Button } from "./ui/button";
 import { EditIcon } from "lucide-react";
 import { MoreActions } from "./left-sidebar";
 import CreatePostModal from "./Modal/CreatePost";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { getUnreadNotificationsCount } from "@/services/api/notification";
 
 type Props = {};
 
 const LeftSideBar = (props: Props) => {
+  const queryClient = useQueryClient();
   const { userData, setShowCreatePost } = useUserContext();
 
   const { theme } = useTheme();
   const cld = new Cloudinary({ cloud: { cloudName: "delflsgq4" } });
 
   const pathname = usePathname();
+
+  const unreadNotifications = useQuery({
+    queryKey: ["get-unread-notifications"],
+    queryFn: getUnreadNotificationsCount,
+  });
 
   return (
     <div className="h-full fixed z-50 left-0 min-[480px]:sticky bottom-0 min-[480px]:top-0 min-[480px]:border-r border-border bg-background">
@@ -48,8 +56,21 @@ const LeftSideBar = (props: Props) => {
               <Link
                 key={i}
                 href={item.path}
-                className="flex gap-x-4 py-[11] items-center"
+                className="flex gap-x-4 py-[11] items-center relative"
+                onClick={() => {
+                  if (item.title.toLowerCase() === "home") {
+                    queryClient.invalidateQueries({
+                      queryKey: ["get-infinite-posts"],
+                    });
+                  }
+                }}
               >
+                {item.title === "Notification" &&
+                  Boolean(
+                    unreadNotifications.data?.data.data.notificationCount
+                  ) && (
+                    <div className="size-2 absolute top-0 left-5 z-10 bg-colorPrimary rounded-full" />
+                  )}
                 {item?.inactiveIcon === null || item?.activeIcon === null ? (
                   <div className="size-[30px] rounded-full">
                     <Image
@@ -127,9 +148,19 @@ const LeftSideBar = (props: Props) => {
                 key={i}
                 href={item.path}
                 className="flex gap-x-4 py-[11] items-center"
+                onClick={() => {
+                  if (item.title.toLowerCase() === "home") {
+                    queryClient.invalidateQueries({
+                      queryKey: ["get-infinite-posts"],
+                    });
+                  }
+                }}
               >
                 {item?.inactiveIcon === null || item?.activeIcon === null ? (
-                  <div className={cn("size-[30px] rounded-full")}>
+                  <div className={cn("size-[30px] rounded-full relative")}>
+                    {item.title === "Notification" && (
+                      <div className="size-2 absolute top-0 right-0 bg-colorPrimary" />
+                    )}
                     <Image
                       width={30}
                       height={30}
@@ -180,6 +211,13 @@ const LeftSideBar = (props: Props) => {
               key={i}
               href={item.path}
               className="flex flex-col gap-y-0 items-center h-10 max-h-10 justify-between"
+              onClick={() => {
+                if (item.title.toLowerCase() === "home") {
+                  queryClient.invalidateQueries({
+                    queryKey: ["get-infinite-posts"],
+                  });
+                }
+              }}
             >
               {item?.inactiveIcon === null || item?.activeIcon === null ? (
                 <div className="size-[30px] rounded-full">
