@@ -224,28 +224,33 @@ export const canIReply = (
   accountFollowing: { follower: User }[] | undefined
 ): boolean => {
   // Post creator can always reply to their post
-  if (post.user.id === user.id) {
+  if (!user) return true;
+  if (post?.user.id === user.id) {
     return false;
   }
 
-  console.log(post.canReply);
+  console.log(post?.canReply);
+
+  if (post?.canReply) {
+    return false;
+  }
 
   // Checks to see if current user can reply to post
-  if (post.canReply.toLowerCase().includes("everyone")) {
+  if (post?.canReply?.toLowerCase().includes("everyone")) {
     return false;
   }
 
-  if (post.canReply.toLowerCase().includes("mention")) {
-    if (post.tagedUsers.includes(user.username)) {
+  if (post?.canReply?.toLowerCase().includes("mention")) {
+    if (post?.tagedUsers.includes(user.username)) {
       return false;
     } else return true;
   }
-  if (post.canReply.toLowerCase().includes("verified")) {
-    if (user.verified) {
+  if (post?.canReply?.toLowerCase().includes("verified")) {
+    if (user?.verified) {
       return false;
     } else return true;
   }
-  if (post.canReply.toLowerCase().includes("follow")) {
+  if (post?.canReply?.toLowerCase().includes("follow")) {
     if (accountFollowing === undefined) {
       return true;
     } else if (accountFollowing.length <= 0) {

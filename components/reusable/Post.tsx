@@ -76,6 +76,8 @@ const Post = ({ postData, optionsType, isFetching }: PostProps) => {
   const router = useRouter();
   const queryClient = useQueryClient();
 
+  console.log(postData);
+
   const [post, setPost] = useState<PostMeta>(postData);
   const [showViewModal, setShowViewModal] = useState(false);
   const [showReportModal, setShowReportModal] = useState(false);
@@ -140,9 +142,11 @@ const Post = ({ postData, optionsType, isFetching }: PostProps) => {
   });
 
   const accountFollowing = useQuery({
-    queryKey: [`account-following-${post.user.username}`],
-    queryFn: () => getUserFollowing(post.user.id),
-    enabled: post.canReply.toLowerCase().includes("follow"),
+    queryKey: [`account-following-${post?.user?.username}`],
+    queryFn: () => getUserFollowing(post?.user?.id),
+    enabled: post?.canReply
+      ? post?.canReply.toLowerCase().includes("follow")
+      : true,
   });
 
   const handlePostLikeRequest = (index: number) => {
@@ -166,7 +170,7 @@ const Post = ({ postData, optionsType, isFetching }: PostProps) => {
       });
     }
     setPost(postData);
-  }, [postData.likedByMe]);
+  }, [postData?.likedByMe]);
 
   return (
     <div className="py-4 pb-2 px-2 sm:px-5 relative z-10 overflow-x-hidden border-none bg-background sm:bg-inherit border-border">
@@ -246,7 +250,7 @@ const Post = ({ postData, optionsType, isFetching }: PostProps) => {
                   {post?.user?.usermeta.lastname}
                 </p>
                 <div className="flex gap-x-1 items-center">
-                  {post.user.verified && (
+                  {post?.user?.verified && (
                     <Image
                       width={14}
                       height={14}
@@ -266,10 +270,10 @@ const Post = ({ postData, optionsType, isFetching }: PostProps) => {
                 className="text-inactive text-sm min-[480px]:text-base hover:cursor-pointer"
                 onClick={(e) => {
                   e.stopPropagation();
-                  if (post.user.id === userData?.user.id) {
+                  if (post?.user?.id === userData?.user.id) {
                     router.push(`/profile`);
                   } else {
-                    router.push(`/profile/${post.user.username}`);
+                    router.push(`/profile/${post?.user?.username}`);
                   }
                 }}
               >
@@ -280,13 +284,13 @@ const Post = ({ postData, optionsType, isFetching }: PostProps) => {
           {/* <Button variant={"ghost"} className=" bg-transparent px-0"> */}
 
           {/* Post action btn options */}
-          {!optionsType && post.user.id !== userData?.user.id && (
+          {!optionsType && post?.user?.id !== userData?.user.id && (
             <DefaultPostOptions
               post={post}
               setShowReportModal={setShowReportModal}
             />
           )}
-          {(optionsType === "user" || post.user.id === userData?.user.id) && (
+          {(optionsType === "user" || post?.user?.id === userData?.user.id) && (
             <UserPostOptions post={post} />
           )}
           {/* </Button> */}
@@ -299,16 +303,16 @@ const Post = ({ postData, optionsType, isFetching }: PostProps) => {
             className="w-full"
           >
             <ContentText
-              text={post.content}
+              text={post?.content}
               // textRef={ref}
-              contentId={post.id}
+              contentId={post?.id}
               // isShowingMore={isShowingMore}
             />
           </div>
 
           {/* media box */}
           <div className="mt-3">
-            {Boolean(post.media && post.media.length) && (
+            {Boolean(post?.media && post?.media?.length) && (
               <PostViewer
                 postData={post}
                 setShowFullScreenPost={(value: boolean) =>
@@ -321,11 +325,11 @@ const Post = ({ postData, optionsType, isFetching }: PostProps) => {
 
           {/* poll */}
           <div className="my-4">
-            {post.type === "poll" && <Poll post={post} setPost={setPost} />}
+            {post?.type === "poll" && <Poll post={post} setPost={setPost} />}
           </div>
 
           <div>
-            {Boolean(post.likes && post.likes.length) && (
+            {Boolean(post?.likes && post.likes.length) && (
               <div className="text-colorWhite mt-2 text-base flex gap-x-2 item-center">
                 {/* <Image
                   width={25}
@@ -394,7 +398,7 @@ const Post = ({ postData, optionsType, isFetching }: PostProps) => {
                 handlePostLikeRequest={handlePostLikeRequest}
                 post={post}
                 setPost={setPost}
-                likeData={post.likedByMe}
+                likeData={post?.likedByMe}
                 postLikedByMe={postLikedByMe}
                 setPostLikedByMe={setPostLikedByMe}
               />
@@ -420,7 +424,7 @@ const Post = ({ postData, optionsType, isFetching }: PostProps) => {
                   src={"/assets/post-icons/comment.svg"}
                 />
                 <p className="text-foreground/60 px-2 pr-0 font">
-                  {formatNumberCount(post.commentsCount)}
+                  {formatNumberCount(post?.commentsCount)}
                 </p>
               </Button>
               {/* </div> */}
@@ -444,7 +448,7 @@ const Post = ({ postData, optionsType, isFetching }: PostProps) => {
                 </p>
               </Button>
             </div>
-            {Boolean(post.commentsCount > 0) && (
+            {Boolean(post?.commentsCount > 0) && (
               <Button
                 variant={"ghost"}
                 className="text-inactive p-0 hover:bg-transparent hover:text-foreground"

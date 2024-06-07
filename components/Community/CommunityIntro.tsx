@@ -103,7 +103,7 @@ const CommunityIntro = () => {
 
   const handleJoin = () => {
     joinCommunity({ communityId: Number(community_id) }).then(() => {
-      if (community_info?.type === "private") {
+      if (community_info?.data.data?.type === "private") {
         setIsRequested(true);
       } else {
         replace(`/community/${community_id}`);
@@ -112,9 +112,9 @@ const CommunityIntro = () => {
   };
 
   useEffect(() => {
-    if (community_info?.id) {
+    if (community_info?.data.data.id) {
       const user = JSON.parse(localStorage.getItem("userData") ?? "");
-      const isAdmin = community_info.moderators.some(
+      const isAdmin = community_info?.data.data.moderators.some(
         (itm) => itm.id === user.id
       );
 
@@ -129,37 +129,37 @@ const CommunityIntro = () => {
           <PageLoadingSpinner spinnerExtraClass="w-7 h-7" />
         </div>
       ) : community_info ? (
-        <div>
+        <div className="bg-background">
           <HeaderWithImage
-            imgSrc={community_info.coverImage}
+            imgSrc={community_info?.data.data.coverImage}
             dropDownOptions={isAdmin ? moreOptionsAdmin : moreOptions}
-            name={community_info?.name}
-            memberCount={community_info?.memberCount}
-            isPrivate={community_info?.type === "private"}
+            name={community_info?.data.data?.name}
+            memberCount={community_info?.data.data?.memberCount}
+            isPrivate={community_info?.data.data?.type === "private"}
             sideBtn={
               <Button
                 className="border rounded-full flex justify-center md:min-w-[90px] items-center h-8 duo:h-[40px] px-3 w-max hover:bg-white hover:scale-[1.01] transition-all hover:shadow-xl bg-white border-border text-foreground dark:text-black"
                 disabled={
                   isPending ||
-                  Boolean(community_info.isMember.length) ||
+                  Boolean(community_info?.data.data.isMember.length) ||
                   isRequested
                 }
                 onClick={handleJoin}
               >
                 {isPending
                   ? "Hang on..."
-                  : community_info?.type === "private"
+                  : community_info?.data.data?.type === "private"
                   ? "Request to join"
                   : "Join"}
               </Button>
             }
           />
 
-          <div className="px-4">
+          <div className="">
             {!get("tab") && (
-              <>
+              <div className="px-4">
                 <p className="text-sm text-black dark:text-[#AFAFAF] mt-[14px]">
-                  {community_info.description}
+                  {community_info?.data.data.description}
                 </p>
                 <Link
                   href={{ query: { tab: "about" } }}
@@ -167,11 +167,11 @@ const CommunityIntro = () => {
                 >
                   More about this community &gt;{" "}
                 </Link>
-              </>
+              </div>
             )}
 
             {/* Ongoing buzz */}
-            <div className="h-[110px] flex flex-col bg-[#C8C8C8] -translate-x-4 px-0 w-[calc(100%+2rem)] dark:bg-[#222623] mt-5 py-2 md:py-[0.875rem]">
+            <div className="h-[110px] flex flex-col bg-[#C8C8C8] -translate-x-4 px-4 w-[calc(100%+2rem)] dark:bg-[#222623] mt-5 py-2 md:py-[0.875rem]">
               <div className="flex items-center gap-1 w-[calc(100%-2rem)] mx-auto">
                 <BsSoundwave className="text-xl text-[#1A1A1A] dark:text-[#AFAFAF]" />
                 <span className="text-[#1A1A1A] dark:text-[#A0A0A0] text-sm font-medium">
@@ -222,7 +222,9 @@ const CommunityIntro = () => {
 
             <div className="mt-5">
               {get("tab") === "about" ? (
-                <About info={community_info} />
+                <div className="px-4">
+                  <About info={community_info?.data.data} />
+                </div>
               ) : (
                 <Feeds />
               )}

@@ -15,7 +15,7 @@ const CreateRule = () => {
   const { community_id } = useParams();
   const client = useQueryClient();
 
-  const { mutateAsync: createRule } = useCustomMutation<BodyContext>(
+  const { mutateAsync: createRule, isPending } = useCustomMutation<BodyContext>(
     "/community-rule",
     "POST"
   );
@@ -48,7 +48,7 @@ const CreateRule = () => {
       open={["new", "edit"].includes(searchParams.get("rule") ?? "")}
       handleClose={handleCloseModal}
     >
-      <AddRule onSubmit={onSubmit} />
+      <AddRule onSubmit={onSubmit} isPending={isPending} />
     </MobileDesktopOverlay>
   );
 };

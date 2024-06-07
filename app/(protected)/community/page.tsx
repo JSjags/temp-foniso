@@ -6,7 +6,7 @@ import RightSideBar from "@/components/RightSideBar";
 
 const Community = () => {
   return (
-    <div className="flex duo:gap-3">
+    <div className="flex duo:gap-3 bg-background">
       <div className="w-full">
         <Titlebar title="Community" />
         <div className="px-4">

@@ -23,11 +23,12 @@ const Titlebar = ({ title }: { title: string }) => {
 
   const { mutateAsync, isPending } = useCustomMutation<
     CreateCommunityForm,
-    { id: number }
+    { data: { data: { id: number } } }
   >("/community", "POST");
 
   const onSubmit = (arg: CreateCommunityForm) => {
-    mutateAsync(arg).then(({ id }) => {
+    mutateAsync(arg).then(({ data }) => {
+      const id = data.data.id;
       replace(`/community/${id}/grow-community`);
     });
   };

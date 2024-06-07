@@ -1,5 +1,9 @@
+"use client";
+
 import Link from "next/link";
 import BuzzCard from "./BuzzCard";
+import { allBuzz } from "@/services/api/community";
+import { useQuery } from "@tanstack/react-query";
 
 const buzz = [
   {
@@ -31,6 +35,13 @@ const buzz = [
 ];
 
 const OngoingBuzz = () => {
+  const allBuzzQuery = useQuery({
+    queryKey: ["ongoing-buzz"],
+    queryFn: () => allBuzz(),
+  });
+
+  console.log(allBuzzQuery);
+
   return (
     <div className="mt-5">
       <div className="flex justify-between items-center">

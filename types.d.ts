@@ -207,6 +207,7 @@ export type CommunityMember = {
   id: number;
   communityId: number;
   userId: number;
+  user?: User;
   status: string;
   created_at: string;
   updated_at: string;
@@ -287,6 +288,20 @@ export type ApiResponse<T> = {
     itemsPerPage: number;
     totalPages: number;
     currentPage: number;
+  };
+};
+export type ApiResponseDeep<T> = {
+  data: {
+    data: {
+      items: T;
+      meta: {
+        totalItems: number;
+        itemCount: number;
+        itemsPerPage: number;
+        totalPages: number;
+        currentPage: number;
+      };
+    };
   };
 };
 

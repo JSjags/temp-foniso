@@ -99,7 +99,7 @@ const Profile = (props: Props) => {
           title: "Discover my profile on Foniso",
           text:
             about.length <= 0
-              ? "Hey, check out my profile on Example.com! I've shared some great content that I think you'll enjoy. Follow the link below to see more."
+              ? "Hey, check out my profile on Foniso! I've shared some great content that I think you'll enjoy. Follow the link below to see more."
               : about,
           url: url,
         });

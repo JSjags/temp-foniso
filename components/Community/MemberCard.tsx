@@ -1,7 +1,8 @@
+import { profileImageplaceholder } from "@/constants";
 import Image from "next/image";
 
 type Props = {
-  avatar: string;
+  avatar: string | undefined;
   name: string;
   username: string;
   interest?: Array<string>;
@@ -11,7 +12,7 @@ const MemberCard = (props: Props) => {
   return (
     <div className="flex gap-[18px]">
       <div className="size-10 duo:size-[50px] rounded-full relative overflow-hidden">
-        <Image src={props.avatar} alt="user" fill />
+        <Image src={props.avatar ?? profileImageplaceholder} alt="user" fill />
       </div>
 
       <div className="">
@@ -19,11 +20,11 @@ const MemberCard = (props: Props) => {
         <p className="text-sm text-[#676666] dark:text-[#A0A0A0]">
           {props.username}
         </p>
-        <p className="text-sm text-[#676666] dark:text-[#A0A0A0]">
+        {/* <p className="text-sm text-[#676666] dark:text-[#A0A0A0]">
           {(props?.interest ?? ["Leicester", "Father", "Sport enthusiasts"])
             .join(",")
             .replace(/,/g, ". ")}
-        </p>
+        </p> */}
       </div>
     </div>
   );

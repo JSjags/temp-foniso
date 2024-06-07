@@ -11,50 +11,171 @@ import {
 import { cn } from "@/lib/utils";
 import { Dialog, DialogContent } from "../ui/dialog";
 import { Button } from "../ui/button";
+import { CommunityMember, User } from "@/types";
+import { profileImageplaceholder } from "@/constants";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useParams } from "next/navigation";
+import {
+  makeModeratorQuery,
+  removeModeratorQuery,
+} from "@/services/api/community";
+import toast from "react-hot-toast";
+import SuccessToast from "../reusable/toasts/SuccessToast";
+import ErrorToast from "../reusable/toasts/ErrorToast";
 
-const CommunityMembers = () => {
+const CommunityMembers = ({
+  members,
+  moderators,
+}: {
+  members: CommunityMember[];
+  moderators: CommunityMember[];
+}) => {
+  const queryClient = useQueryClient();
+  const { community_id } = useParams();
+
   const [selectedUser, setSelectedUser] = useState({
     username: "@sportsOn3",
+    memberId: "",
     action: "",
   });
 
   const [openModal, setOpenModal] = useState(false);
 
-  const options = [
+  const moderatorOptions = [
     {
-      label: "Make moderator",
-      callback: (arg: string) => {
+      label: "Remove moderator",
+      callback: (arg: string, memberId: number) => {
         setOpenModal(true);
-        setSelectedUser({ username: arg, action: "appoint" });
+        setSelectedUser({
+          username: arg,
+          memberId: memberId.toString(),
+          action: "unappoint",
+        });
       },
       color: "text-[#1A1A1A] dark:text-[#FAFAFA]",
     },
     {
       label: "Remove member",
-      callback: (arg: string) => {
+      callback: (arg: string, memberId: number) => {
         setOpenModal(true);
-        setSelectedUser({ username: arg, action: "remove" });
+        setSelectedUser({
+          username: arg,
+          memberId: memberId.toString(),
+          action: "remove",
+        });
+      },
+      color: "text-[#D13D51]",
+    },
+  ];
+  const options = [
+    {
+      label: "Make moderator",
+      callback: (arg: string, memberId: number) => {
+        setOpenModal(true);
+        setSelectedUser({
+          username: arg,
+          memberId: memberId.toString(),
+          action: "appoint",
+        });
+      },
+      color: "text-[#1A1A1A] dark:text-[#FAFAFA]",
+    },
+    {
+      label: "Remove member",
+      callback: (arg: string, memberId: number) => {
+        setOpenModal(true);
+        setSelectedUser({
+          username: arg,
+          memberId: memberId.toString(),
+          action: "remove",
+        });
       },
       color: "text-[#D13D51]",
     },
   ];
 
+  const makeModerator = useMutation({
+    mutationKey: ["make-moderator"],
+    mutationFn: (memberId: string) =>
+      makeModeratorQuery(memberId, community_id as string),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["community-members"],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["community-moderators"],
+      });
+      toast.custom((t) => (
+        <SuccessToast
+          t={t}
+          message={`You successfully made ${selectedUser.username} a moderator`}
+        />
+      ));
+      setSelectedUser({ action: "", memberId: "", username: "" });
+      setOpenModal(false);
+    },
+    onError: () => {
+      toast.custom((t) => (
+        <ErrorToast
+          t={t}
+          message={`Error appointing ${selectedUser.username} a moderator`}
+        />
+      ));
+    },
+  });
+
+  const removeModerator = useMutation({
+    mutationKey: ["remove-moderator"],
+    mutationFn: (memberId: string) =>
+      removeModeratorQuery(memberId, community_id as string),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["community-members"],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["community-moderators"],
+      });
+      toast.custom((t) => (
+        <SuccessToast
+          t={t}
+          message={`You successfully removed ${selectedUser.username} as a moderator`}
+        />
+      ));
+      setSelectedUser({ action: "", memberId: "", username: "" });
+      setOpenModal(false);
+    },
+    onError: () => {
+      toast.custom((t) => (
+        <ErrorToast
+          t={t}
+          message={`Error removing ${selectedUser.username} as a moderator`}
+        />
+      ));
+    },
+  });
+
   return (
     <div>
       <Tabs defaultValue="All">
         <TabsList>
-          <TabsTrigger value="All">All (3,267)</TabsTrigger>
-          <TabsTrigger value="Moderators">Moderators (3)</TabsTrigger>
+          <TabsTrigger value="All">All ({members.length})</TabsTrigger>
+          <TabsTrigger value="Moderators">
+            Moderators ({moderators.length})
+          </TabsTrigger>
         </TabsList>
 
         <TabsContent value="All">
           <div className="space-y-5 mt-9">
-            {"01234".split("").map((item) => (
-              <div key={item} className="flex justify-between">
+            {members.map((item) => (
+              <div key={item?.id} className="flex justify-between">
                 <MemberCard
-                  avatar="https://source.unsplash.com/random/120x120/?portrait"
-                  name="StoneSilver12"
-                  username="@sportsOn3"
+                  avatar={item?.user?.usermeta?.avatar}
+                  name={
+                    item?.user?.usermeta?.firstname +
+                    " " +
+                    item?.user?.usermeta?.lastname
+                  }
+                  username={item?.user?.username ?? ""}
                 />
 
                 <DropdownMenu>
@@ -75,7 +196,9 @@ const CommunityMembers = () => {
                       <DropdownMenuItem
                         key={label}
                         className={cn("py-3 cursor-pointer", color)}
-                        onClick={() => callback("@sportsOn3")}
+                        onClick={() =>
+                          callback(item.user?.username ?? "", item.id)
+                        }
                       >
                         <span className="">{label}</span>
                       </DropdownMenuItem>
@@ -89,12 +212,16 @@ const CommunityMembers = () => {
 
         <TabsContent value="Moderators">
           <div className="space-y-5 mt-9">
-            {"012".split("").map((item) => (
-              <div key={item} className="flex justify-between">
+            {moderators.map((item) => (
+              <div key={item?.id} className="flex justify-between">
                 <MemberCard
-                  avatar="https://source.unsplash.com/random/120x120/?portrait"
-                  name="StoneSilver12"
-                  username="@sportsOn3"
+                  avatar={item?.user?.usermeta?.avatar}
+                  name={
+                    item?.user?.usermeta?.firstname +
+                    " " +
+                    item?.user?.usermeta?.lastname
+                  }
+                  username={item?.user?.username ?? ""}
                 />
 
                 <DropdownMenu>
@@ -111,11 +238,13 @@ const CommunityMembers = () => {
                     align="end"
                     className="w-[220px] -mt-5 z-[53]"
                   >
-                    {options.map(({ label, callback, color }) => (
+                    {moderatorOptions.map(({ label, callback, color }) => (
                       <DropdownMenuItem
                         key={label}
                         className={cn("py-3 cursor-pointer", color)}
-                        onClick={() => callback("@sportsOn3")}
+                        onClick={() =>
+                          callback(item.user?.username ?? "", item.id)
+                        }
                       >
                         <span className="">{label}</span>
                       </DropdownMenuItem>
@@ -136,12 +265,16 @@ const CommunityMembers = () => {
           <p className="font-bold text-center mt-8 text-lg w-[80%] mx-auto">
             {selectedUser.action === "remove"
               ? `Remove ${selectedUser.username} from community?`
+              : selectedUser.action === "unappoint"
+              ? `Remove ${selectedUser.username} from the position of a moderator?`
               : `Make ${selectedUser.username}  a moderator?`}
           </p>
 
           <p className="text-center text-[#888888] dark:text-[#A0A0A0]">
             {selectedUser.action === "remove"
               ? "This user will no longer able to directly invite, remove and members in the community."
+              : selectedUser.action === "unappoint"
+              ? `This user will no longer able to directly invite, remove and members in the community.`
               : "This user will be able to directly invite, remove and members in the community"}
           </p>
 
@@ -153,7 +286,14 @@ const CommunityMembers = () => {
                   : "bg-black dark:bg-white text-white dark:text-black",
                 " w-full rounded-full h-14"
               )}
-              onClick={() => setOpenModal(false)}
+              onClick={() => {
+                if (selectedUser.action === "appoint") {
+                  return makeModerator.mutate(selectedUser.memberId);
+                }
+                if (selectedUser.action === "unappoint") {
+                  return removeModerator.mutate(selectedUser.memberId);
+                }
+              }}
             >
               {selectedUser.action === "remove" ? "Remove" : "Yes"}
             </Button>

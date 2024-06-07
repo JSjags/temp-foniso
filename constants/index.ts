@@ -856,3 +856,5 @@ export const reactionsList = [
   "/assets/post-reactions/sad.svg",
   "/assets/post-reactions/champion.svg",
 ];
+
+export const defaultCommunityCover = "/assets/default-community-cover.jpeg";

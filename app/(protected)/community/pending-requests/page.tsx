@@ -77,9 +77,20 @@ const Page = () => {
         <HeaderWithBackBtn title="Pending requests" />
 
         <div className="mt-6 space-y-5">
-          {data?.map((item, index) => (
-            <CommunityCard key={index} {...item} />
-          ))}
+          {Boolean(data?.data.data.length) ? (
+            data?.data.data?.map((item, index) => (
+              <CommunityCard key={index} {...item} />
+            ))
+          ) : (
+            <div className="px-4 w-full justify-center pt-10">
+              <div className="text-center text-lg font-bold">
+                No Pending Request
+              </div>
+              <div className="text-center text-sm text-foreground/70">
+                You haven't received any requests to join your community.
+              </div>
+            </div>
+          )}
         </div>
       </div>
 
