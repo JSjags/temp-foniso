@@ -4,8 +4,8 @@ import RightSideBar from "@/components/RightSideBar";
 
 const Page = () => {
   return (
-    <div className="flex duo:gap-3 duo:pr-2">
-      <div className="w-full">
+    <div className="flex duo:gap-2 duo:pr-2">
+      <div className="w-full bg-background">
         <HeaderWithBackBtn title="Invite new members" />
         <MembersList />
       </div>

@@ -7,9 +7,11 @@ import { communityRules } from "@/constants";
 import { useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { getOneCommunity } from "@/services/api/community";
+import { ImSpinner2 } from "react-icons/im";
 
 type Props = {
   onSubmit: (val: AddRulesContext) => void;
+  isPending?: boolean;
 };
 
 const AddRule = (props: Props) => {
@@ -23,7 +25,7 @@ const AddRule = (props: Props) => {
     },
   });
 
-  const { data: community_info, isLoading } = useQuery({
+  const { data: community_info } = useQuery({
     queryKey: ["one-community", community_id],
     queryFn: () => getOneCommunity(String(community_id)),
   });
@@ -35,8 +37,8 @@ const AddRule = (props: Props) => {
   };
 
   useEffect(() => {
-    if (community_info && searchParams.get("edit")) {
-      const rule = community_info?.rules.find(
+    if (community_info?.data.data && searchParams.get("edit")) {
+      const rule = community_info?.data.data?.rules.find(
         (item) => item.id === Number(searchParams.get("edit"))
       );
 
@@ -45,7 +47,7 @@ const AddRule = (props: Props) => {
         setValue("description", rule.description);
       }
     }
-  }, [searchParams, setValue, community_info]);
+  }, [searchParams, setValue, community_info?.data.data]);
 
   return (
     <form className="" onSubmit={handleSubmit(onSubmit)}>
@@ -86,9 +88,14 @@ const AddRule = (props: Props) => {
           </span>
         </div>
       </div>
-
       <Button className="w-full rounded-full mt-[131px] bg-[#676666] h-14 mb-6">
-        {searchParams.get("edit") ? "Edit rule" : "Create rule"}
+        {props.isPending ? (
+          <ImSpinner2 className="size-7 ml-3 animate-spin text-[#4ED17E]" />
+        ) : searchParams.get("edit") ? (
+          "Edit rule"
+        ) : (
+          "Create rule"
+        )}
       </Button>
     </form>
   );

@@ -91,7 +91,7 @@ const CommunityCard = (props: CommunityContext) => {
               hasRequested ||
               isRequested ||
               (isLocked && props?.isMember === undefined)
-              ? "border-[#4ED17E] text-[#4ED17E] !bg-transparent"
+              ? "border-[#4ED17E] text-[#4ED17E] bg-transparent"
               : "hover:bg-white hover:scale-[1.01] transition-all hover:shadow-xl bg-white border-border text-foreground dark:text-black",
             "border rounded-full flex justify-center items-center h-8 duo:h-[40px] px-3 w-[90px] duo:w-[110px]"
           )}

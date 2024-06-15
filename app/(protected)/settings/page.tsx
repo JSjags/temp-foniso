@@ -1,7 +1,9 @@
+import SettingsPage from "@/components/settings/Settings";
+
 type Props = {};
 
 const Settings = (props: Props) => {
-  return <div>Settings page</div>;
+  return <SettingsPage />;
 };
 
 export default Settings;

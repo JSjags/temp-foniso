@@ -1,4 +1,5 @@
 import { type ClassValue, clsx } from "clsx";
+import { format, formatDistanceToNow, isSameDay } from "date-fns";
 import moment from "moment";
 import { twMerge } from "tailwind-merge";
 import validator from "validator";
@@ -87,4 +88,20 @@ export function formatDateTime(dateTimeString: string) {
   const formattedDateTime = dateTime.format("h:mmA, D MMM YYYY");
 
   return formattedDateTime;
+}
+
+/**
+ * Formats the given date based on whether it is from the same day or not.
+ * @param {Date|string} createdAt - The createdAt date to format.
+ * @returns {string} - Formatted date string.
+ */
+export function formatConversationCreatedAt(createdAt: string) {
+  const date = new Date(createdAt);
+  const now = new Date();
+
+  if (isSameDay(date, now)) {
+    return format(date, "p"); // 'p' represents the time in 'hh:mm a' format
+  } else {
+    return formatDistanceToNow(date, { addSuffix: true }).replace("about ", "");
+  }
 }

@@ -5,7 +5,7 @@ import { CiGlobe } from "react-icons/ci";
 import { VscLock } from "react-icons/vsc";
 import { Button } from "@/components/ui/button";
 import { useForm, SubmitHandler } from "react-hook-form";
-import { CreateCommunityForm } from "@/types/community";
+import { CommunityContext, CreateCommunityForm } from "@/types/community";
 import { useEffect } from "react";
 import { ImSpinner2 } from "react-icons/im";
 
@@ -27,6 +27,7 @@ type Props = {
   defaultValues?: CreateCommunityForm;
   btnText?: string;
   isLoading?: boolean;
+  community?: CommunityContext;
 };
 
 const CreateCommunity = (props: Props) => {
@@ -35,7 +36,7 @@ const CreateCommunity = (props: Props) => {
       defaultValues: {
         name: "",
         description: "",
-        type: "public",
+        type: props?.community?.type.toLowerCase() ?? "public",
       },
     });
 
@@ -94,7 +95,7 @@ const CreateCommunity = (props: Props) => {
 
       <p className="text-lg font-bold my-6">Community type</p>
       <RadioGroup
-        defaultValue="public"
+        defaultValue={props?.community?.type.toLowerCase() ?? "public"}
         className="space-y-30px"
         onValueChange={(val) => {
           setValue("type", val);

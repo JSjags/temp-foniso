@@ -31,6 +31,7 @@ const MembersList = () => {
       if (data) toast.success("Invite sent");
     });
   };
+
   return (
     <div className="mt-5 px-4">
       <div className="relative flex items-center">
@@ -39,7 +40,7 @@ const MembersList = () => {
       </div>
 
       <div className="mt-5">
-        {community_members?.map(({ usermeta, username, id }) => (
+        {community_members?.data.data?.map(({ usermeta, username, id }) => (
           <div
             className="flex justify-between gap-6 py-4 border-b border-border"
             key={id}

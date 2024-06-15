@@ -35,14 +35,20 @@ export function WhoCanReply({
   const [currentOption, setCurrentOption] = useState<string>(
     replyOption ?? "Everyone"
   );
+
+  console.log(currentOption);
+
   const [CurrentIcon, setCurrentIcon] = useState<LucideIcon>(
-    postReplyOptions.filter((option) => option.title === currentOption)[0].icon
+    postReplyOptions.filter(
+      (option) => option.title.toLowerCase() === currentOption.toLowerCase()
+    )[0].icon
   );
 
   useEffect(() => {
     setCurrentIcon(
-      postReplyOptions.filter((option) => option.title === currentOption)[0]
-        .icon
+      postReplyOptions.filter(
+        (option) => option.title.toLowerCase() === currentOption.toLowerCase()
+      )[0].icon
     );
   }, [currentOption]);
 

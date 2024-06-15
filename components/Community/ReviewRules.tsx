@@ -39,30 +39,32 @@ const ReviewRules = ({ editOnClick, addOnClick }: Props) => {
 
       <></>
       <ul className="mt-8 space-y-[18px]">
-        {community_info?.rules?.map(({ title, description, id }, index) => (
-          <li key={id} className="flex">
-            <p className="mr-3 text-center font-bold text-lg leading-none">
-              {index + 1}
-            </p>
-            <div className="flex-1">
-              <p className="!leading-none font-bold duo:text-lg">{title}</p>
-              <p className="text-black dark:text-[#AFAFAF] text-sm duo:text-base mt-1">
-                {description}
+        {community_info?.data.data?.rules?.map(
+          ({ title, description, id }, index) => (
+            <li key={id} className="flex items-start">
+              <p className="mr-3 text-center font-bold text-lg leading-none">
+                {index + 1}
               </p>
-            </div>
-            <button
-              type="button"
-              className="text-[#22C55E] font-medium"
-              onClick={() =>
-                typeof editOnClick === "function"
-                  ? editOnClick(index)
-                  : openModal(id)
-              }
-            >
-              Edit
-            </button>
-          </li>
-        ))}
+              <div className="flex-1">
+                <p className="!leading-none font-bold duo:text-lg">{title}</p>
+                <p className="text-black dark:text-[#AFAFAF] text-sm duo:text-base mt-1">
+                  {description}
+                </p>
+              </div>
+              <button
+                type="button"
+                className="text-[#22C55E] font-medium"
+                onClick={() =>
+                  typeof editOnClick === "function"
+                    ? editOnClick(id)
+                    : openModal(id)
+                }
+              >
+                Edit
+              </button>
+            </li>
+          )
+        )}
       </ul>
 
       <button

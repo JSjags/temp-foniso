@@ -56,7 +56,10 @@ const HeaderWithImage = (props: Props) => {
               </button>
             </DropdownMenuTrigger>
 
-            <DropdownMenuContent align="end" className="duo:w-[220px]">
+            <DropdownMenuContent
+              align="end"
+              className="duo:w-[220px] bg-background"
+            >
               {props.dropDownOptions.map(({ label, callback, color }) => (
                 <DropdownMenuItem
                   key={label}

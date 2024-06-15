@@ -77,20 +77,24 @@ export function SelectDestination({
               <Globe color="white" size={20} />
             </div>
           ) : (
-            <div className="bg-colorPrimary size-[35px] flex gap-x-4 justify-center items-center rounded-md">
+            <div className="bg-foreground/10 size-[35px] flex gap-x-4 justify-center items-center rounded-md">
               <div className="relative size-[35px] overflow-hidden rounded-md">
                 {myCommunities.isPending ? (
                   <div className="flex justify-center">
                     <ImSpinner2 className="size-5 animate-spin text-white" />
                   </div>
                 ) : (
-                  <Image
-                    alt="community image"
-                    src={selectedCommunity?.coverImage ?? ""}
-                    layout="fill"
-                    objectFit="cover"
-                    className={cn("size-[35px] h-auto rounded-md")}
-                  />
+                  <div className="size-[35px] relative">
+                    <Image
+                      alt="community image"
+                      src={selectedCommunity?.coverImage ?? ""}
+                      layout="fill"
+                      objectFit="cover"
+                      className={cn("w-full h-full size-[35px] rounded-md")}
+                      width={0}
+                      height={0}
+                    />
+                  </div>
                 )}
               </div>
             </div>

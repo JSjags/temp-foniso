@@ -207,6 +207,7 @@ export type CommunityMember = {
   id: number;
   communityId: number;
   userId: number;
+  user?: User;
   status: string;
   created_at: string;
   updated_at: string;
@@ -289,6 +290,20 @@ export type ApiResponse<T> = {
     currentPage: number;
   };
 };
+export type ApiResponseDeep<T> = {
+  data: {
+    data: {
+      items: T;
+      meta: {
+        totalItems: number;
+        itemCount: number;
+        itemsPerPage: number;
+        totalPages: number;
+        currentPage: number;
+      };
+    };
+  };
+};
 
 export type NotificationMeta = {
   id: number;
@@ -302,4 +317,34 @@ export type NotificationMeta = {
   created_at: string;
   updated_at: string;
   sender: User;
+};
+
+export interface NotificationMeta {
+  action: string;
+  content: string;
+  created_at: string;
+  id: number;
+  sender: User;
+  senderId: number;
+  status: string;
+  title: string;
+  type: string;
+  updated_at: string;
+  userId: number;
+}
+
+type DummyConversation = {
+  id: number;
+  avatar: StaticImageData; // Changed from string to StaticImageData
+  name: string;
+  message: {
+    content: string;
+    media: {
+      url: string;
+      type: string;
+    }[];
+    created_at: string;
+  };
+  status: string;
+  unreadCount: number;
 };

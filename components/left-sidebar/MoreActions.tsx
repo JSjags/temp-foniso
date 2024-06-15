@@ -121,7 +121,10 @@ const MoreActions = ({ item }: Props) => {
             />
             <span>Account Verification</span>
           </DropdownMenuItem>
-          <DropdownMenuItem className="data-[highlighted]:bg-[#393D39] text-foreground/80 py-3 px-3 rounded-lg font-medium text-lg cursor-pointer">
+          <DropdownMenuItem
+            onClick={() => router.push("/settings")}
+            className="data-[highlighted]:bg-[#393D39] text-foreground/80 py-3 px-3 rounded-lg font-medium text-lg cursor-pointer"
+          >
             <Image
               width={30}
               height={30}

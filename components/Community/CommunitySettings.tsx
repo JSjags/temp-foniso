@@ -3,11 +3,22 @@
 import Image from "next/image";
 import NavList from "./NavList";
 import { CiGlobe } from "react-icons/ci";
-import { CreateCommunityForm } from "@/types/community";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { CommunityContext, CreateCommunityForm } from "@/types/community";
+import {
+  useParams,
+  usePathname,
+  useRouter,
+  useSearchParams,
+} from "next/navigation";
 import MobileDesktopOverlay from "../Modal/MobileDesktopOverlay";
 import CreateCommunity from "./CreateCommunity";
 import { useState } from "react";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { updateCommunity } from "@/services/api/community";
+import toast from "react-hot-toast";
+import SuccessToast from "../reusable/toasts/SuccessToast";
+import { all } from "axios";
+import ErrorToast from "../reusable/toasts/ErrorToast";
 
 const tab_params = [
   "community-settings-name",
@@ -15,33 +26,34 @@ const tab_params = [
   "community-settings-type",
 ];
 
-const settings_list = [
-  {
-    count: 0,
-    label: "Community name",
-    href: tab_params[0],
-    desc: "Manchester united",
-  },
-  {
-    count: 0,
-    label: "Description",
-    href: tab_params[1],
-    desc: "Welcome to the Red Devils' Haven! Join our...",
-  },
-  {
-    count: 0,
-    label: "Community type",
-    href: tab_params[2],
-    desc: (
-      <span className="flex gap-[2px] items-center">
-        <CiGlobe />
-        Public
-      </span>
-    ),
-  },
-];
-
-const CommunitySettings = () => {
+const CommunitySettings = ({ community }: { community: CommunityContext }) => {
+  const queryClient = useQueryClient();
+  const { community_id } = useParams();
+  const settings_list = [
+    {
+      count: 0,
+      label: "Community name",
+      href: tab_params[0],
+      desc: community?.name,
+    },
+    {
+      count: 0,
+      label: "Description",
+      href: tab_params[1],
+      desc: community.description,
+    },
+    {
+      count: 0,
+      label: "Community type",
+      href: tab_params[2],
+      desc: (
+        <span className="flex gap-[2px] items-center capitalize">
+          <CiGlobe />
+          {community.type}
+        </span>
+      ),
+    },
+  ];
   const searchParams = useSearchParams();
   const { push } = useRouter();
   const pathname = usePathname();
@@ -53,13 +65,41 @@ const CommunitySettings = () => {
     preview: "",
   });
 
+  const updateCommunityAction = useMutation({
+    mutationKey: ["community-moderators"],
+    mutationFn: (data: FormData) =>
+      updateCommunity(community_id as string, data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["community-info"] });
+      toast.custom((t) => (
+        <SuccessToast t={t} message="Community details updated successfully" />
+      ));
+      handleGoBack();
+    },
+    onError: () => {
+      toast.custom((t) => (
+        <ErrorToast t={t} message="Couldn't update community at the moment" />
+      ));
+    },
+  });
+
   const handleGoBack = () => {
     push(`${pathname}?tab=community-settings`);
   };
 
   const onSubmit = (arg: CreateCommunityForm) => {
     console.log(arg, "from main component");
-    handleGoBack();
+    const formData = new FormData();
+
+    formData.append("name", arg.name);
+    formData.append("description", arg.description);
+    formData.append("type", arg.type);
+
+    if (image.file) {
+      formData.append("coverImage", image.file);
+    }
+
+    updateCommunityAction.mutate(formData);
   };
 
   const handleUpload = () => {
@@ -88,6 +128,7 @@ const CommunitySettings = () => {
         <Image
           src={
             image.preview ||
+            community.coverImage ||
             "https://source.unsplash.com/random/1050x730/?white"
           }
           alt="background"
@@ -124,10 +165,11 @@ const CommunitySettings = () => {
       >
         <CreateCommunity
           onSubmit={onSubmit}
+          community={community}
           defaultValues={{
-            name: "Manchester United",
-            description: "The red devils",
-            type: "public",
+            name: community?.name,
+            description: community?.description,
+            type: community?.type?.toLowerCase(),
           }}
           btnText="Save changes"
         />

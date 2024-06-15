@@ -5,12 +5,15 @@ import CommunityCard from "./CommunityCard";
 import { useQuery } from "@tanstack/react-query";
 import { allCommunities } from "@/services/api/community";
 import PageLoadingSpinner from "../Spinner/PageLoadingSpinner";
+import { CommunityContext } from "@/types/community";
 
 const CommunitiesList = () => {
-  const { data: communities, isFetching } = useQuery({
+  const communities = useQuery({
     queryKey: ["all-communities"],
     queryFn: () => allCommunities(),
   });
+
+  console.log(communities);
 
   return (
     <div className="mt-5">
@@ -24,15 +27,18 @@ const CommunitiesList = () => {
         </Link>
       </div>
 
-      {isFetching ? (
+      {communities.isFetching ? (
         <div className="mt-10 flex justify-center">
           <PageLoadingSpinner spinnerExtraClass="w-7 h-7" />
         </div>
       ) : (
         <div className="mt-6 space-y-5">
-          {communities?.items?.map((item, index) => (
-            <CommunityCard key={index} {...item} />
-          ))}
+          {}
+          {communities.data?.data.data.items?.map(
+            (item: CommunityContext, index: number) => (
+              <CommunityCard key={index} {...item} />
+            )
+          )}
         </div>
       )}
     </div>
