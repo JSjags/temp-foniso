@@ -60,7 +60,7 @@ export default function RootLayout({
             <div className="mx-auto w-full flex justify-center gap-0 min-[480px]:gap-2 bg-[##E0E5E2] dark:bg-bgEffect max-w-[1560px] h-screen overflow-y-scroll">
               <LeftSideBar />
               {/* max-w-[740px] */}
-              <div className="flex-1 min-w-[140px] h-fit pb-20 sm:pb-4">
+              <div className="flex-1 min-w-[140px] h-fit pb-20 sm:pb-0">
                 {/* Titlebar is only for mobile devices */}
                 <Titlebar />
                 <FloatingPostBtn />

@@ -115,7 +115,7 @@ const CommunityIntro = () => {
     if (community_info?.data.data.id) {
       const user = JSON.parse(localStorage.getItem("userData") ?? "");
       const isAdmin = community_info?.data.data.moderators.some(
-        (itm) => itm.id === user.id
+        (itm) => itm.userId === user.user.id
       );
 
       setIsAdmin(isAdmin);
@@ -171,7 +171,7 @@ const CommunityIntro = () => {
             )}
 
             {/* Ongoing buzz */}
-            <div className="h-[110px] flex flex-col bg-[#C8C8C8] -translate-x-4 px-4 w-[calc(100%+2rem)] dark:bg-[#222623] mt-5 py-2 md:py-[0.875rem]">
+            {/* <div className="h-[110px] flex flex-col bg-[#C8C8C8] -translate-x-4 px-4 w-[calc(100%+2rem)] dark:bg-[#222623] mt-5 py-2 md:py-[0.875rem]">
               <div className="flex items-center gap-1 w-[calc(100%-2rem)] mx-auto">
                 <BsSoundwave className="text-xl text-[#1A1A1A] dark:text-[#AFAFAF]" />
                 <span className="text-[#1A1A1A] dark:text-[#A0A0A0] text-sm font-medium">
@@ -207,7 +207,7 @@ const CommunityIntro = () => {
                   </Button>
                 </Link>
               </div>
-            </div>
+            </div> */}
 
             {/* buzz sidebar */}
             {get("live-buzz") && (

@@ -6,13 +6,13 @@ import RightSideBar from "@/components/RightSideBar";
 
 const Community = () => {
   return (
-    <div className="flex duo:gap-3 bg-background">
-      <div className="w-full">
+    <div className="flex duo:gap-2">
+      <div className="w-full bg-background">
         <Titlebar title="Community" />
         <div className="px-4">
           <PendingRequests />
           <CommunitiesList />
-          <OngoingBuzz />
+          {/* <OngoingBuzz /> */}
         </div>
       </div>
 

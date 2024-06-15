@@ -56,7 +56,7 @@ const ReviewRules = ({ editOnClick, addOnClick }: Props) => {
                 className="text-[#22C55E] font-medium"
                 onClick={() =>
                   typeof editOnClick === "function"
-                    ? editOnClick(index)
+                    ? editOnClick(id)
                     : openModal(id)
                 }
               >

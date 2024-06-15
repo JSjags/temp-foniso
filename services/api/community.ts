@@ -26,6 +26,33 @@ export const makeModeratorQuery = async (
   });
 };
 
+export const editRuleQuery = async (
+  id: string,
+  title: string,
+  description: string
+): Promise<{
+  data: any;
+}> => {
+  return await axiosInstance.patch(`/community-rule/${id}`, {
+    title,
+    description,
+  });
+};
+
+export const newRuleQuery = async (
+  communityId: string,
+  title: string,
+  description: string
+): Promise<{
+  data: any;
+}> => {
+  return await axiosInstance.post(`/community-rule`, {
+    communityId: parseInt(communityId),
+    title,
+    description,
+  });
+};
+
 export const removeModeratorQuery = async (
   memberId: string,
   community_id: string

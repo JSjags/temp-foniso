@@ -12,6 +12,7 @@ import { useMemo } from "react";
 import PageLoadingSpinner from "../Spinner/PageLoadingSpinner";
 import { cn } from "@/lib/utils";
 import { profileImageplaceholder } from "@/constants";
+import NotificationOptions from "../options/NotificationOptions";
 
 type Props = {
   type: string;
@@ -170,10 +171,20 @@ const AllNotificationCard = ({ type, data }: Props) => {
     data.senderId,
   ]);
 
+  // POST = 'post',
+  // LIKEPOST = 'likepost',
+  // LIKECOMMENT = 'likecomment',
+  // MENTION = 'mention',
+  // FOLLOW = 'follow',
+  // UNFOLLOW = 'unfollow',
+  // COMMENT = 'comment',
+  // GENERAL = 'general',
+  // NEWS = 'news',
+
   switch (type) {
     case "community_invite":
       return (
-        <div className="border-b border-border flex items-start gap-3 py-5">
+        <div className="border-b border-border flex items-start gap-3 py-5 px-2 sm:px-5">
           <div className="size-[35px] sm:size-[45px] rounded-full relative">
             <Image
               src={data?.sender.usermeta.avatar ?? ""}
@@ -198,12 +209,12 @@ const AllNotificationCard = ({ type, data }: Props) => {
           </div>
         </div>
       );
-    case "liked_post":
+    case "likepost":
       return (
-        <div className="border-b border-border flex items-start gap-3 py-5">
+        <div className="border-b border-border flex items-start gap-3 py-5 px-2 sm:px-5">
           <div className="size-[35px] sm:size-[45px] rounded-full relative">
             <Image
-              src={data?.sender.usermeta.avatar ?? ""}
+              src={data?.sender?.usermeta?.avatar ?? profileImageplaceholder}
               alt="notification-image size"
               layout="fill"
               objectFit="cover"
@@ -214,41 +225,57 @@ const AllNotificationCard = ({ type, data }: Props) => {
           <div className="flex-1">
             <div className="flex justify-between text-sm sm:text-lg gap-2 w-full ">
               {/* <p className="flex-1 font-medium">
+                {data.followed_by} followed you
+              </p> */}
+              <ContentText text={data.title} contentId={data.id} />
+              <div className="flex items-center">
+                <p className="text-foreground/50 dark:text-foreground/60 text-sm whitespace-nowrap">
+                  {customRelativeTime(data.created_at)}
+                </p>
+                <NotificationOptions notification={data} />
+              </div>
+            </div>
+            <p className="mt-2 text-base sm:text-lg font-medium text-foreground/50 dark:text-foreground/60">
+              {/* {data.content} */}
+              <ContentText text={data.content} contentId={data.id} />
+            </p>
+          </div>
+        </div>
+      );
+    case "likecomment":
+      return (
+        <div className="border-b border-border flex items-start gap-3 py-5 px-2 sm:px-5">
+          <div className="size-[35px] sm:size-[45px] rounded-full relative">
+            <Image
+              src={data?.sender.usermeta.avatar ?? profileImageplaceholder}
+              alt="notification-image size"
+              layout="fill"
+              objectFit="cover"
+              className="w-full h-full rounded-full object-cover"
+            />
+            {getAsset(data.type ?? "")}
+          </div>
+          <div className="flex-1">
+            {/* <div className="flex justify-between text-sm sm:text-lg gap-2 w-full ">
+              <p className="flex-1 font-medium">
                 {data.liked_by} liked your post
               </p>
               <p className="text-foreground/50 dark:text-foreground/60 text-sm sm:text-base">
                 {customRelativeTime(data.created_at)}
-              </p> */}
+              </p>
               {data.title}
-            </div>
-            <p className="mt-2 text-base sm:text-lg font-medium text-foreground/50 dark:text-foreground/60">
-              {data.content}
-            </p>
-          </div>
-        </div>
-      );
-    case "reply_like":
-      return (
-        <div className="border-b border-border flex items-start gap-3 py-5">
-          <div className="size-[35px] sm:size-[45px] rounded-full relative">
-            <Image
-              src={data?.sender.usermeta.avatar ?? ""}
-              alt="notification-image size"
-              layout="fill"
-              objectFit="cover"
-              className="w-full h-full rounded-full object-cover"
-            />
-            {getAsset(data.type ?? "")}
-          </div>
-          <div className="flex-1">
+            </div> */}
             <div className="flex justify-between text-sm sm:text-lg gap-2 w-full ">
               {/* <p className="flex-1 font-medium">
-                {data.liked_by} liked your reply
-              </p>
-              <p className="text-foreground/50 dark:text-foreground/60 text-sm sm:text-base">
-                {customRelativeTime(data.created_at)}
+                {data.followed_by} followed you
               </p> */}
-              {data.title}
+              <ContentText text={data.title} contentId={data.id} />
+              <div className="flex items-center">
+                <p className="text-foreground/50 dark:text-foreground/60 text-sm whitespace-nowrap">
+                  {customRelativeTime(data.created_at)}
+                </p>
+                <NotificationOptions notification={data} />
+              </div>
             </div>
             <p className="mt-2 text-base sm:text-lg font-medium text-foreground/50 dark:text-foreground/60">
               {data.content}
@@ -256,9 +283,38 @@ const AllNotificationCard = ({ type, data }: Props) => {
           </div>
         </div>
       );
+    // case "reply_like":
+    //   return (
+    //     <div className="border-b border-border flex items-start gap-3 py-5 px-2 sm:px-5">
+    //       <div className="size-[35px] sm:size-[45px] rounded-full relative">
+    //         <Image
+    //           src={data?.sender.usermeta.avatar ?? ""}
+    //           alt="notification-image size"
+    //           layout="fill"
+    //           objectFit="cover"
+    //           className="w-full h-full rounded-full object-cover"
+    //         />
+    //         {getAsset(data.type ?? "")}
+    //       </div>
+    //       <div className="flex-1">
+    //         <div className="flex justify-between text-sm sm:text-lg gap-2 w-full ">
+    //           {/* <p className="flex-1 font-medium">
+    //             {data.liked_by} liked your reply
+    //           </p>
+    //           <p className="text-foreground/50 dark:text-foreground/60 text-sm sm:text-base">
+    //             {customRelativeTime(data.created_at)}
+    //           </p> */}
+    //           {data.title}
+    //         </div>
+    //         <p className="mt-2 text-base sm:text-lg font-medium text-foreground/50 dark:text-foreground/60">
+    //           {data.content}
+    //         </p>
+    //       </div>
+    //     </div>
+    //   );
     case "follow":
       return (
-        <div className="border-b border-border flex items-start gap-3 py-5">
+        <div className="border-b border-border flex items-start gap-3 py-5 px-2 sm:px-5">
           <div className="size-[35px] sm:size-[45px] rounded-full relative">
             <Image
               src={data?.sender.usermeta.avatar ?? profileImageplaceholder}
@@ -275,6 +331,12 @@ const AllNotificationCard = ({ type, data }: Props) => {
                 {data.followed_by} followed you
               </p> */}
               <ContentText text={data.title} contentId={data.id} />
+              <div className="flex items-center">
+                <p className="text-foreground/50 dark:text-foreground/60 text-sm whitespace-nowrap">
+                  {customRelativeTime(data.created_at)}
+                </p>
+                <NotificationOptions notification={data} />
+              </div>
             </div>
             <div className="mt-2">
               {/* <Button className="bg-foreground text-background rounded-full font-medium h-8">
@@ -308,12 +370,122 @@ const AllNotificationCard = ({ type, data }: Props) => {
           </div>
         </div>
       );
-    case "reply_you":
+    case "unfollow":
       return (
-        <div className="border-b border-border flex items-start gap-3 py-5">
+        <div className="border-b border-border flex items-start gap-3 py-5 px-2 sm:px-5">
           <div className="size-[35px] sm:size-[45px] rounded-full relative">
             <Image
-              src={data?.sender.usermeta.avatar ?? ""}
+              src={data?.sender.usermeta.avatar ?? profileImageplaceholder}
+              alt="notification-image size"
+              layout="fill"
+              objectFit="cover"
+              className="w-full h-full rounded-full object-cover"
+            />
+            {getAsset(data.type ?? "")}
+          </div>
+          <div className="flex-1">
+            <div className="flex justify-between text-sm sm:text-lg gap-2 w-full ">
+              {/* <p className="flex-1 font-medium">
+                {data.followed_by} followed you
+              </p> */}
+              <ContentText text={data.title} contentId={data.id} />
+              <div className="flex items-center">
+                <p className="text-foreground/50 dark:text-foreground/60 text-sm whitespace-nowrap">
+                  {customRelativeTime(data.created_at)}
+                </p>
+                <NotificationOptions notification={data} />
+              </div>
+            </div>
+            <div className="mt-2">
+              {/* <Button className="bg-foreground text-background rounded-full font-medium h-8">
+                Follow back
+              </Button> */}
+              <Button
+                onClick={() => {
+                  if (checkIfUserIsFollowed) {
+                    // alert(checkIfUserIsFollowed);
+                    unfollowUser.mutate();
+                  } else {
+                    // alert(checkIfUserIsFollowed);
+                    followUser.mutate();
+                  }
+                }}
+                disabled={followUser.isPending || unfollowUser.isPending}
+                className={cn(
+                  "flex-1 hover:bg-foreground/20 bg-background hover:scale-[1.01] transition-all hover:shadow-xl border hover:border-foreground hover:text-foreground border-foreground text-foreground rounded-full flex justify-center items-center h-7 px-10 w-[80px] max-w-[129px]",
+                  checkIfUserIsFollowed && "bg-foreground text-background"
+                )}
+              >
+                {followUser.isPending || unfollowUser.isPending ? (
+                  <PageLoadingSpinner spinnerExtraClass="w-5 h-5" />
+                ) : (
+                  <span className="w-fit text-xs font-medium block p-0 align-middle">
+                    {checkIfUserIsFollowed ? "Following" : "Follow back"}
+                  </span>
+                )}
+              </Button>
+            </div>
+          </div>
+        </div>
+      );
+    // case "follow":
+    //   return (
+    //     <div className="border-b border-border flex items-start gap-3 py-5 px-2 sm:px-5">
+    //       <div className="size-[35px] sm:size-[45px] rounded-full relative">
+    //         <Image
+    //           src={data?.sender.usermeta.avatar ?? profileImageplaceholder}
+    //           alt="notification-image size"
+    //           layout="fill"
+    //           objectFit="cover"
+    //           className="w-full h-full rounded-full object-cover"
+    //         />
+    //         {getAsset(data.type ?? "")}
+    //       </div>
+    //       <div className="flex-1">
+    //         <div className="flex justify-between text-sm sm:text-lg gap-2 w-full ">
+    //           {/* <p className="flex-1 font-medium">
+    //             {data.followed_by} followed you
+    //           </p> */}
+    //           <ContentText text={data.title} contentId={data.id} />
+    //         </div>
+    //         <div className="mt-2">
+    //           {/* <Button className="bg-foreground text-background rounded-full font-medium h-8">
+    //             Follow back
+    //           </Button> */}
+    //           <Button
+    //             onClick={() => {
+    //               if (checkIfUserIsFollowed) {
+    //                 // alert(checkIfUserIsFollowed);
+    //                 unfollowUser.mutate();
+    //               } else {
+    //                 // alert(checkIfUserIsFollowed);
+    //                 followUser.mutate();
+    //               }
+    //             }}
+    //             disabled={followUser.isPending || unfollowUser.isPending}
+    //             className={cn(
+    //               "flex-1 hover:bg-foreground/20 bg-background hover:scale-[1.01] transition-all hover:shadow-xl border hover:border-foreground hover:text-foreground border-foreground text-foreground rounded-full flex justify-center items-center h-7 px-10 w-[80px] max-w-[129px]",
+    //               checkIfUserIsFollowed && "bg-foreground text-background"
+    //             )}
+    //           >
+    //             {followUser.isPending || unfollowUser.isPending ? (
+    //               <PageLoadingSpinner spinnerExtraClass="w-5 h-5" />
+    //             ) : (
+    //               <span className="w-fit text-xs font-medium block p-0 align-middle">
+    //                 {checkIfUserIsFollowed ? "Following" : "Follow back"}
+    //               </span>
+    //             )}
+    //           </Button>
+    //         </div>
+    //       </div>
+    //     </div>
+    //   );
+    case "reply_you":
+      return (
+        <div className="border-b border-border flex items-start gap-3 py-5 px-2 sm:px-5">
+          <div className="size-[35px] sm:size-[45px] rounded-full relative">
+            <Image
+              src={data?.sender.usermeta.avatar ?? profileImageplaceholder}
               alt="notification-image size"
               layout="fill"
               objectFit="cover"
@@ -324,13 +496,22 @@ const AllNotificationCard = ({ type, data }: Props) => {
           </div>
           <div className="flex-1">
             <div className="flex justify-between text-sm sm:text-lg gap-2 w-full ">
-              <p className="flex-1 font-medium">
-                {/* {data.replied_by} replied to you */}
+              {/* <p className="flex-1 font-medium">
+                {data.replied_by} replied to you
                 {data.title}
-              </p>
-              <p className="text-foreground/50 dark:text-foreground/60 text-base">
-                {customRelativeTime(data.created_at)}
-              </p>
+              </p> */}
+              <div className="flex justify-between text-sm sm:text-lg gap-2 w-full ">
+                {/* <p className="flex-1 font-medium">
+                {data.followed_by} followed you
+              </p> */}
+                <ContentText text={data.title} contentId={data.id} />
+              </div>
+              <div className="flex items-center">
+                <p className="text-foreground/50 dark:text-foreground/60 text-sm whitespace-nowrap">
+                  {customRelativeTime(data.created_at)}
+                </p>
+                <NotificationOptions notification={data} />
+              </div>
             </div>
             <p className="mt-2 text-base sm:text-lg font-medium text-foreground/50 dark:text-foreground/60">
               {data.content}
@@ -340,10 +521,10 @@ const AllNotificationCard = ({ type, data }: Props) => {
       );
     case "replied":
       return (
-        <div className="border-b border-border flex items-start gap-3 py-5">
+        <div className="border-b border-border flex items-start gap-3 py-5 px-2 sm:px-5">
           <div className="size-[35px] sm:size-[45px] rounded-full relative">
             <Image
-              src={data?.sender.usermeta.avatar ?? ""}
+              src={data?.sender.usermeta.avatar ?? profileImageplaceholder}
               layout="fill"
               objectFit="cover"
               className="w-full h-full rounded-full object-cover"
@@ -354,13 +535,22 @@ const AllNotificationCard = ({ type, data }: Props) => {
           </div>
           <div className="flex-1">
             <div className="flex justify-between text-sm sm:text-lg gap-2 w-full ">
-              <p className="flex-1 font-medium">
-                {/* {data.liked_by} replied to your post */}
+              {/* <p className="flex-1 font-medium">
+                {data.liked_by} replied to your post
                 {data.title}
-              </p>
-              <p className="text-foreground/50 dark:text-foreground/60 text-sm sm:text-base">
-                {customRelativeTime(data.created_at)}
-              </p>
+              </p> */}
+              <div className="flex justify-between text-sm sm:text-lg gap-2 w-full ">
+                {/* <p className="flex-1 font-medium">
+                {data.followed_by} followed you
+              </p> */}
+                <ContentText text={data.title} contentId={data.id} />
+              </div>
+              <div className="flex items-center">
+                <p className="text-foreground/50 dark:text-foreground/60 text-sm whitespace-nowrap">
+                  {customRelativeTime(data.created_at)}
+                </p>
+                <NotificationOptions notification={data} />
+              </div>
             </div>
             <p className="mt-2 text-base sm:text-lg font-medium text-foreground/50 dark:text-foreground/60">
               {data.content}
@@ -368,12 +558,12 @@ const AllNotificationCard = ({ type, data }: Props) => {
           </div>
         </div>
       );
-    case "recent_post":
+    case "post":
       return (
-        <div className="border-b border-border flex items-start gap-3 py-5">
+        <div className="border-b border-border flex items-start gap-3 py-5 px-2 sm:px-5">
           <div className="size-[35px] sm:size-[45px] rounded-full relative">
             <Image
-              src={data?.sender.usermeta.avatar ?? ""}
+              src={data?.sender?.usermeta?.avatar ?? profileImageplaceholder}
               alt="notification-image size"
               layout="fill"
               objectFit="cover"
@@ -384,23 +574,33 @@ const AllNotificationCard = ({ type, data }: Props) => {
           </div>
           <div className="flex-1">
             <div className="flex justify-between text-sm sm:text-lg gap-2 w-full ">
-              <p className="flex-1 font-medium">
-                {/* {data.posted_by} just posted */}
+              {/* <p className="flex-1 font-medium">
+                {data.posted_by} just posted
                 {data.title}
-              </p>
-              <p className="text-foreground/50 dark:text-foreground/60 text-sm sm:text-base">
-                {customRelativeTime(data.created_at)}
-              </p>
+              </p> */}
+              <div className="flex justify-between text-sm sm:text-lg gap-2 w-full ">
+                {/* <p className="flex-1 font-medium">
+                {data.followed_by} followed you
+              </p> */}
+                <ContentText text={data.title} contentId={data.id} />
+              </div>
+              <div className="flex items-center">
+                <p className="text-foreground/50 dark:text-foreground/60 text-sm whitespace-nowrap">
+                  {customRelativeTime(data.created_at)}
+                </p>
+                <NotificationOptions notification={data} />
+              </div>
             </div>
             <p className="mt-2 text-base sm:text-lg font-medium text-foreground/50 dark:text-foreground/60">
-              {data.content}
+              {/* {data.content} */}
+              <ContentText text={data.content} contentId={data.id} />
             </p>
           </div>
         </div>
       );
-    case "milestone":
+    case "general":
       return (
-        <div className="border-b border-border flex items-start gap-3 py-5">
+        <div className="border-b border-border flex items-start gap-3 py-5 px-2 sm:px-5">
           <div className="size-[35px] sm:size-[45px] rounded-full relative">
             <Image
               src={"/assets/app-icons/notifications/milestone.svg"}
@@ -423,10 +623,10 @@ const AllNotificationCard = ({ type, data }: Props) => {
       );
     case "news":
       return (
-        <div className="border-b border-border flex items-start gap-3 py-5">
+        <div className="border-b border-border flex items-start gap-3 py-5 px-2 sm:px-5">
           <div className="size-[35px] sm:size-[45px] rounded-lg overflow-hidden relative">
             <Image
-              src={data?.sender.usermeta.avatar ?? ""}
+              src={data?.sender.usermeta.avatar ?? profileImageplaceholder}
               alt="notification-image w-full h-full object-cover"
               layout="fill"
               objectFit="cover"
@@ -435,17 +635,29 @@ const AllNotificationCard = ({ type, data }: Props) => {
             {getAsset(data.type ?? "")}
           </div>
           <div className="flex-1">
-            <div className="flex justify-between text-foreground/50 dark:text-foreground/60 gap-2 w-full ">
+            {/* <div className="flex justify-between text-foreground/50 dark:text-foreground/60 gap-2 w-full ">
               <p className="flex-1 font-medium text-xs sm:text-sm">
                 {data.title}
               </p>
+            </div> */}
+            <div className="flex justify-between text-sm sm:text-lg gap-2 w-full ">
+              {/* <p className="flex-1 font-medium">
+                {data.followed_by} followed you
+              </p> */}
+              <ContentText text={data.title} contentId={data.id} />
+              <div className="flex items-center">
+                <p className="text-foreground/50 dark:text-foreground/60 text-sm whitespace-nowrap">
+                  {customRelativeTime(data.created_at)}
+                </p>
+                <NotificationOptions notification={data} />
+              </div>
             </div>
             <div className="flex justify-between items-start gap-x-4 mt-2">
               <p className="text-base sm:text-lg font-medium line-clamp-2">
                 {data.content}
               </p>
 
-              <p className="text-foreground/50 dark:text-foreground/60 whitespace-nowrap text-sm sm:text-base">
+              <p className="text-foreground/50 dark:text-foreground/60 whitespace-nowrap text-sm">
                 {customRelativeTime(data.created_at)}
               </p>
             </div>

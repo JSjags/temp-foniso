@@ -106,7 +106,7 @@ const ManageCommunity = () => {
       <div className="bg-background">
         <HeaderWithBackBtn title="Manage community" />
 
-        <div className="mt-5 bg-background">
+        <div className="mt-5 min-h-screen bg-background">
           <p className="text-[1.25rem] mb-3 font-bold px-4 duo:px-5">
             Up for review
           </p>

@@ -48,6 +48,7 @@ const SearchCommunity = () => {
         <div className="px-4">
           <div className="mt-6 space-y-5">
             {Boolean(communities?.data?.data?.items.length) &&
+              param &&
               communities?.data?.data?.items?.map((item, index) => (
                 <CommunityCard key={index} {...item} />
               ))}

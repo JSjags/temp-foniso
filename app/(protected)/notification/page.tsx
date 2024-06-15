@@ -1,9 +1,12 @@
 "use client";
 
 import AllNotificationCard from "@/components/reusable/AllNotificationCard";
+import Loading from "@/components/reusable/Loading";
 import NotificationCard from "@/components/reusable/NotificationCard";
 import NotificationEmptyState from "@/components/reusable/NotificationEmptyState";
 import SubTabs from "@/components/reusable/SubTabs";
+import ErrorToast from "@/components/reusable/toasts/ErrorToast";
+import SuccessToast from "@/components/reusable/toasts/SuccessToast";
 import RightSideBar from "@/components/RightSideBar";
 import { Button } from "@/components/ui/button";
 import {
@@ -19,28 +22,85 @@ import {
   notificationTabs,
   placeholderNewsNotification,
 } from "@/constants";
-import { getNotifications } from "@/services/api/notification";
+import { cn } from "@/lib/utils";
+import {
+  getNotifications,
+  markAllAsReadQuery,
+} from "@/services/api/notification";
 import { NotificationMeta } from "@/types";
 import { DialogContent, DialogTitle } from "@radix-ui/react-dialog";
-import { useQuery } from "@tanstack/react-query";
+import {
+  useInfiniteQuery,
+  useMutation,
+  useQuery,
+  useQueryClient,
+} from "@tanstack/react-query";
 import { Settings, X } from "lucide-react";
 import Image from "next/image";
 import { useSearchParams } from "next/navigation";
-import { useState } from "react";
+import { Fragment, useEffect, useState } from "react";
+import toast from "react-hot-toast";
+import { IoMdDoneAll } from "react-icons/io";
+import { useInView } from "react-intersection-observer";
 
 type Props = {};
 
 const Page = (props: Props) => {
+  const queryClient = useQueryClient();
   const [showPushNotificationDialog, setShowPushNotificationDialog] =
     useState(false);
   const searchParams = useSearchParams();
 
-  const notifications = useQuery({
-    queryKey: ["get-notifications"],
-    queryFn: () => getNotifications(),
+  const { ref, inView } = useInView();
+
+  const notifications = useInfiniteQuery({
+    queryKey: ["get-infinite-notifications"],
+    queryFn: getNotifications,
+    initialPageParam: 0,
+    getNextPageParam: (lastPage, allPages, lastPageParam, allPageParams) => {
+      console.log(lastPage, allPages, lastPageParam, allPageParams);
+      if (lastPage.length === 0) {
+        return undefined;
+      }
+      return lastPageParam + 1;
+    },
   });
 
-  console.log(notifications.data?.data.data.items);
+  useEffect(() => {
+    if (inView) {
+      notifications.fetchNextPage();
+    }
+  }, [notifications.fetchNextPage, inView]);
+
+  // const notifications = useQuery({
+  //   queryKey: ["get-notifications"],
+  //   queryFn: () => getNotifications(),
+  // });
+
+  const markAllAsRead = useMutation({
+    mutationKey: ["mark-all-as-read"],
+    mutationFn: (arr: number[]) => {
+      return markAllAsReadQuery(arr);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["get-infinite-notifications"],
+      });
+      toast.custom((t) => (
+        <SuccessToast
+          t={t}
+          message="All notifications marked as read successfully."
+        />
+      ));
+    },
+    onError: () => {
+      toast.custom((t) => (
+        <ErrorToast t={t} message="Unable to mark all notifications as read." />
+      ));
+    },
+  });
+
+  // console.log(notifications.data?.data.data.items);
 
   const tab = searchParams.get("tab");
 
@@ -49,10 +109,30 @@ const Page = (props: Props) => {
       case null:
         return (
           // <NotificationEmptyState message="You haven’t gotten any notification yet" />
-          <div className="px-5">
+          <div className="">
             {notifications.isSuccess &&
-              Boolean(notifications.data?.data.data.items.length) &&
-              (notifications.data?.data.data.items as NotificationMeta[]).map(
+              notifications.data?.pages.map((group, i) => (
+                <Fragment key={i}>
+                  {group.data.data.items.map(
+                    (notification: NotificationMeta, i: number) => (
+                      <div
+                        className={cn(
+                          notification.status === "unread" &&
+                            "bg-colorPrimary/25"
+                        )}
+                      >
+                        <AllNotificationCard
+                          key={i}
+                          data={notification}
+                          type={notification.type}
+                        />
+                      </div>
+                    )
+                  )}
+                </Fragment>
+              ))}
+
+            {/* (notifications.data?.data.data.items as NotificationMeta[]).map(
                 (notification, i) => (
                   <AllNotificationCard
                     key={i}
@@ -60,14 +140,14 @@ const Page = (props: Props) => {
                     type={notification.type}
                   />
                 )
-              )}
+              )} */}
           </div>
         );
       case "all":
         return (
           // <NotificationEmptyState message="You haven’t gotten any notification yet" />
           <div className="px-5">
-            {notifications.isSuccess &&
+            {/* {notifications.isSuccess &&
               Boolean(notifications.data?.data.data.items.length) &&
               (notifications.data?.data.data.items as NotificationMeta[]).map(
                 (notification, i) => (
@@ -77,15 +157,50 @@ const Page = (props: Props) => {
                     type={notification.type}
                   />
                 )
-              )}
+              )} */}
+            {notifications.isSuccess &&
+              notifications.data?.pages.map((group, i) => (
+                <Fragment key={i}>
+                  {group.data.data.items.map(
+                    (notification: NotificationMeta, i: number) => (
+                      <AllNotificationCard
+                        key={i}
+                        data={notification}
+                        type={notification.type}
+                      />
+                    )
+                  )}
+                </Fragment>
+              ))}
           </div>
         );
       case "news":
         return (
           <div className="px-5">
-            {placeholderNewsNotification.map((news, i) => (
+            {/* {placeholderNewsNotification.map((news, i) => (
               <NotificationCard key={i} data={news} type={news.type} />
-            ))}
+            ))} */}
+            {notifications.isSuccess &&
+              notifications.data?.pages.map((group, i) => (
+                <Fragment key={i}>
+                  {group.data.data.items.map(
+                    (notification: NotificationMeta, i: number) => (
+                      <div
+                        className={cn(
+                          notification.status === "unread" &&
+                            "bg-colorPrimary/25"
+                        )}
+                      >
+                        <AllNotificationCard
+                          key={i}
+                          data={notification}
+                          type={notification.type}
+                        />
+                      </div>
+                    )
+                  )}
+                </Fragment>
+              ))}
           </div>
         );
       case "livescore":
@@ -107,19 +222,39 @@ const Page = (props: Props) => {
           // <NotificationEmptyState message="You haven’t gotten any notification yet" />
           <div className="px-5">
             {notifications.isSuccess &&
-              Boolean(notifications.data?.data.data.items.length) &&
-              (notifications.data?.data.data.items as NotificationMeta[]).map(
-                (notification, i) => (
-                  <AllNotificationCard
-                    key={i}
-                    data={notification}
-                    type={notification.type}
-                  />
-                )
-              )}
+              notifications.data?.pages.map((group, i) => (
+                <Fragment key={i}>
+                  {group.data.data.items.map(
+                    (notification: NotificationMeta, i: number) => (
+                      <div
+                        className={cn(
+                          notification.status === "unread" &&
+                            "bg-colorPrimary/25"
+                        )}
+                      >
+                        <AllNotificationCard
+                          key={i}
+                          data={notification}
+                          type={notification.type}
+                        />
+                      </div>
+                    )
+                  )}
+                </Fragment>
+              ))}
           </div>
         );
     }
+  };
+
+  const handleMarkAllAsRead = () => {
+    let arr: number[] = [];
+    notifications.data?.pages.forEach((p) => {
+      console.log(p);
+      arr = [...arr, p.data?.data.items.map((item: { id: number }) => item.id)];
+    });
+
+    markAllAsRead.mutate(arr);
   };
 
   return (
@@ -199,11 +334,23 @@ const Page = (props: Props) => {
             <p className="text-foreground font-bold text-xl sm:text-2xl">
               Notification
             </p>
-            <Settings
-              className="text-foreground cursor-pointer"
-              role="button"
-              onClick={() => setShowPushNotificationDialog(true)}
-            />
+            <div className="flex gap-x-3 items-center justify-between text-sm">
+              <div
+                role="button"
+                onClick={handleMarkAllAsRead}
+                className="flex gap-x-1 items-center justify-center cursor-pointer group"
+              >
+                <p className="text-foreground group-hover:text-colorPrimary">
+                  Mark all as read
+                </p>
+                <IoMdDoneAll className="group-hover:text-colorPrimary" />
+              </div>
+              <Settings
+                className="text-foreground cursor-pointer"
+                role="button"
+                onClick={() => setShowPushNotificationDialog(true)}
+              />
+            </div>
           </div>
           <div className="border-b border-border mt-6 px-5">
             {/* <SubTabs tabs={notificationTabs} /> */}
@@ -212,6 +359,14 @@ const Page = (props: Props) => {
         {/* Notifications section */}
         <div>
           <div className="">{identifyTab()}</div>
+          <div ref={ref} className="bg-background h-10">
+            {notifications.isFetchingNextPage && (
+              <Loading
+                isLoading={notifications.isFetchingNextPage}
+                className="w-full min-h-10 pb-5"
+              />
+            )}
+          </div>
         </div>
       </div>
       <RightSideBar

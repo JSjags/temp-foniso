@@ -12,7 +12,7 @@ const PendingRequests = () => {
   });
 
   return (
-    <div className="mt-5 mx-4 flex items-center justify-between gap-[9px] border rounded-xl border-border p-[10px]">
+    <div className="mt-2 flex items-center justify-between gap-[9px] border rounded-xl border-border p-[10px]">
       <Link
         href="/community/pending-requests"
         className="flex items-center gap-[10px]"

@@ -10,18 +10,46 @@ import { BsSoundwave } from "react-icons/bs";
 import UsersAvatar from "../reusable/UsersAvatar";
 import Feeds from "./Feeds";
 import { useQuery } from "@tanstack/react-query";
-import { allCommunities, userCommunities } from "@/services/api/community";
+import {
+  allCommunities,
+  getOneCommunity,
+  userCommunities,
+} from "@/services/api/community";
 import { useParams, useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
+import { useUserContext } from "@/context/UserContext";
+import { CommunityMeta } from "@/types";
+import { useEffect } from "react";
+import { Button } from "../ui/button";
 
 const CommunityLiveActivities = () => {
   const router = useRouter();
   const { community_id } = useParams();
 
+  const { userData } = useUserContext();
+
   const { data: communities } = useQuery({
     queryKey: ["user-communities"],
     queryFn: () => userCommunities(),
   });
+
+  const { data: communityInfo } = useQuery({
+    queryKey: ["get-community-data"],
+    queryFn: () => getOneCommunity(community_id as string),
+  });
+
+  console.log(communityInfo?.data?.data);
+  console.log(communityInfo?.data);
+
+  useEffect(() => {
+    if (communityInfo?.data?.data) {
+      if (communityInfo?.data?.data?.isMember.length) {
+        return;
+      } else {
+        router.push(`/community/${community_id}/view-community`);
+      }
+    }
+  }, [communityInfo?.data?.data]);
 
   return (
     <div className="flex duo:gap-2">
@@ -57,8 +85,7 @@ const CommunityLiveActivities = () => {
               </div>
             ))}
           </div>
-
-          <div className="flex px-4 gap-[10px] mt-6 items-center">
+          {/* <div className="flex px-4 gap-[10px] mt-6 items-center">
             <div className="flex-1 h-14 flex gap-[10px] flex-nowrap overflow-x-auto snap-x snap-mandatory scroll-p-2 sm:scroll-p-6 hide-scrollbar">
               {[0, 1, 2, 3].map((item) => (
                 <div
@@ -97,10 +124,29 @@ const CommunityLiveActivities = () => {
               See all
               <RxCaretRight className="" />
             </Link>
-          </div>
+          </div> */}
 
-          <PendingRequests />
-
+          {communityInfo?.data?.data &&
+            Boolean(
+              communityInfo?.data?.data.moderators.filter(
+                (m: { userId: number }) => m.userId === userData?.user.id
+              ).length
+            ) && (
+              <div className="px-4">
+                <div className="flex justify-end">
+                  <Button
+                    variant={"ghost"}
+                    onClick={() => {
+                      router.push(`${community_id}/manage-community`);
+                    }}
+                    className="text-colorPrimary hover:text-colorPrimary hover:underline p-0 hover:bg-transparent"
+                  >
+                    Manage community
+                  </Button>
+                </div>
+                <PendingRequests />
+              </div>
+            )}
           <Feeds />
         </div>
       </div>
