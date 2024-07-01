@@ -7,11 +7,12 @@ import { CiSearch } from "react-icons/ci";
 import { VscVerifiedFilled } from "react-icons/vsc";
 import { cn } from "@/lib/utils";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { getUsers } from "@/services/api/community";
+import { getInvitedMembers, getUsers } from "@/services/api/community";
 import useCustomMutation from "@/hooks/useCustomMutation";
 import { useParams } from "next/navigation";
-import { toast } from "react-toastify";
 import axiosInstance from "@/services/api/axiosInstance";
+import toast from "react-hot-toast";
+import SuccessToast from "../reusable/toasts/SuccessToast";
 
 const MembersList = () => {
   const { community_id } = useParams();
@@ -21,6 +22,13 @@ const MembersList = () => {
     queryFn: getUsers,
   });
 
+  const { data: invited_members } = useQuery({
+    queryKey: ["invited-members"],
+    queryFn: () => getInvitedMembers(community_id as string),
+  });
+
+  console.log(invited_members?.data.data.items);
+
   const { mutateAsync: inviteUser } = useCustomMutation(
     "/community-member/invite",
     "POST"
@@ -28,7 +36,8 @@ const MembersList = () => {
 
   const onInvite = (userId: number) => {
     inviteUser({ communityId: Number(community_id), userId }).then((data) => {
-      if (data) toast.success("Invite sent");
+      if (data)
+        toast.custom((t) => <SuccessToast t={t} message="Invite sent" />);
     });
   };
 
@@ -65,6 +74,16 @@ const MembersList = () => {
               </div>
             </div>
             <Button
+              disabled={invited_members?.data.data.items
+                .map((i) => {
+                  console.log(i);
+
+                  return i.userId;
+                })
+                .some((d) => {
+                  console.log(d === id);
+                  return d === id;
+                })}
               className={cn(
                 false
                   ? "bg-[#1a1a1a67] dark:bg-[#FAFAFA67] text-white dark:text-black"
@@ -73,7 +92,18 @@ const MembersList = () => {
               )}
               onClick={() => onInvite(id)}
             >
-              Invite
+              {invited_members?.data.data.items
+                .map((i) => {
+                  console.log(i);
+
+                  return i.userId;
+                })
+                .some((d) => {
+                  console.log(d === id);
+                  return d === id;
+                })
+                ? "Invited"
+                : "Invite"}
             </Button>
           </div>
         ))}

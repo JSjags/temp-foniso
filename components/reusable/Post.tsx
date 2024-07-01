@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import SportIcon from "./SportIcon";
-import { Heart, MoreVertical, X } from "lucide-react";
+import { Heart, MoreVertical, Share, X } from "lucide-react";
 import { Button } from "../ui/button";
 import { Carousel } from "react-responsive-carousel";
 import "react-responsive-carousel/lib/styles/carousel.min.css"; // requires a loader
@@ -71,12 +71,23 @@ import ReactionButton from "../ReactionButton";
 import { useUserContext } from "@/context/UserContext";
 import Link from "next/link";
 import { getUserFollowing } from "@/services/api/userService";
+import { useSearchParams } from "next/navigation";
+import toast from "react-hot-toast";
+import NoticeToast from "./toasts/NoticeToast";
+import ErrorToast from "./toasts/ErrorToast";
 
 const Post = ({ postData, optionsType, isFetching }: PostProps) => {
   const router = useRouter();
   const queryClient = useQueryClient();
+  const searchParams = useSearchParams();
+  const postId = searchParams.get("postid");
+  const view = searchParams.get("view");
+
+  const baseUrl = window.location.protocol + "//" + window.location.host + "/";
 
   console.log(postData);
+  console.log(postId);
+  console.log(view);
 
   const [post, setPost] = useState<PostMeta>(postData);
   const [showViewModal, setShowViewModal] = useState(false);
@@ -172,6 +183,71 @@ const Post = ({ postData, optionsType, isFetching }: PostProps) => {
     setPost(postData);
   }, [postData?.likedByMe]);
 
+  const copyToClipboard = async (val: string) => {
+    try {
+      await navigator.clipboard.writeText(val);
+      toast.custom((t) => (
+        <SuccessToast
+          t={t}
+          title="Copied to clipboard"
+          message="Post link copied to clipboard successfully."
+        />
+      ));
+    } catch (err) {
+      toast.custom((t) => (
+        <SuccessToast
+          t={t}
+          message="Post link could not be copied to clipboard."
+        />
+      ));
+    }
+  };
+
+  const handleShare = async (url: string, about: string) => {
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: "Discover my profile on Foniso",
+          text:
+            about.length <= 0
+              ? "Hey, check out my profile on Foniso! I've shared some great content that I think you'll enjoy. Follow the link below to see more."
+              : about,
+          url: url,
+        });
+        console.log("Post shared successfully");
+      } catch (error) {
+        console.error("Error sharing post:", error);
+      }
+    } else {
+      try {
+        await navigator.clipboard.writeText(url);
+        toast.custom((t) => (
+          <NoticeToast
+            t={t}
+            title="Browser not supported"
+            message="Web Share API not supported in this browser. Your post URL has been copied to your clipboard."
+          />
+        ));
+      } catch (err) {
+        toast.custom((t) => (
+          <ErrorToast
+            t={t}
+            message="Web Share API not supported in this browser. Your post URL could not be copied to your clipboard."
+          />
+        ));
+      }
+      // Alternatively, you could copy the URL to the clipboard
+      // navigator.clipboard.writeText(profileUrl).then(() => {
+      //   alert('Profile URL copied to clipboard');
+      // });
+    }
+  };
+
+  const handleCopyPostLink = () => {
+    handleShare(baseUrl + "view/post/" + post.id, post.content);
+    // copyToClipboard(baseUrl + "view/post/" + post.id);
+  };
+
   return (
     <div className="py-4 pb-2 px-2 sm:px-5 relative z-10 overflow-x-hidden border-none bg-background sm:bg-inherit border-border">
       {/* Views modal */}
@@ -195,8 +271,8 @@ const Post = ({ postData, optionsType, isFetching }: PostProps) => {
       {/* Fullscreen post modal */}
       <FullScreenPost
         post={post}
-        setShowFullScreenPost={setShowFullScreenPost}
-        showFullScreenPost={showFullScreenPost}
+        // setShowFullScreenPost={router.back()}
+        showFullScreenPost={parseInt(postId!) === post.id}
       />
       {/* Show reply dialog */}
       <PostReplyDialog
@@ -209,7 +285,7 @@ const Post = ({ postData, optionsType, isFetching }: PostProps) => {
         className=""
         onClick={(e) => {
           e.stopPropagation();
-          router.push(`/posts/${post.id}`);
+          router.push(`/posts/${post.id}`, { scroll: false });
         }}
       >
         <div className="flex items-start justify-between">
@@ -392,61 +468,70 @@ const Post = ({ postData, optionsType, isFetching }: PostProps) => {
                   )}
               </div>
             )}
-            <div className="flex mt-4 items-center">
-              <ReactionButton
-                handlePostLikeIncrement={handlePostLikeIncrement}
-                handlePostLikeRequest={handlePostLikeRequest}
-                post={post}
-                setPost={setPost}
-                likeData={post?.likedByMe}
-                postLikedByMe={postLikedByMe}
-                setPostLikedByMe={setPostLikedByMe}
+            <div className="flex mt-4 justify-between">
+              <div className="flex items-center">
+                <ReactionButton
+                  handlePostLikeIncrement={handlePostLikeIncrement}
+                  handlePostLikeRequest={handlePostLikeRequest}
+                  post={post}
+                  setPost={setPost}
+                  likeData={post?.likedByMe}
+                  postLikedByMe={postLikedByMe}
+                  setPostLikedByMe={setPostLikedByMe}
+                />
+                {/* <div className="h-fit border-x border-border"> */}
+                <Button
+                  variant={"ghost"}
+                  className="flex items-center mx-1 px-2 cursor-pointer py-0 h-7 hover:bg-foreground/5 rounded-full"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setShowReplyDialog(true);
+                  }}
+                  disabled={canIReply(
+                    userData?.user!,
+                    post,
+                    accountFollowing.data?.data.data
+                  )}
+                >
+                  <Image
+                    width={20}
+                    height={20}
+                    className="size-[20px] object-cover"
+                    alt="icon"
+                    src={"/assets/post-icons/comment.svg"}
+                  />
+                  <p className="text-foreground/60 px-2 pr-0 font">
+                    {formatNumberCount(post?.commentsCount)}
+                  </p>
+                </Button>
+                {/* </div> */}
+                <Button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setShowViewModal(true);
+                  }}
+                  variant={"ghost"}
+                  className="flex items-center mx-1 px-2 cursor-pointer py-0 h-7 hover:bg-foreground/5 rounded-full"
+                >
+                  <Image
+                    width={20}
+                    height={20}
+                    className="size-[20px] object-cover"
+                    alt="icon"
+                    src={"/assets/post-icons/views.svg"}
+                  />
+                  <p className="text-foreground/60 pl-2 font">
+                    {formatNumberCount(post.viewsCount)}
+                  </p>
+                </Button>
+              </div>
+              <Share
+                className="size-4 cursor-pointer"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleCopyPostLink();
+                }}
               />
-              {/* <div className="h-fit border-x border-border"> */}
-              <Button
-                variant={"ghost"}
-                className="flex items-center mx-1 px-2 cursor-pointer py-0 h-7 hover:bg-foreground/5 rounded-full"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  setShowReplyDialog(true);
-                }}
-                disabled={canIReply(
-                  userData?.user!,
-                  post,
-                  accountFollowing.data?.data.data
-                )}
-              >
-                <Image
-                  width={20}
-                  height={20}
-                  className="size-[20px] object-cover"
-                  alt="icon"
-                  src={"/assets/post-icons/comment.svg"}
-                />
-                <p className="text-foreground/60 px-2 pr-0 font">
-                  {formatNumberCount(post?.commentsCount)}
-                </p>
-              </Button>
-              {/* </div> */}
-              <Button
-                onClick={(e) => {
-                  e.stopPropagation();
-                  setShowViewModal(true);
-                }}
-                variant={"ghost"}
-                className="flex items-center mx-1 px-2 cursor-pointer py-0 h-7 hover:bg-foreground/5 rounded-full"
-              >
-                <Image
-                  width={20}
-                  height={20}
-                  className="size-[20px] object-cover"
-                  alt="icon"
-                  src={"/assets/post-icons/views.svg"}
-                />
-                <p className="text-foreground/60 pl-2 font">
-                  {formatNumberCount(post.viewsCount)}
-                </p>
-              </Button>
             </div>
             {Boolean(post?.commentsCount > 0) && (
               <Button

@@ -348,3 +348,74 @@ type DummyConversation = {
   status: string;
   unreadCount: number;
 };
+
+export type TChatUser = {
+  email: string;
+  id: number;
+  username: string;
+  usermeta: {
+    id: number;
+    avatar: string;
+    firstname: string;
+    lastname: string;
+  };
+};
+
+export type TChatMessage = {
+  message: string;
+  type: string;
+  media_url?: string;
+  receiverId: number;
+  sent_time: number;
+  id?: number;
+  senderId?: number;
+  receiverId?: number;
+  parentId?: null | number;
+  conversationId?: number;
+  message?: string;
+  isMessageDeleted?: number[];
+  media_url?: string;
+  duration?: number;
+  posterImage?: null | string;
+  isRead?: boolean;
+  isReceiverBlocked?: boolean;
+  type?: string;
+  created_at?: string;
+  updated_at?: string;
+  sender?: User;
+  receiver?: User;
+  parentMessage?: TChatMessage;
+};
+
+export type GroupedMessages = {
+  timeFrame: string;
+  messages: TChatMessage[];
+};
+
+export type TChatConversation = {
+  created_at: string;
+  conversationId: number | undefined;
+  id: number | undefined;
+  media_url: string | null;
+  message: string;
+  receiver: TChatUser;
+  sender: TChatUser;
+  type: string;
+  unreadCount: number;
+  updated_at: string;
+};
+export type TSettings = {
+  id: number;
+  userId: number;
+  pause_notification: boolean;
+  sms_notification: boolean;
+  email_notification: boolean;
+  likes: boolean;
+  mention: boolean;
+  followers: boolean;
+  direct_message: boolean;
+  community_messages: boolean;
+  community_buzz: boolean;
+  news: boolean;
+  user: User;
+};

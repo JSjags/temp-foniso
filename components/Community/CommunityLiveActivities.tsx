@@ -126,27 +126,27 @@ const CommunityLiveActivities = () => {
             </Link>
           </div> */}
 
-          {communityInfo?.data?.data &&
-            Boolean(
-              communityInfo?.data?.data.moderators.filter(
-                (m: { userId: number }) => m.userId === userData?.user.id
-              ).length
-            ) && (
-              <div className="px-4">
-                <div className="flex justify-end">
-                  <Button
-                    variant={"ghost"}
-                    onClick={() => {
-                      router.push(`${community_id}/manage-community`);
-                    }}
-                    className="text-colorPrimary hover:text-colorPrimary hover:underline p-0 hover:bg-transparent"
-                  >
-                    Manage community
-                  </Button>
-                </div>
-                <PendingRequests />
+          {communityInfo?.data?.data && (
+            // Boolean(
+            //   communityInfo?.data?.data.moderators.filter(
+            //     (m: { userId: number }) => m.userId === userData?.user.id
+            //   ).length
+            // ) &&
+            <div className="px-4">
+              <div className="flex justify-end">
+                <Button
+                  variant={"ghost"}
+                  onClick={() => {
+                    router.push(`${community_id}/view-community`);
+                  }}
+                  className="text-colorPrimary hover:text-colorPrimary hover:underline p-0 hover:bg-transparent"
+                >
+                  View community
+                </Button>
               </div>
-            )}
+              <PendingRequests />
+            </div>
+          )}
           <Feeds />
         </div>
       </div>

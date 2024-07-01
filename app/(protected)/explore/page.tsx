@@ -64,7 +64,7 @@ const Explore = (props: Props) => {
             <div className="border-b border-border">
               {tab !== null && <SubTabs tabs={exploreTabs} />}
             </div>
-            {handleCurrentView()}
+            <div className="min-h-screen">{handleCurrentView()}</div>
           </div>
           <RightSideBar
             className={

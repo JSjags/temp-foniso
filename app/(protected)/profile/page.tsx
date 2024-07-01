@@ -272,7 +272,7 @@ const Profile = (props: Props) => {
             <DropdownMenu>
               <DropdownMenuTrigger
                 asChild
-                className="absolute hover:bg-colorPrimary top-4 right-4 sm:right-6 size-8 p-1 bg-background/70 flex justify-center items-center rounded-full"
+                className="absolute hover:bg-colorPrimary top-4 right-6 sm:right-6 size-8 p-1 bg-background/70 flex justify-center items-center rounded-full"
               >
                 {/* <Button
                 variant={"ghost"}
@@ -288,7 +288,7 @@ const Profile = (props: Props) => {
               <DropdownMenuContent className="w-[clamp(240px,40%,300px)] md:w-[300px] lg:w-[300px] absolute -translate-x-[105%] top-0 bg-background border-border">
                 <DropdownMenuGroup className="">
                   <DropdownMenuItem
-                    className="p-4 flex items-center gap-x-2 text-base text-foreground font-semibold data-[highlighted]:text-foreground data-[highlighted]:bg-colorPrimary/30"
+                    className="p-4 flex items-center gap-x-2 text-base text-foreground font-semibold data-[highlighted]:text-foreground"
                     onClick={() => setShowVerificationModal(true)}
                   >
                     <span>Verify account</span>
@@ -302,25 +302,28 @@ const Profile = (props: Props) => {
                   <DropdownMenuItem
                     onClick={() => {
                       copyToClipboard(
-                        baseUrl + "profile/" + userData?.user.username
+                        baseUrl + "view/profile/" + userData?.user.username
                       );
                     }}
-                    className="p-4 text-base text-foreground font-semibold data-[highlighted]:text-foreground data-[highlighted]:bg-colorPrimary/30"
+                    className="p-4 text-base text-foreground font-semibold data-[highlighted]:text-foreground"
                   >
                     <span>Copy link to profile</span>
                   </DropdownMenuItem>
                   <DropdownMenuItem
                     onClick={() =>
                       handleShare(
-                        baseUrl + "profile/" + userData?.user.username,
+                        baseUrl + "view/profile/" + userData?.user.username,
                         userData?.user.usermeta.about ?? ""
                       )
                     }
-                    className="p-4 text-base text-foreground font-semibold data-[highlighted]:text-foreground data-[highlighted]:bg-colorPrimary/30"
+                    className="p-4 text-base text-foreground font-semibold data-[highlighted]:text-foreground"
                   >
                     <span>Share profile</span>
                   </DropdownMenuItem>
-                  <DropdownMenuItem className="p-4 text-base text-foreground font-semibold data-[highlighted]:text-foreground data-[highlighted]:bg-colorPrimary/30">
+                  <DropdownMenuItem
+                    onClick={() => router.push("/settings")}
+                    className="p-4 text-base text-foreground font-semibold data-[highlighted]:text-foreground"
+                  >
                     <span>Settings</span>
                   </DropdownMenuItem>
                 </DropdownMenuGroup>
@@ -386,22 +389,22 @@ const Profile = (props: Props) => {
               {userData?.user.usermeta.about}
             </div>
             <div className="mt-2 min-[480px]:mt-4 flex gap-x-4">
-              <p className="font-bold text-sm min-[480px]:text-base">
-                <span
-                  className="cursor-pointer"
-                  onClick={() => router.push("/profile/stats?tab=following")}
-                >
+              <p
+                onClick={() => router.push("/profile/stats?tab=following")}
+                className="font-bold text-sm min-[480px]:text-base cursor-pointer"
+              >
+                <span className="cursor-pointer">
                   {formatNumberCount(publicProfile.data?.followingCount ?? "0")}{" "}
                 </span>
                 <span className="font-normal text-foreground/70">
                   Following
                 </span>
               </p>
-              <p className="font-bold text-sm min-[480px]:text-base">
-                <span
-                  className="cursor-pointer"
-                  onClick={() => router.push("/profile/stats?tab=followers")}
-                >
+              <p
+                onClick={() => router.push("/profile/stats?tab=followers")}
+                className="font-bold text-sm min-[480px]:text-base cursor-pointer"
+              >
+                <span className="cursor-pointer">
                   {formatNumberCount(publicProfile.data?.followerCount ?? "0")}{" "}
                 </span>
                 <span className="font-normal text-foreground/70">
@@ -494,7 +497,8 @@ const Profile = (props: Props) => {
               )}
 
               {Boolean(
-                usersPosts.isSuccess && usersPosts.data?.pages[0].length <= 0
+                // usersPosts.isSuccess && usersPosts.data?.pages[0].length <= 0
+                usersPosts.isSuccess && usersPosts.data?.pages.length <= 0
               ) && (
                 <div className="flex justify-center items-center">
                   <div className="my-10 px-6">

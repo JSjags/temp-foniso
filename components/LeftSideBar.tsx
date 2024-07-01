@@ -55,7 +55,7 @@ const LeftSideBar = (props: Props) => {
             .map((item, i) => (
               <Link
                 key={i}
-                href={item.path}
+                href={item.title === "Livescore" ? "" : item.path}
                 className="flex gap-x-4 py-[11] items-center relative"
                 onClick={() => {
                   if (item.title.toLowerCase() === "home") {
@@ -146,7 +146,7 @@ const LeftSideBar = (props: Props) => {
             .map((item, i) => (
               <Link
                 key={i}
-                href={item.path}
+                href={item.title === "Livescore" ? "" : item.path}
                 className="flex gap-x-4 py-[11] items-center"
                 onClick={() => {
                   if (item.title.toLowerCase() === "home") {
@@ -209,7 +209,7 @@ const LeftSideBar = (props: Props) => {
           {bottomNavItems.map((item, i) => (
             <Link
               key={i}
-              href={item.path}
+              href={item.title === "Livescore" ? "" : item.path}
               className="flex flex-col gap-y-0 items-center h-10 max-h-10 justify-between"
               onClick={() => {
                 if (item.title.toLowerCase() === "home") {

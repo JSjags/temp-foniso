@@ -146,6 +146,10 @@ export const getSinglePost = async (postId: number): Promise<any> => {
   return axiosInstance.get<any>(`/posts/${postId}`);
 };
 
+export const getSinglePostPublic = async (postId: number): Promise<any> => {
+  return axiosInstance.get<any>(`/extra/post/${postId}`);
+};
+
 export const getReasons = async (): Promise<any> => {
   return axiosInstance.get<any>(`/report-post/reasons`);
 };
@@ -166,7 +170,7 @@ export const fetchReplyReplies = async (replyId: number): Promise<any> => {
 
 export const getSinglePostComments = async (
   postId: number,
-  pageParam: number
+  pageParam: number = 0
 ): Promise<any> => {
   const limit = 10;
   return axiosInstance.get<any>(

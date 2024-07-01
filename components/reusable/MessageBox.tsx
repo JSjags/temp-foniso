@@ -88,6 +88,23 @@ const MessageBox = ({
 
   const debouncedSearchQuery = useDebounce(query ?? "", 500);
 
+  const stylePlaceholder = (elementId: string) => {
+    const style = document.createElement("style");
+    style.innerHTML = `
+      #${elementId}::placeholder {
+      opacity: 1; /* Ensure full opacity */
+      white-space: nowrap; /* Prevent text from wrapping */
+      text-overflow: ellipses;
+
+      overflow: hidden !important;
+    display: -webkit-box !important;
+    -webkit-box-orient: vertical !important;
+    -webkit-line-clamp: 1 !important;
+    }
+    `;
+    document.head.appendChild(style);
+  };
+
   const defaultStyle = {
     control: {
       backgroundColor: "transparent",
@@ -99,6 +116,7 @@ const MessageBox = ({
       control: {
         fontFamily: "inherit",
         minHeight: height ?? 24,
+        whiteSpace: "nowrap",
       },
       highlighter: {
         padding: 9,
@@ -150,6 +168,12 @@ const MessageBox = ({
       },
     },
   };
+
+  const inputId = "myInput";
+
+  useEffect(() => {
+    stylePlaceholder(inputId);
+  }, [inputId]);
 
   useEffect(() => {}, [commentType]);
 
@@ -269,12 +293,13 @@ const MessageBox = ({
       maxLength={280}
       inputRef={inputRef}
       placeholder={placeholder}
-      className="w-full text-foreground min-h-10 text-base border-none outline-none ring-0 focus:ring-0 focus:outline-none focus-visible:ring-0 focus-visible:outline-none focus-visible:outline-offset-0 focus-visible:outline-[transparent_!important]"
+      className="w-full text-foreground placeholder:hidden min-h-10 text-base border-none outline-none ring-0 focus:ring-0 focus:outline-none focus-visible:ring-0 focus-visible:outline-none focus-visible:outline-offset-0 focus-visible:outline-[transparent_!important]"
       value={value}
       onChange={(e, newValue, newPlainTextValue, mentions) => {
         setQuery(mentions[mentions.length - 1]?.id);
         handleChange(e, newValue, newPlainTextValue, mentions);
       }}
+      id={inputId}
     >
       <Mention
         trigger="@"
@@ -285,7 +310,7 @@ const MessageBox = ({
         style={{ color: "#188C43" }}
         isLoading={isFetchingUsernameMention}
         renderSuggestion={renderUserSuggestion as any}
-        className="text-[#188C43_!important] bg-red-500"
+        className="text-[#188C43_!important]"
       />
       {/* hashtag feature to be implemented when clarified */}
       {/* <Mention

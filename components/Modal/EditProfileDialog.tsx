@@ -40,6 +40,14 @@ import SuccessToast from "../reusable/toasts/SuccessToast";
 import ErrorToast from "../reusable/toasts/ErrorToast";
 import { ImSpinner2 } from "react-icons/im";
 import { Switch } from "../ui/switch";
+import {
+  Credenza,
+  CredenzaContent,
+  CredenzaDescription,
+  CredenzaFooter,
+  CredenzaHeader,
+  CredenzaTitle,
+} from "../ui/credenza";
 
 type Props = {
   showEditProfileDialog: boolean;
@@ -217,33 +225,33 @@ const EditProfileDialog = ({
   };
 
   return (
-    <Dialog
+    <Credenza
       open={showEditProfileDialog}
       onOpenChange={(val) => {
         setShowEditProfileDialog(val);
-        setShowFavoriteSportForm(val);
+        setShowFavoriteSportForm(false);
       }}
-      modal
+      // modal
     >
       {/* <div className="w-full h-full absolute top-0 left-0 z-50"> */}
-      <DialogContent className="sm:max-w-[680px] pt-3 px-0 overflow-y-scroll max-h-[90vh] pb-0 rounded-lg">
-        <AlertDialogHeader>
+      <CredenzaContent className="sm:max-w-[680px] pt-3 px-0 overflow-y-scroll max-h-[90vh] pb-0 rounded-lg">
+        <CredenzaHeader className="pt-0 min-[768px]:pt-0">
           {showFavoriteSportForm && (
             <Button
               onClick={() => {
                 setShowFavoriteSportForm(false);
               }}
-              className="size-8 p-1 flex justify-center hover:bg-colorPrimary items-center bg-background/70 rounded-full absolute top-4 left-4"
+              className="size-8 p-1 z-50 flex justify-center hover:bg-colorPrimary items-center bg-background/70 rounded-full absolute top-4 left-4"
             >
               <IoArrowBack className="text-foreground size-6" />
             </Button>
           )}
-          <DialogTitle className="text-center font-bold text-xl sm:text-2xl mb-3">
+          <CredenzaTitle className="text-center -translate-y-3 min-[768px]:translate-y-0 font-bold text-xl sm:text-2xl pb-3 border-b min-[768px]:border-none border-border">
             Edit profile
-          </DialogTitle>
-          <div className="border-b border-border w-full absolute top-12 sm:top-14 left-0"></div>
-        </AlertDialogHeader>
-        <DialogDescription className="px-2">
+          </CredenzaTitle>
+          <div className="border-b border-border w-full absolute top-12 sm:top-14 left-0 hidden min-[768px]:block"></div>
+        </CredenzaHeader>
+        <CredenzaDescription className="px-2">
           {showFavoriteSportForm ? (
             <>
               <p className="text-center font-bold text-xl md:text-3xl mt-2 text-foreground">
@@ -286,7 +294,7 @@ const EditProfileDialog = ({
                 <div className="mt-6 flex justify-between items-center text-foreground text-lg font-bold">
                   <p>Suggestions</p>
                 </div>
-                <div className="mt-4">
+                <div className="mt-4 min-h-fit">
                   <RadioGroup
                     value={profileDetails.favoriteSport}
                     onValueChange={(value) =>
@@ -669,12 +677,12 @@ const EditProfileDialog = ({
               </div>
             </>
           )}
-        </DialogDescription>
-        <DialogFooter className="flex justify-end sticky bottom-0 bg-background p-0 py-4 px-2 border-t border-border">
+        </CredenzaDescription>
+        <CredenzaFooter className="justify-end sticky bottom-0 pointer-events-none bg-background p-0 py-4 px-2 border-t border-border min-[768px]:flex">
           <Button
             disabled={profileMutation.isPending}
             onClick={handleProfileUpdate}
-            className="rounded-full w-full sm:w-48 flex justify-center items-center"
+            className="rounded-full w-full sm:w-48 flex justify-center items-center pointer-events-auto"
           >
             {profileMutation.isPending ? (
               <ImSpinner2 className="size-6 animate-spin text-[#4ED17E]" />
@@ -682,10 +690,10 @@ const EditProfileDialog = ({
               <span>Save</span>
             )}
           </Button>
-        </DialogFooter>
-      </DialogContent>
+        </CredenzaFooter>
+      </CredenzaContent>
       {/* </div> */}
-    </Dialog>
+    </Credenza>
   );
 };
 

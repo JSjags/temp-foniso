@@ -26,6 +26,15 @@ import moment from "moment";
 import { FaPlay } from "react-icons/fa6";
 import { useUserContext } from "@/context/UserContext";
 import ReactionButton from "../ReactionButton";
+import {
+  Credenza,
+  CredenzaContent,
+  CredenzaDescription,
+  CredenzaFooter,
+  CredenzaHeader,
+  CredenzaTitle,
+  CredenzaTrigger,
+} from "../ui/credenza";
 
 type Props = {
   highlight: HighlightMeta;
@@ -106,40 +115,12 @@ const HighlightCard = ({ highlight, postData }: Props) => {
 
   return (
     <>
-      {/* Views modal */}
-      <AlertDialog open={showViewModal}>
-        <AlertDialogContent className="w-[95%] bg-background border-border rounded-3xl">
-          <AlertDialogCancel
-            onClick={() => setShowViewModal(false)}
-            className="absolute top-4 right-4 w-fit h-fit p-0 bg-transparent border-none hover:text-darkGrey"
-          >
-            <X className="text-foreground hover:text-darkGrey" />
-          </AlertDialogCancel>
-          <div className="w-full sm:max-w-[369px] mx-auto">
-            <AlertDialogHeader>
-              <AlertDialogTitle className="text-2xl font-bold text-foreground mt-6 max-w-[369px]">
-                Views
-              </AlertDialogTitle>
-              <AlertDialogDescription className="mt-8 text-foreground/60 max-w-[369px]">
-                The times this post was seen.
-              </AlertDialogDescription>
-            </AlertDialogHeader>
-            <AlertDialogFooter className="my-8 mt-10 max-w-[369px]">
-              <AlertDialogCancel
-                onClick={() => setShowViewModal(false)}
-                className="rounded-full w-full bg-transparent border-border hover:bg-white py-6 text-center text-foreground hover:text-textDark"
-              >
-                Close
-              </AlertDialogCancel>
-            </AlertDialogFooter>
-          </div>
-        </AlertDialogContent>
-      </AlertDialog>
-      <Dialog open={showVideo} onOpenChange={() => setShowVideo(false)}>
-        <DialogOverlay className="flex justify-center items-center">
-          <DialogContent className="relative w-[95%] max-w-[720px] overflow-hidden bg-gradient-to-b from-[#0E2017] via-[#0C1E15] to-[#01160C] border-border rounded-lg">
+      <Credenza open={showVideo} onOpenChange={setShowVideo}>
+        {/* <DialogOverlay className="flex justify-center items-center"> */}
+        <CredenzaContent className="min-w-[240px] w-full min-[768px]:w-[95%] bg-background border-border rounded-3xl p-0 h-[90vh] min-[768px]:h-auto">
+          <CredenzaDescription className="flex flex-col justify-between min-[768px]:flex-col h-full">
             <div className="w-[60%] pointer-events-none max-w-[339px] h-[50%] max-h-[288px] bg-[#164F34] absolute top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2 z-0 rounded-full blur-[70px]" />
-            <div className="w-full mx-auto relative z-10">
+            <div className="w-full mx-auto relative z-10 flex-1 flex justify-center items-center min-[768px]:flex-auto">
               <VideoPlayer
                 src={highlight.media[0].media}
                 poster={highlight.media[0].posterImage}
@@ -275,26 +256,58 @@ const HighlightCard = ({ highlight, postData }: Props) => {
                     {formatNumberCount(highlight.commentsCount)}
                   </p>
                 </div>
-                <div
-                  onClick={() => setShowViewModal(true)}
-                  className="flex items-center pl-3 cursor-pointer"
+                {/* Views modal */}
+                <Credenza
+                  open={showViewModal}
+                  onOpenChange={(val) => setShowViewModal(val)}
                 >
-                  <Image
-                    width={20}
-                    height={20}
-                    className="size-[20px] object-cover"
-                    alt="icon"
-                    src={"/assets/post-icons/views.svg"}
-                  />
-                  <p className="text-foreground/60 px-2 font">
-                    {formatNumberCount(highlight.viewsCount)}
-                  </p>
-                </div>
+                  <CredenzaTrigger>
+                    <div className="flex items-center pl-3 cursor-pointer">
+                      <Image
+                        width={20}
+                        height={20}
+                        className="size-[20px] object-cover"
+                        alt="icon"
+                        src={"/assets/post-icons/views.svg"}
+                      />
+                      <p className="text-foreground/60 px-2 font">
+                        {formatNumberCount(highlight.viewsCount)}
+                      </p>
+                    </div>
+                  </CredenzaTrigger>
+                  <CredenzaContent className="w-full min-[768px]:w-[95%] bg-background border-border rounded-3xl">
+                    <div
+                      onClick={() => setShowViewModal(false)}
+                      className="absolute hidden min-[768px]:flex top-4 right-4 w-fit h-fit p-0 bg-transparent border-none hover:text-darkGrey"
+                    >
+                      <X className="text-foreground hover:text-darkGrey" />
+                    </div>
+                    <div className="w-full min-[768px]:max-w-[369px] mx-auto">
+                      <CredenzaHeader>
+                        <CredenzaTitle className="text-2xl text-start min-[768px]:text-center font-bold text-foreground mt-0 min-[768px]:mt-6 w-full min-[768px]:max-w-[369px]">
+                          Views
+                        </CredenzaTitle>
+                        <CredenzaDescription className="nt-0 text-start min-[768px]:text-center min-[768px]:mt-8 text-foreground/60 w-full min-[768px]:max-w-[369px]">
+                          The times this post was seen.
+                        </CredenzaDescription>
+                      </CredenzaHeader>
+                      <CredenzaFooter className="my-8 mt-0 min-[768px]:mt-10 w-full min-[768px]:max-w-[369px]">
+                        <div
+                          onClick={() => setShowViewModal(false)}
+                          className="flex justify-center items-center rounded-full w-full bg-transparent border border-white hover:bg-white pt-0 h-10 min-[768px]:h-10 min-[768px]:pt-0 min-[768px]:py-6 text-center text-foreground hover:text-textDark"
+                        >
+                          Close
+                        </div>
+                      </CredenzaFooter>
+                    </div>
+                  </CredenzaContent>
+                </Credenza>
               </div>
             </div>
-          </DialogContent>
-        </DialogOverlay>
-      </Dialog>
+          </CredenzaDescription>
+        </CredenzaContent>
+        {/* </DialogOverlay> */}
+      </Credenza>
       <div className="cursor-pointer snap-start w-full max-w-[300px] min-w-[270px] h-[349px] aspect-square bg-background rounded-lg relative overflow-hidden">
         <div className="w-full h-full" onClick={() => setShowVideo(true)}>
           <div className="w-full h-full absolute left-0 top-0 group flex justify-center items-center bg-colorPrimary/0 z-10 transition-all hover:bg-colorPrimary/20">

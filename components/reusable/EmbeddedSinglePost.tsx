@@ -27,9 +27,10 @@ import {
 import {
   getSinglePost,
   getSinglePostComments,
+  getSinglePostPublic,
   likeOrUnlikePost,
 } from "@/services/api/post";
-import { CommentMeta, LikeMeta, PostMeta, User } from "@/types";
+import { CommentMeta, LikeMeta, PostMeta, ReplyMeta, User } from "@/types";
 import { Arrow } from "@radix-ui/react-popover";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Heart, MoreVertical } from "lucide-react";
@@ -48,10 +49,12 @@ export default function EmbeddedPost({
   postId,
   hideHeader,
   hideMedia,
+  isPublic = false,
 }: {
   postId: number;
   hideHeader?: boolean;
   hideMedia?: boolean;
+  isPublic?: boolean;
 }) {
   const queryClient = useQueryClient();
   const router = useRouter();
@@ -59,13 +62,22 @@ export default function EmbeddedPost({
   const [isTruncated, setIsTruncated] = useState(false);
   const [isShowingMore, setIsShowingMore] = useState(false);
 
+  const [commentType, setCommentType] = useState<
+    "comment" | "reply" | "nestedReply"
+  >("comment");
+  const [currentComment, setCurrentComment] = useState<CommentMeta | null>(
+    null
+  );
+  const [currentReply, setCurrentReply] = useState<ReplyMeta | null>(null);
+
   const ref = useRef(null);
 
   const toggleIsShowingMore = () => setIsShowingMore((prev) => !prev);
 
   const post = useQuery({
     queryKey: ["single-post"],
-    queryFn: () => getSinglePost(postId),
+    queryFn: () =>
+      isPublic ? getSinglePostPublic(postId) : getSinglePost(postId),
   });
 
   const comments = useQuery({
@@ -294,7 +306,7 @@ export default function EmbeddedPost({
                           }}
                           disabled={followUser.isPending}
                           className={cn(
-                            "flex-1 hover:bg-colorPrimary hover:scale-[1.01] transition-all hover:shadow-xl bg-foreground border hover:border-colorPrimary hover:text-white border-border text-background rounded-full flex justify-center items-center h-9 px-10 w-[129px]",
+                            "flex-1 hover:bg-colorPrimary hover:scale-[1.01] transition-all hover:shadow-xl bg-foreground border hover:border-colorPrimary hover:text-white border-border text-background rounded-full flex justify-center items-center h-6 min-[1080px]:h-7 p-3 text-xs min-[1080px]:text-sm min-[1080px]:px-6 w-fit min-[1080px]:w-fit",
                             checkIfUserIsFollowed &&
                               "bg-colorPrimary text-white"
                           )}
@@ -398,7 +410,13 @@ export default function EmbeddedPost({
                     <div className="p-4 pb-6 relative flex flex-col gap-y-6 min-h-screen">
                       {comments.data?.data.data.items.map(
                         (comment: CommentMeta, i: number) => (
-                          <CommentCard key={i} comment={comment} />
+                          <CommentCard
+                            key={i}
+                            comment={comment}
+                            setCommentType={setCommentType}
+                            setCurrentComment={setCurrentComment}
+                            setCurrentReply={setCurrentReply}
+                          />
                         )
                       )}
                     </div>

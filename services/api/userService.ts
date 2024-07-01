@@ -29,6 +29,13 @@ export const getFollowing = async (): Promise<any> => {
   return await axiosInstance.get<any>("/followers/following");
 };
 
+export const getSettings = async (): Promise<any> => {
+  return await axiosInstance.get<any>("/settings/user");
+};
+export const updateSettings = async (id: number, data: any): Promise<any> => {
+  return await axiosInstance.get<any>(`/settings/${id}`, data);
+};
+
 export const getUserFollowing = async (id: number): Promise<any> => {
   return await axiosInstance.get<any>(`/followers/${id}/following`);
 };
@@ -105,6 +112,16 @@ export const fetchUsersPosts = async (
   const limit = 10;
   return axiosInstance.get<any>(
     `/posts/user/${id}?page=${pageParam + 1}&limit=${limit}`
+  );
+};
+
+export const fetchUsersPostsPublic = async (
+  id: number,
+  pageParam: number
+): Promise<any> => {
+  const limit = 10;
+  return axiosInstance.get<any>(
+    `/extra/posts/user/${id}?page=${pageParam + 1}&limit=${limit}`
   );
 };
 

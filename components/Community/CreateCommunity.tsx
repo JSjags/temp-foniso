@@ -106,7 +106,7 @@ const CreateCommunity = (props: Props) => {
             <RadioGroupItem
               value={value}
               id={value}
-              className="text-white border border-gray-50 size-6"
+              className="text-white border border-gray-50 size-6 shrink-0"
             />
             <Label htmlFor={value} className="text-foreground text-base block">
               <span className="flex items-center gap-1">

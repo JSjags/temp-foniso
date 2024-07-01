@@ -1,8 +1,14 @@
 import { type ClassValue, clsx } from "clsx";
 import { format, formatDistanceToNow, isSameDay } from "date-fns";
+import dayjs from "dayjs";
 import moment from "moment";
 import { twMerge } from "tailwind-merge";
 import validator from "validator";
+import relativeTime from "dayjs/plugin/relativeTime";
+import isToday from "dayjs/plugin/isToday";
+import isYesterday from "dayjs/plugin/isYesterday";
+import isSameOrBefore from "dayjs/plugin/isSameOrBefore";
+import { GroupedMessages, TChatMessage } from "@/types";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -105,3 +111,62 @@ export function formatConversationCreatedAt(createdAt: string) {
     return formatDistanceToNow(date, { addSuffix: true }).replace("about ", "");
   }
 }
+
+export const formatTimestamp = (unixTimestamp: number): string => {
+  const date = dayjs.unix(unixTimestamp);
+  const now = dayjs();
+
+  if (date.isSame(now, "day")) {
+    // Today
+    return date.format("HH:mm");
+  } else if (date.isSame(now.subtract(1, "day"), "day")) {
+    // Yesterday
+    return `Yesterday ${date.format("HH:mm")}`;
+  } else if (date.isAfter(now.subtract(7, "days"))) {
+    // Within the last 7 days
+    return date.format("dddd HH:mm");
+  } else {
+    // Older than 7 days
+    return date.format("DD/MM/YYYY HH:mm");
+  }
+};
+
+dayjs.extend(relativeTime);
+dayjs.extend(isToday);
+dayjs.extend(isYesterday);
+dayjs.extend(isSameOrBefore);
+
+export const groupMessagesByTime = (
+  messages: TChatMessage[]
+): GroupedMessages[] => {
+  const groupedMessages = messages.reduce<Record<string, TChatMessage[]>>(
+    (acc, message) => {
+      const createdAt = dayjs(message.created_at);
+
+      let timeFrame: string;
+      if (createdAt.isToday()) {
+        timeFrame = "Today";
+      } else if (createdAt.isYesterday()) {
+        timeFrame = "Yesterday";
+      } else if (createdAt.isSameOrBefore(dayjs().subtract(1, "week"))) {
+        timeFrame = createdAt.format("MMMM D, YYYY");
+      } else {
+        timeFrame = "Last Week";
+      }
+
+      if (!acc[timeFrame]) {
+        acc[timeFrame] = [];
+      }
+
+      acc[timeFrame].push(message);
+
+      return acc;
+    },
+    {}
+  );
+
+  return Object.entries(groupedMessages).map(([timeFrame, messages]) => ({
+    timeFrame,
+    messages,
+  }));
+};

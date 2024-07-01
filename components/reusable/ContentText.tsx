@@ -14,14 +14,25 @@ const ContentText = ({
   type = "post",
 }: Props): React.ReactNode => {
   const urlRegex = /https?:\/\/\S+/g;
-  let urls: string[] = [];
   const ref = useRef<HTMLDivElement | null>(null);
 
   const [isTruncated, setIsTruncated] = useState(false);
   const [isShowingMore, setIsShowingMore] = useState(false);
 
+  const isJsonString = (str: string) => {
+    try {
+      JSON.parse(str);
+      return true;
+    } catch (e) {
+      return false;
+    }
+  };
+
   // Function to extract URLs from a string
+
+  const parsedString = isJsonString(text) ? JSON.parse(text) : text;
   const extractUrls = (text: string): string[] => {
+    let urls: string[] = [];
     let urlMatch;
     while ((urlMatch = urlRegex.exec(text)) !== null) {
       urls.push(urlMatch[0]);
@@ -29,13 +40,26 @@ const ContentText = ({
     return urls;
   };
 
-  extractUrls(text);
+  extractUrls(parsedString);
 
   // Regular expression to match words starting with @ or #
   const regex = /(@|#)\w+|(https?:\/\/\S+)/g;
 
+  // Remove leading and trailing escaped quotes
+  const removeLeadingTrailingQuotes = (text: string): string => {
+    if (text.startsWith('\\"') && text.endsWith('\\"')) {
+      return text.slice(2, -2);
+    }
+    return text;
+  };
+
+  // Replace escaped quotes with normal quotes and remove unnecessary escape characters
+  const processedText = removeLeadingTrailingQuotes(parsedString)
+    .replace(/\\"/g, '"')
+    .replace(/\\'/g, "'");
+
   // Split text by new lines first
-  const lines = text.split("\n");
+  const lines = processedText.split("\n");
 
   // Process each match in the text
   const formattedText: React.ReactNode[] = [];
@@ -65,7 +89,7 @@ const ContentText = ({
               e.stopPropagation();
             }}
           >
-            {cleanedWord} {/* Add a space after the formatted word */}
+            {cleanedWord}
           </Link>
         );
       } else if (word.startsWith("http")) {
@@ -76,7 +100,7 @@ const ContentText = ({
             rel="noopener noreferrer"
             className={cn("text-colorPrimary text-wrap break-words")}
           >
-            {word} {/* Add a space after the formatted word */}
+            {word}
           </Link>
         );
       }
@@ -98,7 +122,7 @@ const ContentText = ({
 
   useLayoutEffect(() => {
     checkIfTruncated();
-  }, [text]);
+  }, [processedText]);
 
   useEffect(() => {
     window.addEventListener("resize", checkIfTruncated);
@@ -112,10 +136,12 @@ const ContentText = ({
       <div
         ref={ref}
         className={cn(
-          "text-foreground hover:cursor-pointer text-sm min-[480px]:text-base w-[calc(100vw-16px)] min-[480px]:w-auto",
+          "text-foreground hover:cursor-pointer text-sm min-[480px]:text-base min-[480px]:w-auto w-[calc(100vw-16px)]",
           !isShowingMore && "line-clamp-5"
         )}
       >
+        {/* {console.log(text)}
+        {console.log(formattedText)} */}
         {formattedText}
       </div>
       {isTruncated && !isShowingMore && (

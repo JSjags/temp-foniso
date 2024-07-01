@@ -47,7 +47,7 @@ const MobileDesktopOverlay = (props: Props) => {
 
       {props.open && is_mobile && (
         <Wrapper name={props.wrapperElement ?? "div"} {...props.wrapperProps}>
-          <div className="md:hidden fixed flex flex-col z-[70] h-screen w-full inset-0 bg-background">
+          <div className="md:hidden top-10 min-[480px]:top-0 fixed flex flex-col z-[70] h-screen w-full inset-0 bg-background">
             <HeaderWithBackBtn title={props.title} />
             <div className={cn(props.contentClass, "px-4 mt-6")}>
               {props.children}

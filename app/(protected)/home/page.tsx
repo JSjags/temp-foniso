@@ -151,7 +151,7 @@ const Home = (props: Props) => {
             </div>
           )}
         </div>
-        <div ref={ref} className="bg-background h-10">
+        <div ref={ref} className="bg-background min-[480px]:h-10 h-28">
           {posts.isFetchingNextPage && (
             <Loading
               isLoading={posts.isFetchingNextPage}

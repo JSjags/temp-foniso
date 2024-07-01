@@ -12,6 +12,7 @@ type ItemProps = {
   desc?: ReactNode;
   removePadding?: boolean;
   href: string;
+  setter?: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
 const NavList = (props: ItemProps) => {
@@ -20,7 +21,19 @@ const NavList = (props: ItemProps) => {
 
   return (
     <Link
-      href={{ query: { tab: props.href } }}
+      href={{
+        query: {
+          ...(props.href !== "delete-account"
+            ? { tab: props.href }
+            : { tab: "your-account" }),
+        },
+      }}
+      onClick={() => {
+        console.log(props?.setter);
+        if (props.setter !== undefined) {
+          props.setter(true);
+        }
+      }}
       replace={!is_mobile}
       className={cn(
         "flex items-center gap-4 duo:gap-5 py-5",

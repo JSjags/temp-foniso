@@ -5,10 +5,12 @@ const Loading = ({
   isLoading,
   className,
   extraClass,
+  spinnerClass,
 }: {
   isLoading: boolean;
   className?: string;
   extraClass?: string;
+  spinnerClass?: string;
 }) => {
   return (
     <div
@@ -17,7 +19,10 @@ const Loading = ({
         className
       )}
     >
-      <PageLoadingSpinner spinnerExtraClass="w-7 h-7" extraClass={extraClass} />
+      <PageLoadingSpinner
+        spinnerExtraClass={cn("size-4 sm:size-7", spinnerClass)}
+        extraClass={extraClass}
+      />
     </div>
   );
 };

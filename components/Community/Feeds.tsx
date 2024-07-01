@@ -23,7 +23,7 @@ const Feeds = () => {
   console.log(community_post?.data?.data.items);
 
   return (
-    <div className="flex flex-col gap-y-2 bg-background sm:bg-inherit">
+    <div className="flex flex-col gap-y-2 bg-background sm:bg-inherit px-2 pb-20">
       {isSuccess &&
         community_post?.data?.data.items.length &&
         community_post?.data?.data.items?.map((post: PostMeta) => {

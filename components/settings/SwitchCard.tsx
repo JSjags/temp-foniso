@@ -3,13 +3,15 @@ import { Switch } from "../ui/switch";
 
 type Props = {
   title: string;
+  value?: boolean;
+  onChange?: () => void;
 };
 
-const SwitchCard = ({ title }: Props) => {
+const SwitchCard = ({ title, value, onChange }: Props) => {
   return (
     <div className="flex justify-between items-center mt-6">
       <p className="font-medium">{title}</p>
-      <Switch />
+      <Switch checked={value} onChange={onChange} />
     </div>
   );
 };

@@ -527,7 +527,7 @@ const Page = ({ params }: { params: any }) => {
               Posts
             </div>
             {/* Posts */}
-            <div className=" flex flex-col gap-y-2 bg-background sm:bg-inherit">
+            <div className=" flex flex-col gap-y-2 bg-background sm:bg-inherit min-h-screen">
               {usersPosts.isLoading && (
                 <div className="mt-10 flex justify-center">
                   <ImSpinner2 className="size-10 animate-spin text-[#4ED17E]" />

@@ -22,6 +22,7 @@ import toast from "react-hot-toast";
 import SuccessToast from "./toasts/SuccessToast";
 import ErrorToast from "./toasts/ErrorToast";
 import MessageBox from "./MessageBox";
+import { Credenza, CredenzaContent, CredenzaDescription } from "../ui/credenza";
 
 type Props = {
   post: PostMeta;
@@ -87,9 +88,9 @@ const PostReplyDialog = ({
   const toggleIsShowingMore = () => setIsShowingMore((prev) => !prev);
 
   return (
-    <Dialog open={isOpen} onOpenChange={() => setShowReplyDialog(false)}>
-      <DialogContent className="min-w-[240px] w-[95%] bg-background border-border rounded-3xl p-0">
-        <DialogDescription className="mt-14 text-inactive px-4 pb-6 pt-3">
+    <Credenza open={isOpen} onOpenChange={() => setShowReplyDialog(false)}>
+      <CredenzaContent className="min-w-[240px] w-full min-[768px]:w-[95%] bg-background border-border rounded-3xl p-0">
+        <CredenzaDescription className="mt-6 min-[768px]:mt-14 text-inactive px-4 pb-6 pt-3">
           <div className="w-full mx-auto">
             <div>
               <div className="flex items-start justify-between">
@@ -228,9 +229,9 @@ const PostReplyDialog = ({
               </Button>
             </div>
           </div>
-        </DialogDescription>
-      </DialogContent>
-    </Dialog>
+        </CredenzaDescription>
+      </CredenzaContent>
+    </Credenza>
   );
 };
 

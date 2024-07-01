@@ -36,6 +36,9 @@ import { CircleHelp, Lock, LogOut, SquareUserRound } from "lucide-react";
 import { IoNotificationsOutline } from "react-icons/io5";
 import { cn } from "@/lib/utils";
 import { useUserContext } from "@/context/UserContext";
+import Support from "./sub-pages/Support";
+import DirectMessages from "./sub-pages/DirectMessages";
+import BlockedAccounts from "./sub-pages/BlockedAccounts";
 
 const item_list = [
   {
@@ -90,10 +93,10 @@ const SettingsPage = () => {
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-[0.8fr_1fr] lg:grid-cols-[0.7fr_1fr] gap-[8px] items-stretch">
-      <div className="bg-background">
+      {/* <div className="bg-background">
         <HeaderWithBackBtn title="Settings" />
 
-        <div className="mt-5 min-h-screen bg-background">
+        <div className="mt-0 min-h-screen bg-background">
           {item_list.map(({ icon, desc, divider, href, label }) =>
             divider ? (
               <hr key={label} className="my-4 hidden" />
@@ -132,45 +135,23 @@ const SettingsPage = () => {
                 ?.replace(/\b\w/, (c) => c.toUpperCase())}
             </p>
           </div>
-          {searchParams.get("tab") === "your-account" && (
-            <YourAccount
-            //   requests={singleCommunityRequests.data?.data.data ?? []}
-            />
-          )}
-          {searchParams.get("tab") === "notification" && (
-            <Notifications
-            //   requests={singleCommunityRequests.data?.data.data ?? []}
-            />
-          )}
+          {searchParams.get("tab") === "your-account" && <YourAccount />}
+          {searchParams.get("tab") === "notification" && <Notifications />}
           {searchParams.get("tab") === "additional-information" && (
-            <AdditionalInformation
-            //   requests={singleCommunityRequests.data?.data.data ?? []}
-            />
+            <AdditionalInformation />
           )}
-          {searchParams.get("tab") === "privacy" && (
-            <Privacy
-            //   requests={singleCommunityRequests.data?.data.data ?? []}
-            />
+          {searchParams.get("tab") === "privacy" && <Privacy />}
+          {searchParams.get("tab") === "display-and-language" && <Display />}
+
+          
+          {searchParams.get("tab") === "support" && <Support />}
+          {searchParams.get("tab") === "direct-messages" && <DirectMessages />}
+          {searchParams.get("tab") === "blocked-accounts" && (
+            <BlockedAccounts />
           )}
-          {searchParams.get("tab") === "display-and-language" && (
-            <Display
-            //   requests={singleCommunityRequests.data?.data.data ?? []}
-            />
-          )}
-          {/* {searchParams.get("tab")?.includes("community-settings") &&
-            communityInfo.isSuccess && (
-              <CommunitySettings community={communityInfo.data?.data.data} />
-            )}
-          {searchParams.get("tab") === "members" && (
-            <CommunityMembers
-              members={communityMembersList.data?.data.data.items ?? []}
-              moderators={communityModeratorsList.data?.data.data.items ?? []}
-            />
-          )}
-          {searchParams.get("tab") === "rules" && <ManageCommunityRules />}
-          {searchParams.get("tab") === "hidden-post" && <HiddenPosts />} */}
         </SettingsSidebar>
-      )}
+      )} */}
+      <div>Settings</div>
     </div>
   );
 };

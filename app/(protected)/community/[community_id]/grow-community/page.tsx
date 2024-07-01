@@ -1,14 +1,19 @@
 "use client";
 
 import CreatePost from "@/components/Community/CreatePost";
+import Feeds from "@/components/Community/Feeds";
 import HeaderWithImage from "@/components/reusable/HeaderWithImage";
 import ErrorToast from "@/components/reusable/toasts/ErrorToast";
 import NoticeToast from "@/components/reusable/toasts/NoticeToast";
 import RightSideBar from "@/components/RightSideBar";
 import PageLoadingSpinner from "@/components/Spinner/PageLoadingSpinner";
 import { defaultCommunityCover } from "@/constants";
-import { getOneCommunity } from "@/services/api/community";
-import { useQuery } from "@tanstack/react-query";
+import { useUserContext } from "@/context/UserContext";
+import {
+  deleteCommunityQuery,
+  getOneCommunity,
+} from "@/services/api/community";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import Image from "next/image";
 import Link from "next/link";
 import { useParams, usePathname, useRouter } from "next/navigation";
@@ -20,6 +25,14 @@ const Page = () => {
   const baseUrl = window.location.protocol + "//" + window.location.host + "/";
   const pathName = usePathname();
   const { push, back } = useRouter();
+  const { community_id } = useParams();
+  const [showSteps, setShowSteps] = useState(true);
+
+  const user = useUserContext().userData;
+  const setShowCreatePost = useUserContext().setShowCreatePost;
+
+  const [isAdmin, setIsAdmin] = useState(false);
+
   const [items, setItems] = useState([
     {
       label: "Review your rules",
@@ -33,16 +46,20 @@ const Page = () => {
     },
     {
       label: "Post about your community",
-      href: `${pathName}?post=new`,
+      href: `/community/${community_id}/view-community`,
       done: false,
     },
   ]);
 
-  const { community_id } = useParams();
   const { data: community_info, isLoading } = useQuery({
     queryKey: ["one-community", community_id],
     queryFn: () => getOneCommunity(String(community_id)),
     gcTime: 60 * 60 * 24,
+  });
+
+  const deleteCommunity = useMutation({
+    mutationKey: ["delete-community"],
+    mutationFn: (id: string) => deleteCommunityQuery(id),
   });
 
   console.log(community_info);
@@ -64,6 +81,50 @@ const Page = () => {
       label: "Report community",
       callback: () => {
         push(`${pathName}?tab=report`);
+      },
+    },
+  ];
+  const moreOptionsAdmin = [
+    {
+      label: "Invite new member",
+      callback: () => {
+        push(`/community/${community_id}/grow-community/invite-members`);
+      },
+    },
+    {
+      label: "Create buzz",
+      callback: () => {
+        push(`/community/${community_id}/view-community?tab=create-buzz`);
+      },
+    },
+    {
+      label: "Manage community",
+      callback: () => {
+        push(`/community/${community_id}/manage-community`);
+      },
+    },
+    {
+      label: "Share via",
+      callback: () => {
+        // push(`${pathName}?tab=share`);
+        handleShare(
+          `/community/${community_id}`,
+          community_info?.data.data.description!
+        );
+      },
+    },
+    {
+      label: "About community",
+      callback: () => {
+        push(`/community/${community_id}/view-community?tab=about`);
+      },
+    },
+    {
+      label: "Delete community",
+      color: "text-red-500",
+      callback: () => {
+        // push(`${pathName}?tab=delete`);
+        // deleteCommunity.mutate(community_id!);
       },
     },
   ];
@@ -109,6 +170,21 @@ const Page = () => {
   };
 
   useEffect(() => {
+    console.log(community_info?.data.data);
+
+    if (community_info?.data.data.id) {
+      const isAdmin = community_info?.data.data.moderators.some(
+        (itm) => itm.userId === user?.user.id
+      );
+
+      console.log(community_info?.data.data.moderators);
+      console.log(isAdmin);
+
+      setIsAdmin(isAdmin);
+    }
+  }, [community_info]);
+
+  useEffect(() => {
     if (community_info?.data.data.id) {
     }
   }, [community_info]);
@@ -126,7 +202,7 @@ const Page = () => {
               imgSrc={
                 community_info?.data.data?.coverImage ?? defaultCommunityCover
               }
-              dropDownOptions={moreOptions}
+              dropDownOptions={isAdmin ? moreOptionsAdmin : moreOptions}
               name={community_info?.data.data.name}
               memberCount={community_info?.data.data.memberCount}
               sideBtn={
@@ -150,45 +226,51 @@ const Page = () => {
               }
             />
 
-            <div className="w-full max-w-[535px] mx-auto min-h-[346px] mt-14 rounded-lg md:rounded-xl overflow-hidden border">
-              <div className="relative center-item h-14">
-                <Image
-                  src="/assets/pattern-leaves.webp"
-                  fill
-                  alt="pattern-leaves"
-                />
+            {showSteps && (
+              <div className="w-full max-w-[535px] mx-auto min-h-[346px] mt-14 rounded-lg md:rounded-xl overflow-hidden border">
+                <div className="relative center-item h-14">
+                  <Image
+                    src="/assets/pattern-leaves.webp"
+                    fill
+                    alt="pattern-leaves"
+                  />
 
-                <IoClose
-                  className="absolute right-4 text-3xl cursor-pointer"
-                  stroke="#F3F7F2"
-                />
-              </div>
+                  <IoClose
+                    onClick={() => setShowSteps(false)}
+                    className="absolute right-4 text-3xl cursor-pointer"
+                    stroke="#F3F7F2"
+                  />
+                </div>
 
-              <div className="px-[14px] duo:px-5 mt-5">
-                <p className="font-bold text-[20px] md:text-2xl">
-                  Grow your community
-                </p>
-                <p className="text-[#676666] dark:text-[#888888] leading-snug">
-                  Here are a couple of actions to ensure your community is
-                  well-prepared for its launch
-                </p>
+                <div className="px-[14px] duo:px-5 mt-5">
+                  <p className="font-bold text-[20px] md:text-2xl">
+                    Grow your community
+                  </p>
+                  <p className="text-[#676666] dark:text-[#888888] leading-snug">
+                    Here are a couple of actions to ensure your community is
+                    well-prepared for its launch
+                  </p>
 
-                <div className="mt-[28px] space-y-6">
-                  {items.map(({ label, done, href }) => (
-                    <Link
-                      href={href}
-                      className="flex justify-between gap-6"
-                      key={label}
-                    >
-                      <p className="flex-1">{label}</p>
-                      <span className="w-6 h-6 rounded-full border border-[#C8C8C8] dark:border-[#888888] dark:bg-[#222623]"></span>
-                    </Link>
-                  ))}
+                  <div className="mt-[28px] space-y-6">
+                    {items.map(({ label, done, href }) => (
+                      <Link
+                        href={href}
+                        className="flex justify-between gap-6"
+                        key={label}
+                      >
+                        <p className="flex-1">{label}</p>
+                        <span className="w-6 h-6 rounded-full border border-[#C8C8C8] dark:border-[#888888] dark:bg-[#222623]"></span>
+                      </Link>
+                    ))}
+                  </div>
                 </div>
               </div>
-            </div>
+            )}
 
-            <CreatePost />
+            {/* <CreatePost /> */}
+            <div className="mt-6">
+              <Feeds />
+            </div>
           </div>
 
           <RightSideBar className="min-w-[300px] lg:min-w-[380px]" />

@@ -74,7 +74,7 @@ const FollowUnfollowTile = ({ user, hideBorder }: Props) => {
   return (
     <div
       className={cn(
-        "flex justify-between items-center",
+        "flex justify-between items-center w-full flex-1",
         !hideBorder && "border-b border-border"
       )}
     >
@@ -97,7 +97,7 @@ const FollowUnfollowTile = ({ user, hideBorder }: Props) => {
           }
         />
         <div>
-          <div className="flex gap-x-2 items-center">
+          <div className="flex gap-x-2 items-center h">
             <p className="text-foreground hover:underline font-semibold text-sm line-clamp-1 text-ellipsis">
               {user?.usermeta?.firstname} {user?.usermeta?.lastname}
             </p>

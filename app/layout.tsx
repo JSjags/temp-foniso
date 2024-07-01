@@ -48,7 +48,6 @@ export default function RootLayout({
             </NextAuthProvider>
           </UserProvider>
         </div>
-
         <Toaster />
       </body>
     </html>

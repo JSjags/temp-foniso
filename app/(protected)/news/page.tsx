@@ -175,10 +175,10 @@ const News = (props: Props) => {
         </Select> */}
       </div>
       <div className="flex gap-0 min-[480px]:gap-2 bg-transparent">
-        <div className="relative min-[480px]:mt-0 flex-1 bg-background min-h-screen">
+        <div className="relative min-[480px]:mt-0 flex-1 bg-background min-h-screen pb-40">
           {news.isLoading && (
-            <div className="mt-20 flex justify-center items-center">
-              <ImSpinner2 className="size-10 animate-spin text-[#4ED17E]" />
+            <div className="mt-10 sm:mt-20 flex justify-center items-center">
+              <ImSpinner2 className="size-4 sm:size-10 animate-spin text-[#4ED17E]" />
             </div>
           )}
           {news.isSuccess && news.data && tab === "all" && (
@@ -320,18 +320,37 @@ const News = (props: Props) => {
                 <div className="flex gap-x-4">
                   <Button
                     variant={"outline"}
-                    className="border rounded-lg border-foreground text-sm"
-                    disabled={news.data?.data.data.meta.currentPage === 1}
+                    className="border rounded-lg border-foreground text-sm hover:bg-foreground/10"
+                    disabled={
+                      news.data?.data.data.meta.currentPage === 1 ||
+                      news.isLoading ||
+                      news.isFetching
+                    }
+                    onClick={() => {
+                      if (news.data?.data.data.meta.currentPage !== 1) {
+                        setPage((prev) => prev - 1);
+                      }
+                    }}
                   >
                     Previous
                   </Button>
                   <Button
                     variant={"outline"}
-                    className="border rounded-lg border-foreground text-sm"
+                    className="border rounded-lg border-foreground text-sm hover:bg-foreground/10"
                     disabled={
                       news.data?.data.data.meta.currentPage ===
-                      news.data?.data.data.meta.totalPages
+                        news.data?.data.data.meta.totalPages ||
+                      news.isLoading ||
+                      news.isFetching
                     }
+                    onClick={() => {
+                      if (
+                        news.data?.data.data.meta.currentPage !==
+                        news.data?.data.data.meta.totalPages
+                      ) {
+                        setPage((prev) => prev + 1);
+                      }
+                    }}
                   >
                     Next
                   </Button>

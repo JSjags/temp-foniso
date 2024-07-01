@@ -11,13 +11,37 @@ type ItemProps = {
   label: string;
   desc?: ReactNode;
   href: string;
+  isButton?: boolean;
 };
 
 const DetailCard = (props: ItemProps) => {
   const searchParams = useSearchParams();
   const is_mobile = useIsMobile();
 
-  return (
+  return props.isButton ? (
+    <div
+      role="button"
+      className={cn(
+        "flex items-center gap-4 duo:gap-5 py-5",
+        searchParams.get("tab") === props.href
+          ? "bg-[#E1E1E1] dark:bg-[#1D211E]"
+          : ""
+      )}
+    >
+      {props.icon && (
+        <props.icon className="text-2xl text-[#656464] dark:text-[#7C7C7C]" />
+      )}
+      <span className="block flex-1">
+        <span className="font-medium block"> {props.label} </span>
+        <span className="font-sm text-[#888888] dark:text-[#AFAFAF] block">
+          {props.desc}
+        </span>
+      </span>
+      {/* { (
+        <PiCaretRightThin className="text-2xl text-[#888888] dark:text-[#7C7C7C]" />
+      )} */}
+    </div>
+  ) : (
     <Link
       href={{ query: { tab: props.href } }}
       replace={!is_mobile}

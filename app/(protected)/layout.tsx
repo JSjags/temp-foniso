@@ -17,6 +17,7 @@ import CreatePost from "@/components/Modal/CreatePost";
 import CreatePostModal from "@/components/Modal/CreatePost";
 import VerifyUserProfileByInterval from "@/components/VerifyUserProfileByInterval";
 import FloatingPostBtn from "@/components/FloatingPostBtn";
+import { SocketProvider } from "@/context/SocketContext";
 
 const fontSans = DM_Sans({
   subsets: ["latin"],
@@ -47,32 +48,36 @@ export default function RootLayout({
     //     sizes="<generated>"
     //   />
     <ProtectedRoute>
-      <div className={cn(fontSans.variable)}>
-        <Analytics />
-        <AppProvider>
-          <ThemeProvider
-            attribute="class"
-            defaultTheme="system"
-            enableSystem
-            disableTransitionOnChange
-          >
-            <VerifyUserProfileByInterval />
-            <div className="mx-auto w-full flex justify-center gap-0 min-[480px]:gap-2 bg-[##E0E5E2] dark:bg-bgEffect max-w-[1560px] h-screen overflow-y-scroll">
-              <LeftSideBar />
-              {/* max-w-[740px] */}
-              <div className="flex-1 min-w-[140px] h-fit pb-20 sm:pb-0">
-                {/* Titlebar is only for mobile devices */}
-                <Titlebar />
-                <FloatingPostBtn />
-                {children}
-              </div>
-            </div>
-            {/* Create post from anywhere */}
-            <CreatePostModal />
-            <ToastContainer />
-          </ThemeProvider>
-        </AppProvider>
-      </div>
+      <SocketProvider>
+        <div vaul-drawer-wrapper="" className="bg-background !h-0">
+          <div className={cn(fontSans.variable)}>
+            <Analytics />
+            <AppProvider>
+              <ThemeProvider
+                attribute="class"
+                defaultTheme="system"
+                enableSystem
+                disableTransitionOnChange
+              >
+                <VerifyUserProfileByInterval />
+                <div className="mx-auto w-full flex justify-center gap-0 min-[480px]:gap-2 bg-[##E0E5E2] dark:bg-bgEffect max-w-[1560px] h-screen overflow-y-scroll">
+                  <LeftSideBar />
+                  {/* max-w-[740px] */}
+                  <div className="flex-1 min-w-[140px] h-fit min-[480px]:pb-20 sm:pb-0">
+                    {/* Titlebar is only for mobile devices */}
+                    <Titlebar />
+                    <FloatingPostBtn />
+                    {children}
+                  </div>
+                </div>
+                {/* Create post from anywhere */}
+                <CreatePostModal />
+                <ToastContainer />
+              </ThemeProvider>
+            </AppProvider>
+          </div>
+        </div>
+      </SocketProvider>
     </ProtectedRoute>
     // </html>
   );

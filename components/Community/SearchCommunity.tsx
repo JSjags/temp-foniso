@@ -17,11 +17,11 @@ const Search = ({
   setParam: Dispatch<SetStateAction<string>>;
 }) => {
   return (
-    <div className="relative flex items-center rounded-xl overflow-hidden ml-4 duo:ml-5">
+    <div className="relative flex items-center rounded-xl overflow-hidden ml-4 duo:ml-5 pb-2">
       <CiSearch className="absolute left-2 text-2xl fill-[#656464] dark:fill-[#7C7C7C]" />
       <Input
         onChange={(e) => setParam(e.target.value)}
-        className="pl-9 bg-[#E0E5E2] ring-0 border-none outline-none h-[52px] duo:h-[60px] dark:bg-[#020302] dark:border-[#222623] placeholder:font-normal placeholder:dark:text-[#616161]"
+        className="pl-9 bg-[#E0E5E2] ring-0 focus-within:outline-offset-0 border-none outline-none h-[52px] duo:h-[60px] dark:bg-[#020302] dark:border-[#222623] placeholder:font-normal placeholder:dark:text-[#616161]"
         placeholder="Search community"
       />
     </div>
@@ -37,7 +37,7 @@ const SearchCommunity = () => {
   });
 
   return (
-    <div className="flex duo:gap-2">
+    <div className="flex duo:gap-2 h-screen">
       <div className="w-full bg-background">
         <HeaderWithBackBtn title={<Search setParam={setParam} />} />
         {isFetching && (

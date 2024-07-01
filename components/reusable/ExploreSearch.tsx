@@ -127,17 +127,18 @@ const ExploreSearch = ({ inputStyle }: Props) => {
                       className="flex gap-x-3 hover:bg-foreground/20 rounded-md p-2 cursor-pointer"
                       role="button"
                       onClick={() => {
-                        if (pathname.includes("explore")) {
-                          setShowQuerySearchResults(false);
-                          router.push(
-                            `?search=${debouncedSearchQuery}&tab=people`
-                          );
-                        } else {
-                          setShowQuerySearchResults(false);
-                          router.push(
-                            `/explore?search=${debouncedSearchQuery}&tab=people`
-                          );
-                        }
+                        router.push(`/profile/${suggestion.username}`);
+                        // if (pathname.includes("explore")) {
+                        //   setShowQuerySearchResults(false);
+                        //   router.push(
+                        //     `?search=${debouncedSearchQuery}&tab=people`
+                        //   );
+                        // } else {
+                        //   setShowQuerySearchResults(false);
+                        //   router.push(
+                        //     `/explore?search=${debouncedSearchQuery}&tab=people`
+                        //   );
+                        // }
                       }}
                     >
                       <Image

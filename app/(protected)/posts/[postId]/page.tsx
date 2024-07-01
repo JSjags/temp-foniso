@@ -48,11 +48,18 @@ import {
   useQuery,
   useQueryClient,
 } from "@tanstack/react-query";
-import { Heart, MoreVertical } from "lucide-react";
+import { Heart, MoreVertical, Send } from "lucide-react";
 import moment from "moment";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { Fragment, RefObject, useEffect, useRef, useState } from "react";
+import {
+  Fragment,
+  RefObject,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState,
+} from "react";
 import toast from "react-hot-toast";
 import { ImSpinner2 } from "react-icons/im";
 import { IoArrowBack } from "react-icons/io5";
@@ -114,7 +121,7 @@ export default function Page({ params }: { params: any }) {
     },
   });
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (post.isSuccess) {
       setPostData(post.data?.data.data);
       setPostLikedByMe({
@@ -129,13 +136,13 @@ export default function Page({ params }: { params: any }) {
     post.data?.data.data?.emojiId,
   ]);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (post.isSuccess) {
       setPostData(post.data?.data.data);
     }
   }, [post.isSuccess, post.data?.data.data]);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (inputRef.current) {
       inputRef.current.focus();
     }
@@ -320,7 +327,7 @@ export default function Page({ params }: { params: any }) {
   return (
     <div className="">
       <div className="flex gap-0 min-[480px]:gap-2">
-        <div className="relative mt-0 min-[480px]:mt-0 flex-1 bg-background">
+        <div className="relative mt-0 min-[480px]:mt-0 flex-1 bg-background min-h-screen">
           <div className="p-2 sm:p-4 flex gap-x-2 items-center bg-background/50 backdrop-blur-lg sticky top-12 min-[480px]:top-0 z-[100]">
             <Button
               className="p-0 w-6 h-6 bg-transparent rounded-full text-foreground hover:bg-foreground/20"
@@ -340,7 +347,7 @@ export default function Page({ params }: { params: any }) {
             {Boolean(postData) && (
               // <Post post={post.data?.data.data} />
               <>
-                <div className="p-4 border-b border-border">
+                <div className="p-2 sm:p-4 border-b border-border">
                   <div className="flex gap-x-3">
                     <Image
                       width={45}
@@ -472,7 +479,7 @@ export default function Page({ params }: { params: any }) {
                     </div>
                   </div>
                 </div>
-                <p className="py-2 border-b border-border font-bold text-foreground pl-4 sticky top-0 z-50 bg-background">
+                <p className="py-2 border-b border-border font-bold text-foreground pl-2 sm:pl-4 sticky top-0 z-50 bg-background">
                   Comments
                 </p>
                 {comments.isLoading && (
@@ -524,17 +531,18 @@ export default function Page({ params }: { params: any }) {
                       </p>
                     </div>
                   )}
-                <div className="p-4 border-t border-border sticky bottom-0 w-full z-50 text-foreground bg-background">
+                <div className="p-2 border-t border-border sticky bottom-0 bg-background w-full z-50 text-foreground">
                   <Image
                     width={25}
                     height={25}
-                    className="size-[25px] rounded-full object-cover absolute top-6 left-6"
+                    className="size-[25px] rounded-full object-cover absolute top-4 left-4 bg-foreground/30"
                     alt="icon"
                     src={
-                      userData?.user.usermeta.avatar ?? profileImageplaceholder
+                      userData?.user?.usermeta?.avatar ??
+                      profileImageplaceholder
                     }
                   />
-                  <div className="rounded-3xl bg-foreground/10 border-none min-h-10 pr-14 placeholder:text-foreground/80 pl-10">
+                  <div className="rounded-3xl bg-foreground/10 border-none min-h-10 pr-12 placeholder:text-foreground/80 pl-8 flex-1">
                     <MessageBox
                       inputRef={inputRef}
                       commentType={commentType}
@@ -572,7 +580,7 @@ export default function Page({ params }: { params: any }) {
                       }}
                     />
                   </div>
-                  <div className="flex items-end absolute right-4 bottom-4 w-fit h-max min-h-11">
+                  <div className="flex items-end absolute right-4 bottom-2 w-fit h-max min-h-11">
                     <Button
                       disabled={
                         value.trim().length <= 0 ||
@@ -600,7 +608,7 @@ export default function Page({ params }: { params: any }) {
                         }
                       }}
                       variant={"ghost"}
-                      className="text-colorPrimary hover:bg-colorPrimary rounded-full min-h-11"
+                      className="text-colorPrimary hover:bg-colorPrimary rounded-full min-h-11 px-2"
                     >
                       {comment.isPending ||
                       reply.isPending ||
@@ -610,7 +618,7 @@ export default function Page({ params }: { params: any }) {
                         </div>
                       ) : (
                         <span className="w-fit text-base font-bold block p-0 align-middle">
-                          Send
+                          <Send />
                         </span>
                       )}
                     </Button>

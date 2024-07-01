@@ -78,16 +78,16 @@ const SearchCommunities = (props: Props) => {
                           : profileImageplaceholder
                       }
                     />
-                    <div>
+                    <div className="flex-1">
                       <div className="flex gap-x-2 items-center">
                         <p className="text-foreground hover:underline font-semibold text-sm line-clamp-1 text-ellipsis">
                           {community.name}{" "}
                         </p>
-                        <div className="flex gap-x-1 items-center">
+                        <div className="flex gap-x-1 items-center shrink-0">
                           <Image
                             width={14}
                             height={14}
-                            className="size-[16px] rounded-full object-cover"
+                            className="size-[16px] rounded-full object-cover shrink-0"
                             alt="avatar"
                             src={"/assets/app-icons/verified-icon.svg"}
                           />
@@ -108,11 +108,11 @@ const SearchCommunities = (props: Props) => {
                         (item) => item.userId === userData?.user.id
                       ).length
                     ) ? (
-                      <Button className="rounded-full bg-colorPrimary text-white w-[129px] h-9 mt-4 font-medium">
+                      <Button className="rounded-full bg-colorPrimary/80 hover:bg-colorPrimary/100 text-xs sm:text-sm text-white w-fit sm:w-[129px] sm:h-8 h-6 mt-4 font-medium">
                         Joined
                       </Button>
                     ) : (
-                      <Button className="rounded-full w-[129px] h-9 mt-4 font-medium">
+                      <Button className="rounded-full w-fit sm:w-[129px] sm:h-9 h-7 mt-4 font-medium">
                         Join
                       </Button>
                     )}

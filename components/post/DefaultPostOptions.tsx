@@ -30,6 +30,13 @@ import ErrorToast from "../reusable/toasts/ErrorToast";
 import NoticeToast from "../reusable/toasts/NoticeToast";
 import { getBlockedUsers, getFollowing } from "@/services/api/userService";
 import { followUserQuery, unfollowUserQuery } from "@/services/api/explore";
+import {
+  DropdownDrawer,
+  DropdownDrawerContent,
+  DropdownDrawerGroup,
+  DropdownDrawerItem,
+  DropdownDrawerTrigger,
+} from "../ui/dropdown-drawer";
 
 type Props = {
   post: PostMeta;
@@ -248,9 +255,9 @@ const DefaultPostOptions = ({ post, setShowReportModal }: Props) => {
   console.log(following);
 
   return (
-    <DropdownMenu modal={true}>
+    <DropdownMenu>
       <DropdownMenuTrigger
-        asChild
+        // asChild
         onClick={(e) => {
           e.stopPropagation();
         }}

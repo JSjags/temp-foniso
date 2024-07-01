@@ -6,7 +6,7 @@ type Props = {};
 const AdditionalInformation = (props: Props) => {
   return (
     <div className="flex flex-col gap-y-5">
-      <Link href={"#"}>
+      <Link href={"/settings?tab=support"}>
         <p className="font-medium text-lg">Support</p>
       </Link>
       <Link href={"#"}>

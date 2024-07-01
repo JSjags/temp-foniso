@@ -97,6 +97,12 @@ export const getOneCommunity = async (
   return await axiosInstance.get(`/community/${community_id}`);
 };
 
+export const deleteCommunityQuery = async (
+  community_id: string
+): Promise<{ data: { data: CommunityContext } }> => {
+  return await axiosInstance.get(`/community/${community_id}`);
+};
+
 export const communityMembers = async (
   community_id: string
 ): Promise<ApiResponse<Array<CommunityMember>>> => {
@@ -123,6 +129,16 @@ export const communityModerators = async (
 
 export const getUsers = async (): Promise<{ data: { data: User[] } }> => {
   return await axiosInstance.get("/users");
+};
+
+export const getInvitedMembers = async (
+  communityId: string
+): Promise<{
+  data: { data: { items: { user: User[]; userId: number }[] } };
+}> => {
+  return await axiosInstance.get(
+    `/community-member/members/invited/${communityId}?limit=100&page=1`
+  );
 };
 
 export const communityPost = async (

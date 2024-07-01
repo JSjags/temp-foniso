@@ -1,14 +1,46 @@
-// import React from 'react';
-// import { Modal } from '@shadcn/ui';
+// src/components/FullScreenContent.tsx
+import React from "react";
 
-// const FullScreenImageModal: React.FC<{ src: string | null; onClose: () => void }> = ({ src, onClose }) => {
-//   return (
-//     <Modal open={!!src} onClose={onClose}>
-//       <div className="flex justify-center items-center h-screen bg-black">
-//         {src && <img src={src} alt="Full screen" className="max-w-full max-h-full" />}
-//       </div>
-//     </Modal>
-//   );
-// };
+interface FullScreenContentProps {
+  url: string;
+}
 
-// export default FullScreenImageModal;
+const FullScreenContent: React.FC<FullScreenContentProps> = ({ url }) => {
+  const isImage = /\.(jpeg|jpg|gif|png)$/.test(url);
+  const isVideo = /\.(mp4|ogg|webm)$/.test(url);
+
+  console.log(url);
+
+  const renderContent = () => {
+    if (isImage) {
+      return (
+        <div className="fixed  top-0 left-0 w-screen h-screen flex justify-center items-center bg-black">
+          <img
+            src={url}
+            alt="FullScreenImage"
+            className="max-w-full max-h-full"
+          />
+        </div>
+      );
+    } else if (isVideo) {
+      return (
+        <div className="fixed top-0 left-0 w-screen h-screen flex justify-center items-center bg-black">
+          <video controls autoPlay className="max-w-full max-h-full">
+            <source src={url} type={`video/${url.split(".").pop()}`} />
+            Your browser does not support the video tag.
+          </video>
+        </div>
+      );
+    } else {
+      return (
+        <div className="fixed top-0 left-0 w-screen h-screen flex justify-center items-center bg-black">
+          <p className="text-white">Unsupported URL type.</p>
+        </div>
+      );
+    }
+  };
+
+  return renderContent();
+};
+
+export default FullScreenContent;
